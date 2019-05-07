@@ -133,7 +133,7 @@ function showPreviewAbilityWay() {
 
         case "E":
         case "e":
-            if(player.Wobj) {
+            if(player.Eobj) {
                 var obj = player.Eobj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
@@ -143,8 +143,8 @@ function showPreviewAbilityWay() {
 
         case "R":
         case "r":
-            if(player.Wobj){
-                var obj = player.R.getMovevableObj();
+            if(player.Robj){
+                var obj = player.Robj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
             }
