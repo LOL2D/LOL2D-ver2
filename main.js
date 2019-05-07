@@ -4,6 +4,7 @@ var images = {};
 var hacked = false;
 
 function preload() {
+    images.rocket = loadImage('images/rocket2.png');
     images.locxoay = loadImage('images/locXoay.png');
     images.yasuo = loadImage('images/yasuo.png');
 }
@@ -62,7 +63,7 @@ function keyPressed() {
             break;
 
         case "W":
-            if (yasuo.W.available()) objects.push(yasuo.W.active());
+            
             break;
 
         case "E":
@@ -70,7 +71,7 @@ function keyPressed() {
             break;
 
         case "R":
-            // statements_1
+            if (yasuo.W.available()) objects.push(yasuo.W.active());
             break;
 
         case "D":

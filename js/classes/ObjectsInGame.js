@@ -90,7 +90,7 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
 
 class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
     constructor(_owner, _position, _direction, _damage) {
-        var image = images.locxoay;
+        var image = images.rocket;
         var speed = 15;
         var radius = 35;
         var range = 2000;
