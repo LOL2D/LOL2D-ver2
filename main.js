@@ -1,4 +1,4 @@
-var yasuo, autoYasuo;
+var player, autoYasuo;
 var objects = []; // lưu các vật thể trong game
 var images = {};
 var hacked = true;
@@ -7,6 +7,7 @@ function preload() {
     images.rocket = loadImage('images/rocket2.png');
     images.locxoay = loadImage('images/locXoay.png');
     images.yasuo = loadImage('images/yasuo.png');
+    images.jinx = loadImage('images/jinx.png');
 }
 
 function setup() {
@@ -17,23 +18,19 @@ function setup() {
     preventRightClick();
 
     // khởi tạo
-    yasuo = new Yasuo("Hoàng đẹp trai", random(width), random(height));
+    player = new Jinx("Hoàng đẹp trai", random(width), random(height));
     autoYasuo = new AutoYasuo(random(width), random(height));
 }
 
 function draw() {
     background(30);
 
-    yasuo.run();
+    player.run();
     autoYasuo.run();
 
-    if (random(1) > .98) {
-        if (!autoYasuo.died && autoYasuo.Q.available()) {
-            if (random(1) > .5) {
-                objects.push(autoYasuo.Q.active());
-            } else {
-                objects.push(autoYasuo.W.active());
-            }
+    if (!autoYasuo.died && random(1) > .96) {
+        if(autoYasuo.Q.available()) {
+            objects.push(autoYasuo.Q.active());
         }
     }
 
@@ -45,14 +42,14 @@ function draw() {
             var oy = objects[i].position.y;
             var or = objects[i].radius;
 
-            var yasuoPos = yasuo.getPosition();
+            var playerPos = player.getPosition();
             var autoYasuoPos = autoYasuo.getPosition();
 
-            if (collideCircleCircle(yasuoPos.x, yasuoPos.y, yasuo.radius, ox, oy, or)) {
-                objects[i].effect(yasuo);
+            if (collideCircleCircle(playerPos.x, playerPos.y, player.radius, ox, oy, or * 2)) {
+                objects[i].effect(player);
             }
 
-            if (collideCircleCircle(autoYasuoPos.x, autoYasuoPos.y, autoYasuo.radius, ox, oy, or)) {
+            if (collideCircleCircle(autoYasuoPos.x, autoYasuoPos.y, autoYasuo.radius, ox, oy, or* 2)) {
                 objects[i].effect(autoYasuo);
             }
         }
@@ -76,31 +73,37 @@ function mouseClicked() {
 
 function mousePressed() {
     // if (mouseButton == "right")
-    yasuo.setTargetMove(mouseX, mouseY);
+    player.setTargetMove(mouseX, mouseY);
 }
 
 function showPreviewAbilityWay() {
-    var direc = createVector(mouseX - yasuo.position.x, mouseY - yasuo.position.y);
+    var direc = createVector(mouseX - player.position.x, mouseY - player.position.y);
     var r = direc.mag();
 
     switch (key) {
         case "q":
         case "Q":
-            r = yasuo.Q.getRange();
+            if(player.Q)
+                r = player.Q.getRange();
             break;
 
         case "W":
         case "w":
+            if(player.W)
+                r = player.W.getRange();
             break;
 
         case "E":
         case "e":
+            if(player.E)
+                r = player.E.getRange();
             // statements_1
             break;
 
         case "R":
         case "r":
-            r = yasuo.W.getRange();
+            if(player.R)
+                r = player.R.getRange();
             break;
 
         default:
@@ -109,37 +112,39 @@ function showPreviewAbilityWay() {
     }
 
     direc.setMag(r);
-    direc.add(yasuo.position);
+    direc.add(player.position);
 
     stroke("#fff9");
-    line(yasuo.position.x, yasuo.position.y, direc.x, direc.y);
+    line(player.position.x, player.position.y, direc.x, direc.y);
 }
 
 function keyReleased() {
-    if (!yasuo.died)
+    if (!player.died)
         switch (key) {
             case "Q":
-                if (yasuo.Q.available()) objects.push(yasuo.Q.active());
+                if (player.Q && player.Q.available()) 
+                    objects.push(player.Q.active());
                 break;
 
             case "W":
-
+                if (player.W && player.W.available()) 
+                    objects.push(player.W.active());
                 break;
 
             case "E":
-                // statements_1
+                if (player.E && player.E.available()) 
+                    objects.push(player.E.active());
                 break;
 
             case "R":
-                if (yasuo.W.available()) objects.push(yasuo.W.active());
+                if (player.R && player.R.available()) 
+                    objects.push(player.R.active());
                 break;
 
             case "D":
-                yasuo.hatTung(500);
                 break;
 
             case "F":
-                yasuo.lamCham(.5, 2000);
                 break;
 
             default:

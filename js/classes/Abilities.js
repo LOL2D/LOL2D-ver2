@@ -16,8 +16,8 @@ class Ability {
 class Q_Yasuo extends Ability {
 
     constructor(_owner) {
-        var damage = 10;
-        var cooldownTime = 500;
+        var damage = 5;
+        var cooldownTime = 1000;
         super(damage, cooldownTime);
 
         this.owner = _owner;
@@ -25,18 +25,18 @@ class Q_Yasuo extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
+        return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 
     getRange() {
-        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
+        return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
     }
 }
 
 class R_Jinx extends Ability {
     constructor(_owner) {
         var damage = 0; // sát thương ban đầu = 0
-        var cooldownTime = 500;
+        var cooldownTime = 2000;
         super(damage, cooldownTime);
 
         this.owner = _owner;

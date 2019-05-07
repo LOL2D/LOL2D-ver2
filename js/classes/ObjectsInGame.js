@@ -60,7 +60,7 @@ class Moveable_Ability_Object {
     }
 }
 
-class LocXoay_Yasuo extends Moveable_Ability_Object {
+class BaoKiem_Yasuo extends Moveable_Ability_Object {
 
     constructor(_owner, _position, _direction, _damage) {
         var image = images.locxoay;

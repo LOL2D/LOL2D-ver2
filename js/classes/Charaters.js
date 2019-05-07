@@ -38,10 +38,11 @@ class Character {
         if (this.health >= damage) {
             this.health -= damage;
         } else {
-            this.health = 0;
-            this.died = true;
-            this.color = "#555"; // Mất màu :v
-            this.bgColor = "#555a";
+            // this.health = 0;
+            // this.died = true;
+            // this.color = "#555"; // Mất màu :v
+            // this.bgColor = "#555a";
+            this.health = this.maxHealth; // test
         }
     }
 
@@ -214,6 +215,8 @@ class Character {
     }
 }
 
+//=========================================================
+
 class Yasuo extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.yasuo;
@@ -223,12 +226,28 @@ class Yasuo extends Character {
 
         this.Q = new Q_Yasuo(this);
         this.W = new R_Jinx(this);
+        this.E = null;
+        this.R = null;
     }
 }
 
 class AutoYasuo extends Yasuo {
     constructor(_name, _x, _y) {
         super((_name || "Yasuo Máy"), _x, _y, true);
-        this.autoMove = true;
+        // this.autoMove = true;
+    }
+}
+
+class Jinx extends Character {
+    constructor(_name, _x, _y, _isEnermy) {
+        var image = images.jinx;
+        var radius = 30;
+        var speed = 5.5;
+        super(_name, image, _x, _y, radius, speed, _isEnermy);
+
+        this.Q = null;
+        this.W = null;
+        this.E = null;
+        this.R = new R_Jinx(this);
     }
 }
