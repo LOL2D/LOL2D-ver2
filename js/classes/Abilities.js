@@ -1,26 +1,43 @@
 class Ability {
-	constructor(_damage, _cooldown, _keycode) {
-		this.cooldown = _cooldown; // thời gian hồi chiêu (tính bằng milli giây)
-		// this.damage = _damage; // sát thương gây ra
+    constructor(_damage, _cooldown) {
+        this.damage = _damage; // sát thương gây ra
+        this.cooldownTime = _cooldown; // thời gian hồi chiêu (tính bằng milli giây)
 
-		this.remainingCooldownTime = 0; // thời gian hồi chiêu còn lại (khi đang trong quá trình hồi chiêu)
-		this.keycode = _keycode; // nút kích hoạt chiêu này
-	}
+        this.lastActivatedTime = millis(); // mốc thời gian dùng chiêu trước đó
+    }
 
-	run() {
-		if(keyIsDown(this.key)) { // nếu nút kích hoạt đang được ấn thì activate
-			this.activate();
-		}
-	}
-
-	activate() {
-		if(this.remainingCooldownTime <= 0) { // nếu không trong khoảng thời gian hồi chiêu thì mới hành động
-
-		}
-	}
-
-	setKey(_keycode) {
-		this.keycode = _keycode;
-	}
+    available() {
+        return (millis() - this.lastActivatedTime >= this.cooldownTime);
+    }
 }
 
+class Q_Yasuo extends Ability {
+
+    constructor(_owner) {
+        var damage = 10;
+        var cooldownTime = 3000;
+        super(damage, cooldownTime);
+
+        this.owner = _owner;
+    }
+
+    active() {
+        this.lastActivatedTime = millis();
+        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
+    }
+}
+
+class R_Jinx extends Ability {
+	constructor(_owner) {
+        var damage = 20;
+        var cooldownTime = 100;
+        super(damage, cooldownTime);
+
+        this.owner = _owner;
+    }
+
+    active() {
+        this.lastActivatedTime = millis();
+        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
+    }
+}

@@ -26,8 +26,10 @@ function draw() {
     yasuo.run();
     autoYasuo.run();
 
-    if(random(1) > .98) 
-        objects.push(autoYasuo.Q());
+    if (random(1) > .98) {
+        if (autoYasuo.Q.available())
+            objects.push(autoYasuo.Q.active());
+    }
 
     for (var i = objects.length - 1; i >= 0; i--) {
         objects[i].run();
@@ -45,7 +47,7 @@ function draw() {
 }
 
 function mouseClicked() {
-	// mousePressed();
+    // mousePressed();
 }
 
 function mousePressed() {
@@ -56,11 +58,11 @@ function mousePressed() {
 function keyPressed() {
     switch (key) {
         case "Q":
-            objects.push(yasuo.Q());
+            if (yasuo.Q.available()) objects.push(yasuo.Q.active());
             break;
 
         case "W":
-            // statements_1
+            if (yasuo.W.available()) objects.push(yasuo.W.active());
             break;
 
         case "E":
@@ -83,8 +85,6 @@ function keyPressed() {
             // statements_def
             break;
     }
-
-    console.log(key);
 }
 
 function windowResized() {

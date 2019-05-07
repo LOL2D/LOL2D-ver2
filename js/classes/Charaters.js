@@ -153,11 +153,21 @@ class Character {
             if (this.targetRadius >= 5)
                 this.targetRadius -= 1.5;
 
-            fill(20, 200, 20);
+            fill(this.color);
             ellipse(this.targetMove.x, this.targetMove.y, this.targetRadius * 2);
+
+            if(hacked) {
+                stroke(this.color);
+                line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
+            }
         }
     }
 
+    showAbility() {
+        if(this.Q) {
+
+        }
+    }
 
     // =================== Các hàm tính và lấy giá trị ================
     getDirectionMouse() { // hàm lấy hướng nhìn của nhân vật dạng góc
@@ -184,10 +194,9 @@ class Yasuo extends Character {
         var radius = 30;
         var speed = 5;
         super(image, _x, _y, radius, speed, _isEnermy);
-    }
 
-    Q() {
-        return new LocXoay_Yasuo(this, this.getPosition(), this.getDirectionMouse_Vector(), hacked);
+        this.Q = new Q_Yasuo(this);
+        this.W = new R_Jinx(this);
     }
 }
 
