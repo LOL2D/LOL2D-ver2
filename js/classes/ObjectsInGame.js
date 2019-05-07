@@ -101,7 +101,7 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
     show() {
     	super.show();
     	if(random(1) > .5) {
-    		objects.push(new Smoke(this.position.x, this.position.y, 700, 20))
+    		objects.push(new Smoke(this.position.x, this.position.y, 200, 20))
     	}
     }
 }

@@ -11,11 +11,13 @@ class Ability {
     }
 }
 
+// =======================================================================
+
 class Q_Yasuo extends Ability {
 
     constructor(_owner) {
         var damage = 10;
-        var cooldownTime = 3000;
+        var cooldownTime = 500;
         super(damage, cooldownTime);
 
         this.owner = _owner;
@@ -30,7 +32,7 @@ class Q_Yasuo extends Ability {
 class R_Jinx extends Ability {
 	constructor(_owner) {
         var damage = 20;
-        var cooldownTime = 100;
+        var cooldownTime = 500;
         super(damage, cooldownTime);
 
         this.owner = _owner;

@@ -1,7 +1,7 @@
 var yasuo, autoYasuo;
 var objects = []; // lưu các vật thể trong game
 var images = {};
-var hacked = false;
+var hacked = true;
 
 function preload() {
     images.rocket = loadImage('images/rocket2.png');
@@ -40,8 +40,10 @@ function draw() {
         }
     }
 
-    // if(random(1) > .95) 
-    //     objects.push(new LocXoay_Yasuo(createVector(random(width), random(height)), p5.Vector.random2D(), hacked));
+    if(keyIsPressed) {
+        stroke("#fff9");
+        line(yasuo.position.x, yasuo.position.y, mouseX, mouseY);
+    }
 
     fill(255);
     text(round(frameRate()), 15, 15);
@@ -56,7 +58,7 @@ function mousePressed() {
     yasuo.setTargetMove(mouseX, mouseY);
 }
 
-function keyPressed() {
+function keyReleased() {
     switch (key) {
         case "Q":
             if (yasuo.Q.available()) objects.push(yasuo.Q.active());
