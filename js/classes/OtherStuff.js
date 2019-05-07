@@ -26,3 +26,9 @@ class Loading {
     	this.angle += .1;
     }
 }
+
+class showAbilityInfo {
+    constructor() {
+        
+    }
+}

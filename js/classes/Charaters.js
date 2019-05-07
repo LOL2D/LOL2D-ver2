@@ -36,7 +36,6 @@ class Character {
     // ================= Các hàm gọi chiêu thức ==============
     Q() {
         if (!this.died && this.Qobj && this.Qobj.available()) {
-            
             objects.push(this.Qobj.active());
         }
     }
@@ -284,6 +283,19 @@ class AutoYasuo extends Yasuo {
     constructor(_name, _x, _y) {
         super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
+    }
+
+    Q() {
+        console.log("Q nè");
+    }
+    W() {
+        console.log("W nè");
+    }
+    E() {
+        console.log("E nè");
+    }
+    R() {
+        console.log("R cho chết nè");
     }
 }
 
