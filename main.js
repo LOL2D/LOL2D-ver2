@@ -29,6 +29,10 @@ function draw() {
     } else if(!player) { // ngược lại, nếu đã load xong hết thì new Game
         menuWhenDie('open');
 
+        noStroke();
+        fill(200);
+        text("Vui lòng tắt Unikey TIẾNG VIÊT để trải nghiệm game tốt hơn", width * .5, height * .5 + 40);
+
     } else {
         player.run();
 
@@ -95,63 +99,6 @@ function draw() {
     fill(255);
     noStroke();
     text(round(frameRate()), 15, 15);
-}
-
-function showPreviewAbilityWay() {
-    var direc = createVector(mouseX - player.position.x, mouseY - player.position.y);
-    var r = direc.mag();
-    var strokeW = 1;
-
-    switch (key) {
-        case "q":
-        case "Q":
-            if (player.Qobj) {
-                var obj = player.Qobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        case "W":
-        case "w":
-            if (player.Wobj) {
-                var obj = player.Wobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        case "E":
-        case "e":
-            if (player.Eobj) {
-                var obj = player.Eobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            // statements_1
-            break;
-
-        case "R":
-        case "r":
-            if (player.Robj) {
-                var obj = player.Robj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        default:
-            // statements_def
-            break;
-    }
-
-    direc.setMag(r);
-    direc.add(player.position);
-
-    stroke("#0006");
-    strokeWeight(strokeW * 2);
-    line(player.position.x, player.position.y, direc.x, direc.y);
-    strokeWeight(1); // reset stroke Weight
 }
 
 function keyReleased() {
@@ -222,5 +169,61 @@ function newGame() {
     for (var i = 0; i < numOfAI; i++) {
         AI_Players.push(new AutoYasuo(null, random(width), random(height)));
     }
+}
 
+function showPreviewAbilityWay() {
+    var direc = createVector(mouseX - player.position.x, mouseY - player.position.y);
+    var r = direc.mag();
+    var strokeW = 1;
+
+    switch (key) {
+        case "q":
+        case "Q":
+            if (player.Qobj) {
+                var obj = player.Qobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
+            break;
+
+        case "W":
+        case "w":
+            if (player.Wobj) {
+                var obj = player.Wobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
+            break;
+
+        case "E":
+        case "e":
+            if (player.Eobj) {
+                var obj = player.Eobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
+            // statements_1
+            break;
+
+        case "R":
+        case "r":
+            if (player.Robj) {
+                var obj = player.Robj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
+            break;
+
+        default:
+            // statements_def
+            break;
+    }
+
+    direc.setMag(r);
+    direc.add(player.position);
+
+    stroke("#0006");
+    strokeWeight(strokeW * 2);
+    line(player.position.x, player.position.y, direc.x, direc.y);
+    strokeWeight(1); // reset stroke Weight
 }

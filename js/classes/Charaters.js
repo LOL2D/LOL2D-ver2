@@ -36,6 +36,7 @@ class Character {
     // ================= Các hàm gọi chiêu thức ==============
     Q() {
         if (!this.died && this.Qobj && this.Qobj.available()) {
+            
             objects.push(this.Qobj.active());
         }
     }

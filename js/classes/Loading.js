@@ -10,7 +10,7 @@ class Loading {
     	noFill();
 
     	// vòng xám
-		stroke(0, 50);
+		stroke(0, 100);
     	ellipse(width * .5, height * .5, this.radius * 2);
 
     	// nửa vòng màu 
