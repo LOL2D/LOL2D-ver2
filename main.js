@@ -4,9 +4,9 @@ var objects = []; // lưu các vật thể trong game
 var images = {};
 var loading;
 
-var hacked = false;
-var autoFire = true;
-var numOfAI = 1;
+var hacked = false; // hiện đường đạn
+var autoFire = false; // máy tự động bắn
+var numOfAI = 3; // số lượng máy
 
 function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
@@ -21,7 +21,7 @@ function setup() {
 }
 
 function draw() {
-    background(30);
+    background(20);
 
     if (!checkLoad()) { // khi chưa load xong hình thì hiện loading
         loading.run();
@@ -68,9 +68,11 @@ function draw() {
 
                 // duyệt qua mảng tướng máy
                 for (var a of AI_Players) {
-                    var aPos = a.getPosition();
-                    if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or * 2)) {
-                        objects[i].effect(a);
+                    if(!a.died) {
+                        var aPos = a.getPosition();
+                        if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or * 2)) {
+                            objects[i].effect(a);
+                        }
                     }
                 }
             }
@@ -97,6 +99,9 @@ function keyReleased() {
         switch (key) {
             case "P":
                 hacked = !hacked;
+                break;
+            case "O":
+                autoFire = !autoFire;
                 break;
             case "Q":
                 player.Q();
@@ -151,7 +156,7 @@ function newGame() {
 
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {
-        AI_Players.push(new AutoYasuo(null, random(width), random(height)));
+        AI_Players.push(new AutoYasuo(random(width), random(height)));
     }
 }
 

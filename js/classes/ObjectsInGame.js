@@ -1,19 +1,19 @@
 // Vật thể di chuyển được (đạn của jinx, lốc của ys, ..)
 class Moveable_Ability_Object {
-    constructor(_owner, _image, _position, _direction, _speed, _damage, _radius, _range) {
+    constructor(_owner, _data) {
         this.owner = _owner; // chủ nhân của vật thể này (character)
-        this.position = _position; // tọa độ bắt đầu (dạng vector)
-        this.speed = _speed; // vận tốc
-        this.image = _image; // hình ảnh hiển thị
+        this.position = _data.position; // tọa độ bắt đầu (dạng vector)
+        this.speed = _data.speed; // vận tốc
+        this.image = _data.image; // hình ảnh hiển thị
 
         // hướng di chuyển (dạng vector, không phải dạng góc)
         // setMag để đưa độ dài direction về đúng = độ lớn vận tốc
-        this.direction = _direction.setMag(this.speed);
+        this.direction = _data.direction.setMag(this.speed);
         this.travelDistance = 0; // quãng đường đã đi được
 
-        this.range = _range; // phạm vi chiêu thức - khoảng cách xa nhất có thể bay tới (tính bằng pixels)
-        this.radius = _radius; // bán kính vùng ảnh hưởng sát thương (hình tròn)
-        this.damage = _damage; // sát thương gây ra khi trúnh mục tiêu
+        this.range = _data.range; // phạm vi chiêu thức - khoảng cách xa nhất có thể bay tới (tính bằng pixels)
+        this.radius = _data.radius; // bán kính vùng ảnh hưởng sát thương (hình tròn)
+        this.damage = _data.damage; // sát thương gây ra khi trúnh mục tiêu
 
         // phần hack (nhìn thấy đường đi)
         this.targetMove = this.position.copy().add(this.direction.copy().setMag(this.range));
@@ -63,10 +63,17 @@ class Moveable_Ability_Object {
 class BaoKiem_Yasuo extends Moveable_Ability_Object {
 
     constructor(_owner, _position, _direction, _damage, _range) {
-        var image = images.locxoay;
-        var speed = 10;
-        var radius = 40;
-        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
+    	var data = {
+    		image : images.locxoay,
+    		speed: 10,
+    		radius: 40,
+
+    		position: _position,
+    		direction: _direction,
+    		damage: _damage,
+    		range: _range
+    	}
+        super(_owner, data);
 
         this.charactersEffected = []; // lưu những tướng đã dính damage của chiêu này
         // do chiêu này xuyên qua tướng, nếu ko có mảng duyệt, tướng sẽ bị trừ máu ... đến chết :v
@@ -92,20 +99,26 @@ class BaoKiem_Yasuo extends Moveable_Ability_Object {
         if (this.checkCharacter(c)) {
             if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
                 c.loseHealth(this.damage);
+                c.hatTung(1000);
                 this.charactersEffected.push(c); // cho vào mảng để ko bị trừ nữa
             }
-
-            c.hatTung(1000);
         }
     }
 }
 
 class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
     constructor(_owner, _position, _direction, _damage, _range) {
-        var image = images.rocket;
-        var speed = 15;
-        var radius = 35;
-        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
+    	var data = {
+    		image : images.rocket,
+    		speed: 15,
+    		radius: 35,
+
+    		position: _position,
+    		direction: _direction,
+    		damage: _damage,
+    		range: _range
+    	}
+        super(_owner, data);
     }
 
     show() {
@@ -136,10 +149,17 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
 
 class SungDien_Jinx extends Moveable_Ability_Object {
     constructor(_owner, _position, _direction, _damage, _range) {
-        var image = null;
-        var speed = 15;
-        var radius = 10;
-        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
+    	var data = {
+    		image : null,
+    		speed: 15,
+    		radius: 10,
+
+    		position: _position,
+    		direction: _direction,
+    		damage: _damage,
+    		range: _range
+    	}
+        super(_owner, data);
     }
 
     show() {
@@ -159,7 +179,8 @@ class SungDien_Jinx extends Moveable_Ability_Object {
     effect(c) {
         if (this.checkCharacter(c)) {
             c.loseHealth(this.damage);
-            c.lamCham(.9, 1000);
+            c.lamCham(.5, 700);
+            c.camLang(1500);
 
             // hiệu ứng nổ khói
             for (var i = 0; i < 2; i++) {
@@ -176,10 +197,17 @@ class SungDien_Jinx extends Moveable_Ability_Object {
 
 class TroiAnhSanh_Lux extends Moveable_Ability_Object {
     constructor(_owner, _position, _direction, _damage, _range) {
-        var image = images.troiAnhSang;
-        var speed = 12;
-        var radius = 15;
-        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
+    	var data = {
+    		image : images.troiAnhSang,
+    		speed: 12,
+    		radius: 15,
+
+    		position: _position,
+    		direction: _direction,
+    		damage: _damage,
+    		range: _range
+    	}
+        super(_owner, data);
 
         this.charactersEffected = []; // tương tự bão kiếm của ys
     }
@@ -188,14 +216,50 @@ class TroiAnhSanh_Lux extends Moveable_Ability_Object {
         if (this.checkCharacter(c)) {
             if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
                 c.loseHealth(this.damage);
+                c.troi(1500); // trói 
                 this.charactersEffected.push(c); // cho vào mảng để ko bị trừ nữa
             }
-            c.troi(1500); // trói (làm chậm 100%)
         }
     }
 }
 
 // =============================== Vat the dung im ======================
+class Stable_Ability_Object {
+	constructor(_owner, _data, _image, _position, _lifeTime, _damage, _radius, _range) {
+        this.owner = _owner; // chủ nhân của vật thể này (character)
+        this.position = _position; // tọa độ bắt đầu (dạng vector)
+        this.image = _image; // hình ảnh hiển thị
+        this.life = _lifeTime; // thời gian sống
+        this.born = millis(); // thời điểm khởi tạo
+
+        this.range = _range; // phạm vi chiêu thức
+        this.radius = _radius; // bán kính vùng ảnh hưởng sát thương (hình tròn)
+        this.damage = _damage; // sát thương gây ra khi trúnh mục tiêu
+    }
+
+    run() {
+        this.move();
+        this.show();
+    }
+
+    show() {
+        push();
+        translate(this.position.x, this.position.y); // đưa bút vẽ tới vị trí vật thể
+        rotate(this.direction.heading()); // xoay theo hướng bay
+
+        image(this.image, 0, 0, this.radius * 2, this.radius * 2);
+
+        pop(); // trả bút vẽ về vị trí mặc định
+    }
+
+    isFinished() {
+        return (millis() - this.born >= this.life);
+    }
+
+    checkCharacter(c) {
+        return !c.died && c != this.owner;
+    }
+}
 class TuongGio_Yasuo {
 
 }

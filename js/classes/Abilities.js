@@ -1,8 +1,8 @@
 class Ability {
-    constructor(_owner, _damage, _cooldown, _range) {
-        this.damage = _damage; // sát thương gây ra
-        this.cooldownTime = _cooldown; // thời gian hồi chiêu (tính bằng milli giây)
-        this.range = _range;
+    constructor(_owner, _data) {
+        this.damage = _data.damage; // sát thương gây ra
+        this.cooldownTime = _data.cooldownTime; // thời gian hồi chiêu (tính bằng milli giây)
+        this.range = _data.range;
 
         this.lastActivatedTime = millis(); // mốc thời gian dùng chiêu trước đó
         this.owner = _owner;
@@ -34,10 +34,12 @@ class Ability {
 
 class Q_Yasuo extends Ability {
     constructor(_owner) {
-        var damage = 0;
-        var cooldownTime = 1000;
-        var range = 700;
-        super(_owner, damage, cooldownTime, range);
+    	var data = {
+	        damage : 0,
+	        cooldownTime : 1000,
+	        range : 700
+    	}
+        super(_owner, data);
     }
 
     getMovevableObj() {
@@ -50,10 +52,12 @@ class Q_Yasuo extends Ability {
 
 class W_Jinx extends Ability {
 	constructor(_owner) {
-        var damage = 15;
-        var cooldownTime = 500;
-        var range = 2000;
-        super(_owner, damage, cooldownTime, range);
+		var data = {
+	        damage : 0,
+	        cooldownTime : 1500,
+	        range : 2000
+    	}
+        super(_owner, data);
     }
 
     getMovevableObj() {
@@ -66,10 +70,12 @@ class W_Jinx extends Ability {
 
 class R_Jinx extends Ability {
     constructor(_owner) {
-        var damage = 0; // sát thương ban đầu = 0
-        var cooldownTime = 2000;
-        var range = 2000;
-        super(_owner, damage, cooldownTime, range);
+    	var data = {
+	        damage : 0,
+	        cooldownTime : 2000,
+	        range : 2000
+    	}
+        super(_owner, data);
     }
 
     getMovevableObj() {
@@ -82,10 +88,12 @@ class R_Jinx extends Ability {
 
 class Q_Lux extends Ability {
     constructor(_owner) {
-        var damage = 7; // sát thương ban đầu = 0
-        var cooldownTime = 1500;
-        var range = 600;
-        super(_owner, damage, cooldownTime, range);
+    	var data = {
+	        damage : 7,
+	        cooldownTime : 1500,
+	        range : 600
+    	}
+        super(_owner, data);
     }
 
     getMovevableObj() {

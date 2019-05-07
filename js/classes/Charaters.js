@@ -6,6 +6,7 @@ class Character {
         this.radius = _r; // bán kính vẽ nhân vật
         this.maxHealth = 100;
         this.health = 100; // lượng máu
+        this.isEnermy = _isEnermy;
         this.color = (_isEnermy ? "#f00c" : "#0f0c"); // là kẻ địch thì màu đỏ, ngược lại là xanh
         this.bgColor = "#0000";
 
@@ -21,39 +22,44 @@ class Character {
             biHatTung: false, // bị hất tung
             biCamLang: false, // bị câm lặng    
         }
-
     }
 
     run() { // hàm chạy chính (ở main chỉ gọi hàm này)
         if (!this.died) {
-            this.showTargetMove();
+            if (!this.isEnermy || hacked) 
+                this.showTargetMove();
             this.move();
             this.showHealth();
+            this.showState();
         }
         this.show();
     }
 
     // ================= Các hàm gọi chiêu thức ==============
+    coTheDungChieu() {
+        return !(this.died || this.effects.biHatTung || this.effects.biCamLang);
+    }
+
     Q() {
-        if (!this.died && this.Qabi) {
+        if (this.coTheDungChieu() && this.Qabi) {
             this.Qabi.active();
         }
     }
 
     W() {
-        if (!this.died && this.Wabi) {
+        if (this.coTheDungChieu() && this.Wabi) {
             this.Wabi.active();
         }
     }
 
     E() {
-        if (!this.died && this.Eabi) {
+        if (this.coTheDungChieu() && this.Eabi) {
             this.Eabi.active();
         }
     }
 
     R() {
-        if (!this.died && this.Rabi) {
+        if (this.coTheDungChieu() && this.Rabi) {
             this.Rabi.active();
         }
     }
@@ -99,7 +105,12 @@ class Character {
     }
 
     camLang(time) {
+        this.effects.biCamLang = true;
 
+        var effects = this.effects;
+        setTimeout(function() { // setTimeOut .... khá rắc rối
+            effects.biCamLang = false;
+        }, time);
     }
 
     troi(time) {
@@ -171,7 +182,7 @@ class Character {
         rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
 
         fill(this.bgColor);
-        stroke(this.effects.biTroi ? "#fffb" : this.color); // nếu bị trói thì màu trắng
+        stroke(this.getColorBaseState());
         strokeWeight(5);
         ellipse(0, 0, radius * 2); // vẽ thân
         strokeWeight(1); // reset strokeWeight
@@ -182,44 +193,85 @@ class Character {
             rect(radius * .5, 0, radius, 3); // vẽ hướng    
         }
 
-
         pop(); // trả lại bút vẽ về như cũ
+
+        // khi bị câm lặng thì hiện dấu gạch chéo
+        if (this.effects.biCamLang) {
+            stroke("#555b");
+            strokeWeight(10);
+
+            var x = this.position.x;
+            var y = this.position.y;
+            var r = radius * .7;
+
+            if(random(1) > .9) {
+                var x = this.position.x + random(-this.radius, this.radius);
+                var y = this.position.y + random(-this.radius, this.radius);
+                objects.push(new Smoke(x, y, random(100, 200), random(10, 30)));
+            }
+
+            // vẽ chữ x xám
+            line(x - r, y - r, x + r, y + r);
+            line(x + r, y - r, x - r, y + r);
+        }
+    }
+
+    showState() { // hiển thị các hiệu ứng hiện có
+        var info = "";
+        if (this.effects.biCamLang) info = "Câm lặng"; // câm lặng có tầm quan trọng cao nhất
+        if (this.effects.biHatTung) info += " - Hất tung";
+        if (this.effects.biTroi) info += " - Trói";
+
+        if(info != "") {
+            fill("#f0f9");
+            noStroke();
+            text(info, this.position.x, this.position.y - this.radius - 30);
+        }
+    }
+
+    getColorBaseState() { // lấy màu theo hiệu ứng hiện có
+        if (this.effects.biCamLang) return "#555"; // câm lặng có tầm quan trọng cao nhất
+        if (this.effects.biHatTung) return "#ff0";
+        if (this.effects.biTroi) return "#fff";
+        return this.color;
     }
 
     showHealth() {
         // các giá trị mặc định
         var healthWidth = 150;
         var healthHeight = 20;
-        var bgHealth = "#5559";
+        var bgHealth = "#5555";
 
         rectMode(CORNER); // chuyển về corner mode cho dễ vẽ
         // vẽ
         fill(bgHealth);
-        stroke(200, 150);
-        strokeWeight(5);
+        noStroke();
+        strokeWeight(1);
         rect(this.position.x - healthWidth * .5,
             this.position.y + this.radius + 10,
             healthWidth,
             healthHeight
         );
 
-        fill(this.color);
+        fill(this.isEnermy ? "#f005" : "#0f05");
         noStroke();
         rect(this.position.x - healthWidth * .5,
             this.position.y + this.radius + 10,
             map(this.health, 0, this.maxHealth, 0, healthWidth), // tính độ dài thanh máu
             healthHeight
         );
-
-        fill(255);
-        textSize(17);
-        text(floor(this.health), this.position.x, this.position.y + this.radius + healthHeight)
         rectMode(CENTER); // reset mode
 
-        // show name
-        fill(200, 150);
+        
         noStroke();
-        text(this.name, this.position.x, this.position.y + this.radius + 25 + healthHeight);
+        textSize(17);
+
+        // show health value
+        fill(0, 200);
+        text(floor(this.health), this.position.x, this.position.y + this.radius + healthHeight);
+        // show name
+        fill(200, 80);
+        text(this.name, this.position.x, this.position.y - this.radius - 10);
     }
 
     showTargetMove() { // hiển thị điểm cần tới
@@ -235,12 +287,6 @@ class Character {
                 stroke(this.color);
                 line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
             }
-        }
-    }
-
-    showAbility() {
-        if (this.Q) {
-
         }
     }
 
@@ -269,7 +315,7 @@ class Yasuo extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.yasuo;
         var radius = 30;
-        var speed = 5;
+        var speed = 3;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Yasuo(this);
@@ -280,9 +326,10 @@ class Yasuo extends Character {
 }
 
 class AutoYasuo extends Yasuo {
-    constructor(_name, _x, _y) {
+    constructor(_x, _y, _name) {
         super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
+        this.speed = 2;
     }
 }
 
