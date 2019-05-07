@@ -1,10 +1,6 @@
 class Loading {
-    constructor(_x, _y, _r, _color) {
-        this.position = {
-            x: _x,
-            y: _y
-        };
-
+    constructor(_r, _strkW, _color) {
+        this.strW = _strkW;
         this.radius = _r;
         this.color = _color;
         this.angle = 0;
@@ -13,12 +9,19 @@ class Loading {
     run() {
     	noFill();
 
+    	// vòng xám
 		stroke(0, 50);
-    	ellipse(this.position.x, this.position.y, this.radius * 2);
+    	ellipse(width * .5, height * .5, this.radius * 2);
 
-    	strokeWeight(10);
+    	// nửa vòng màu 
+    	strokeWeight(this.strW);
     	stroke(this.color);
-    	arc(this.position.x, this.position.y, this.radius * 2, this.radius * 2, this.angle - HALF_PI, this.angle);
+    	arc(width * .5, height * .5, this.radius * 2, this.radius * 2, this.angle - HALF_PI, this.angle);
+
+    	// chữ
+    	noStroke();
+    	fill("#bbb9");
+    	text("LOADING", width * .5, height * .5 + this.radius + 20)
 
     	this.angle += .1;
     }

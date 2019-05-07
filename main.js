@@ -13,10 +13,11 @@ function setup() {
     rectMode(CENTER);
     imageMode(CENTER);
     textAlign(CENTER, CENTER);
+    textSize(16);
     preventRightClick();
 
     loadImages(); // load các hình
-    loading = new Loading(width * .5, height * .5, 30, "#0f0");
+    loading = new Loading(30, 10, "#0f0");
 }
 
 function draw() {
@@ -26,7 +27,7 @@ function draw() {
         loading.run();
 
     } else if(!player) { // ngược lại, nếu đã load xong hết thì new Game
-        newGame();
+        menuWhenDie('open');
 
     } else {
         player.run();
@@ -154,7 +155,7 @@ function showPreviewAbilityWay() {
 }
 
 function keyReleased() {
-    if (!player.died)
+    if (player && !player.died)
         switch (key) {
             case "P":
                 hacked = !hacked;
@@ -210,7 +211,7 @@ function loadImages() {
 }
 
 function checkLoad() { // hàm check xem các images đã được load hết chưa
-    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx;
+    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx && millis() > 3000;
 }
 
 function newGame() {
