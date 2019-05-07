@@ -35,26 +35,26 @@ class Character {
 
     // ================= Các hàm gọi chiêu thức ==============
     Q() {
-        if (!this.died && this.Qobj && this.Qobj.available()) {
-            objects.push(this.Qobj.active());
+        if (!this.died && this.Qabi) {
+            this.Qabi.active();
         }
     }
 
     W() {
-        if (!this.died && this.Wobj && this.Wobj.available()) {
-            objects.push(this.Wobj.active());
+        if (!this.died && this.Wabi) {
+            this.Wabi.active();
         }
     }
 
     E() {
-        if (!this.died && this.Eobj && this.Eobj.available()) {
-            objects.push(this.Eobj.active());
+        if (!this.died && this.Eabi) {
+            this.Eabi.active();
         }
     }
 
     R() {
-        if (!this.died && this.Robj && this.Robj.available()) {
-            objects.push(this.Robj.active());
+        if (!this.died && this.Rabi) {
+            this.Rabi.active();
         }
     }
 
@@ -227,12 +227,12 @@ class Character {
             if (this.targetRadius >= 5)
                 this.targetRadius -= 1.5;
 
+            strokeWeight(1);
             fill(this.color);
             ellipse(this.targetMove.x, this.targetMove.y, this.targetRadius * 2);
 
             if (hacked) {
                 stroke(this.color);
-                strokeWeight(1);
                 line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
             }
         }
@@ -272,10 +272,10 @@ class Yasuo extends Character {
         var speed = 5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Qobj = new Q_Yasuo(this);
-        this.Wobj = new Q_Lux(this);
-        this.Eobj = null;
-        this.Robj = new R_Jinx(this);
+        this.Qabi = new Q_Yasuo(this);
+        this.Wabi = new Q_Lux(this);
+        this.Eabi = null;
+        this.Rabi = new R_Jinx(this);
     }
 }
 
@@ -283,19 +283,6 @@ class AutoYasuo extends Yasuo {
     constructor(_name, _x, _y) {
         super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
-    }
-
-    Q() {
-        console.log("Q nè");
-    }
-    W() {
-        console.log("W nè");
-    }
-    E() {
-        console.log("E nè");
-    }
-    R() {
-        console.log("R cho chết nè");
     }
 }
 
@@ -306,9 +293,9 @@ class Jinx extends Character {
         var speed = 5.5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Qobj = new Q_Yasuo(this);
-        this.Wobj = new Q_Lux(this);
-        this.Eobj = null;
-        this.Robj = new R_Jinx(this);
+        this.Qabi = new Q_Yasuo(this);
+        this.Wabi = new Q_Lux(this);
+        this.Eabi = null;
+        this.Rabi = new R_Jinx(this);
     }
 }

@@ -62,12 +62,11 @@ class Moveable_Ability_Object {
 
 class BaoKiem_Yasuo extends Moveable_Ability_Object {
 
-    constructor(_owner, _position, _direction, _damage) {
+    constructor(_owner, _position, _direction, _damage, _range) {
         var image = images.locxoay;
         var speed = 10;
         var radius = 40;
-        var range = 700;
-        super(_owner, image, _position, _direction, speed, _damage, radius, range);
+        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
 
         this.charactersEffected = []; // lưu những tướng đã dính damage của chiêu này
         // do chiêu này xuyên qua tướng, nếu ko có mảng duyệt, tướng sẽ bị trừ máu ... đến chết :v
@@ -102,12 +101,11 @@ class BaoKiem_Yasuo extends Moveable_Ability_Object {
 }
 
 class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
-    constructor(_owner, _position, _direction, _damage) {
+    constructor(_owner, _position, _direction, _damage, _range) {
         var image = images.rocket;
         var speed = 15;
         var radius = 35;
-        var range = 2000;
-        super(_owner, image, _position, _direction, speed, _damage, radius, range);
+        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
     }
 
     show() {
@@ -138,12 +136,11 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
 }
 
 class TroiAnhSanh_Lux extends Moveable_Ability_Object {
-    constructor(_owner, _position, _direction, _damage) {
+    constructor(_owner, _position, _direction, _damage, _range) {
         var image = images.troiAnhSang;
         var speed = 12;
         var radius = 15;
-        var range = 500;
-        super(_owner, image, _position, _direction, speed, _damage, radius, range);
+        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
 
         this.charactersEffected = []; // tương tự bão kiếm của ys
     }

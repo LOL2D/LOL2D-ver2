@@ -23,10 +23,10 @@ function setup() {
 function draw() {
     background(30);
 
-    if(!checkLoad()) { // khi chưa load xong hình thì hiện loading
+    if (!checkLoad()) { // khi chưa load xong hình thì hiện loading
         loading.run();
 
-    } else if(!player) { // ngược lại, nếu đã load xong hết thì new Game
+    } else if (!player) { // ngược lại, nếu đã load xong hết thì new Game
         menuWhenDie('open');
 
         noStroke();
@@ -35,6 +35,7 @@ function draw() {
 
     } else {
         player.run();
+        showPreviewAbilityWay();
 
         // auto play
         for (var a of AI_Players) {
@@ -43,18 +44,11 @@ function draw() {
             if (autoFire && random(1) > .95) {
                 var rand = random(10);
 
-                if (rand < 2.5) {
-                    a.Q();
+                if (rand < 2.5) a.Q();
+                else if (rand < 5) a.W();
+                else if (rand < 7.5) a.E();
+                else a.R();
 
-                } else if (rand < 5) {
-                    a.W();
-
-                } else if (rand < 7.5) {
-                    a.E();
-
-                } else {
-                    a.R();
-                }
             }
         }
 
@@ -81,13 +75,10 @@ function draw() {
                 }
             }
 
+            // nếu vật thể đã kết thúc -> xóa khỏi mảng
             if (objects[i].isFinished()) {
-                objects.splice(i, 1); // nếu vật thể đã kết thúc -> xóa khỏi mảng
+                objects.splice(i, 1);
             }
-        }
-
-        if (keyIsPressed) {
-            showPreviewAbilityWay();
         }
 
         if (mouseIsPressed) {
@@ -110,27 +101,20 @@ function keyReleased() {
             case "Q":
                 player.Q();
                 break;
-
             case "W":
                 player.W();
                 break;
-
             case "E":
                 player.E();
                 break;
-
             case "R":
                 player.R();
                 break;
-
             case "D":
                 break;
-
             case "F":
                 break;
-
             default:
-                // statements_def
                 break;
         }
 }
@@ -172,58 +156,12 @@ function newGame() {
 }
 
 function showPreviewAbilityWay() {
-    var direc = createVector(mouseX - player.position.x, mouseY - player.position.y);
-    var r = direc.mag();
-    var strokeW = 1;
-
-    switch (key) {
-        case "q":
-        case "Q":
-            if (player.Qobj) {
-                var obj = player.Qobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        case "W":
-        case "w":
-            if (player.Wobj) {
-                var obj = player.Wobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        case "E":
-        case "e":
-            if (player.Eobj) {
-                var obj = player.Eobj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            // statements_1
-            break;
-
-        case "R":
-        case "r":
-            if (player.Robj) {
-                var obj = player.Robj.getMovevableObj();
-                strokeW = obj.radius;
-                r = obj.range;
-            }
-            break;
-
-        default:
-            // statements_def
-            break;
-    }
-
-    direc.setMag(r);
-    direc.add(player.position);
-
-    stroke("#0006");
-    strokeWeight(strokeW * 2);
-    line(player.position.x, player.position.y, direc.x, direc.y);
-    strokeWeight(1); // reset stroke Weight
+    if (keyIsDown(81))
+        player.Qabi && player.Qabi.showRange();
+    else if (keyIsDown(87))
+        player.Wabi && player.Wabi.showRange();
+    else if (keyIsDown(69))
+        player.Eabi && player.Eabi.showRange();
+    else if (keyIsDown(82))
+        player.Rabi && player.Rabi.showRange();
 }
