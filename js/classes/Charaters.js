@@ -236,9 +236,9 @@ class Yasuo extends Character {
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Q = new Q_Yasuo(this);
-        this.W = new R_Jinx(this);
-        this.E = new Q_Lux(this);
-        this.R = null;
+        this.W = new Q_Lux(this);
+        this.E = null;
+        this.R = new R_Jinx(this);
     }
 }
 
@@ -256,8 +256,8 @@ class Jinx extends Character {
         var speed = 5.5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Q = new Q_Lux(this);
-        this.W = new Q_Yasuo(this);
+        this.Q = new Q_Yasuo(this);
+        this.W = new Q_Lux(this);
         this.E = null;
         this.R = new R_Jinx(this);
     }
