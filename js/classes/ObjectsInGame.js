@@ -133,6 +133,7 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
     effect(c) {
         if (this.checkCharacter(c)) {
             c.loseHealth(this.damage);
+            c.lamCham(.4, 1000);
 
             // hiệu ứng nổ khói
             for (var i = 0; i < 10; i++) {

@@ -73,8 +73,7 @@ class Character {
             this.died = true;
             this.color = "#555"; // Mất màu :v
             this.bgColor = "#555a";
-            checkNewGame();
-            // this.health = this.maxHealth; // test
+            checkNewGame(); // hàm bên functions.js
         }
     }
 
@@ -221,6 +220,7 @@ class Character {
         if (this.effects.biCamLang) info = "Câm lặng"; // câm lặng có tầm quan trọng cao nhất
         if (this.effects.biHatTung) info += (info==""?"":" - ") + "Hất tung";
         if (this.effects.biTroi) info += (info==""?"":" - ") + "Trói";
+        if (this.effects.biLamCham) info += (info==""?"":" - ") + "Chậm";
 
         if(info != "") {
             fill("#f0f9");
@@ -233,6 +233,7 @@ class Character {
         if (this.effects.biCamLang) return "#555"; // câm lặng có tầm quan trọng cao nhất
         if (this.effects.biHatTung) return "#ff0";
         if (this.effects.biTroi) return "#fff";
+        if (this.effects.biLamCham) return "#00f";
         return this.color;
     }
 
@@ -329,7 +330,6 @@ class AutoYasuo extends Yasuo {
     constructor(_x, _y, _name) {
         super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
-        this.speed = 2;
     }
 }
 
