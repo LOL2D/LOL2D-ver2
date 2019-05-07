@@ -232,6 +232,7 @@ class Character {
 
             if (hacked) {
                 stroke(this.color);
+                strokeWeight(1);
                 line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
             }
         }
