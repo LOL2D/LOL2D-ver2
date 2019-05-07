@@ -41,8 +41,7 @@ function draw() {
     }
 
     if(keyIsPressed) {
-        stroke("#fff9");
-        line(yasuo.position.x, yasuo.position.y, mouseX, mouseY);
+        showPreviewAbilityWay();
     }
 
     fill(255);
@@ -56,6 +55,42 @@ function mouseClicked() {
 function mousePressed() {
     // if (mouseButton == "right")
     yasuo.setTargetMove(mouseX, mouseY);
+}
+
+function showPreviewAbilityWay() {
+    var direc = createVector(mouseX - yasuo.position.x, mouseY - yasuo.position.y);
+    var r = direc.mag();
+
+    switch (key) {
+        case "q":
+        case "Q":
+            r = yasuo.Q.getRange();
+            break;
+
+        case "W":
+        case "w":
+            break;
+
+        case "E":
+        case "e":
+            // statements_1
+            break;
+
+        case "R":
+        case "r":
+            r = yasuo.W.getRange();
+            break;
+
+        default:
+            // statements_def
+            break;
+    }
+
+    direc.setMag(r);
+    direc.add(yasuo.position);
+
+    stroke("#fff9");
+    line(yasuo.position.x, yasuo.position.y, direc.x, direc.y);
 }
 
 function keyReleased() {

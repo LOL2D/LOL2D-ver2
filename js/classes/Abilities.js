@@ -27,6 +27,10 @@ class Q_Yasuo extends Ability {
         this.lastActivatedTime = millis();
         return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
     }
+
+    getRange() {
+    	return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector()).range;
+    }
 }
 
 class R_Jinx extends Ability {
@@ -41,5 +45,9 @@ class R_Jinx extends Ability {
     active() {
         this.lastActivatedTime = millis();
         return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
+    }
+
+    getRange() {
+    	return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector()).range;
     }
 }
