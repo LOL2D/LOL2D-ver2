@@ -33,6 +33,31 @@ class Character {
         this.show();
     }
 
+    // ================= Các hàm gọi chiêu thức ==============
+    Q() {
+        if(!this.died && this.Qobj && this.Qobj.available()) {
+            objects.push(this.Qobj.active());
+        }
+    }
+
+    W() {
+        if(!this.died && this.Wobj && this.Wobj.available()) {
+            objects.push(this.Wobj.active());
+        }
+    }
+
+    E() {
+        if(!this.died && this.Eobj && this.Eobj.available()) {
+            objects.push(this.Eobj.active());
+        }
+    }
+
+    R() {
+        if(!this.died && this.Robj && this.Robj.available()) {
+            objects.push(this.Robj.active());
+        }
+    }
+
     // ================= Các hàm hành đông ====================
     loseHealth(damage) {
         if (this.health >= damage) {
@@ -42,7 +67,7 @@ class Character {
             this.died = true;
             this.color = "#555"; // Mất màu :v
             this.bgColor = "#555a";
-            menuWhenDie('open');
+            checkNewGame();
             // this.health = this.maxHealth; // test
         }
     }
@@ -71,6 +96,10 @@ class Character {
     setTargetMove(x, y) { // hàm set tọa độ cần tới
         this.targetMove = createVector(x, y);
         this.targetRadius = 25; // reset độ lớn
+    }
+
+    camLang(time) {
+
     }
 
     troi(time) {
@@ -136,6 +165,7 @@ class Character {
 
         image(this.image, this.position.x, this.position.y, radius * 2, radius * 2);
 
+        // vẽ
         push();
         translate(this.position.x, this.position.y); // di chuyển bút vẽ tới vị trí nhân vật
         rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
@@ -184,6 +214,11 @@ class Character {
         textSize(17);
         text(floor(this.health), this.position.x, this.position.y + this.radius + healthHeight)
         rectMode(CENTER); // reset mode
+
+        // show name
+        fill(200, 150);
+        noStroke();
+        text(this.name, this.position.x, this.position.y + this.radius + 20 + healthHeight);
     }
 
     showTargetMove() { // hiển thị điểm cần tới
@@ -235,10 +270,10 @@ class Yasuo extends Character {
         var speed = 5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Q = new Q_Yasuo(this);
-        this.W = new Q_Lux(this);
-        this.E = null;
-        this.R = new R_Jinx(this);
+        this.Qobj = new Q_Yasuo(this);
+        this.Wobj = new Q_Lux(this);
+        this.Eobj = null;
+        this.Robj = new R_Jinx(this);
     }
 }
 
@@ -256,9 +291,9 @@ class Jinx extends Character {
         var speed = 5.5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Q = new Q_Yasuo(this);
-        this.W = new Q_Lux(this);
-        this.E = null;
-        this.R = new R_Jinx(this);
+        this.Qobj = new Q_Yasuo(this);
+        this.Wobj = new Q_Lux(this);
+        this.Eobj = null;
+        this.Robj = new R_Jinx(this);
     }
 }

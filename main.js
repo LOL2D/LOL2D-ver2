@@ -1,7 +1,11 @@
-var player, autoYasuo;
+var player; 
+var AI_Players = [];
 var objects = []; // lưu các vật thể trong game
 var images = {};
+
 var hacked = false;
+var autoFire = true;
+var numOfAI = 1;
 
 function preload() {
     // objects
@@ -26,32 +30,39 @@ function setup() {
 
 function newGame() {
     // khởi tạo
-    player = new Jinx("Hoàng đẹp trai", random(width), random(height));
-    autoYasuo = new AutoYasuo(random(width), random(height));
+    player = new Jinx("Your Name Here", random(width), random(height));
+
+    AI_Players = [];
+    for(var i = 0; i < numOfAI; i++) {
+        AI_Players.push(new AutoYasuo(null, random(width), random(height)));
+    }
+    
 }
 
 function draw() {
     background(30);
 
     player.run();
-    autoYasuo.run();
 
     // auto play
-    if (!autoYasuo.died && random(1) > .9) {
-        var rand = random(10);
+    for(var a of AI_Players) {
+        a.run();
 
-        if(rand < 2.5 && autoYasuo.Q && autoYasuo.Q.available()) {
-            objects.push(autoYasuo.Q.active());
+        if (autoFire && random(1) > .95) {
+            var rand = random(10);
 
-        } else if(rand < 5 && autoYasuo.W && autoYasuo.W.available()) {
-            objects.push(autoYasuo.W.active());
+            if(rand < 2.5) {
+                a.Q();
 
-        } else if(rand < 7.5 && autoYasuo.E && autoYasuo.E.available()) {
-            objects.push(autoYasuo.E.active());
+            } else if(rand < 5) {
+                a.W();
 
-        } else if(autoYasuo.R && autoYasuo.R.available()) {
-            objects.push(autoYasuo.R.active());
+            } else if(rand < 7.5) {
+                a.E();
 
+            } else {
+                a.R();
+            }
         }
     }
 
@@ -65,14 +76,16 @@ function draw() {
             var or = objects[i].radius;
 
             var playerPos = player.getPosition();
-            var autoYasuoPos = autoYasuo.getPosition();
-
             if (collideCircleCircle(playerPos.x, playerPos.y, player.radius, ox, oy, or * 2)) {
                 objects[i].effect(player);
             }
 
-            if (collideCircleCircle(autoYasuoPos.x, autoYasuoPos.y, autoYasuo.radius, ox, oy, or* 2)) {
-                objects[i].effect(autoYasuo);
+            // duyệt qua mảng tướng máy
+            for(var a of AI_Players) {
+                var aPos = a.getPosition();
+                if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or* 2)) {
+                    objects[i].effect(a);
+                }
             }
         }
 
@@ -85,47 +98,56 @@ function draw() {
         showPreviewAbilityWay();
     }
 
+    if(mouseIsPressed) {
+        player.setTargetMove(mouseX, mouseY);
+    }
+
+    // Hiện frameRate
     fill(255);
     text(round(frameRate()), 15, 15);
-}
-
-function mouseClicked() {
-    // mousePressed();
-}
-
-function mousePressed() {
-    // if (mouseButton == "right")
-    player.setTargetMove(mouseX, mouseY);
 }
 
 function showPreviewAbilityWay() {
     var direc = createVector(mouseX - player.position.x, mouseY - player.position.y);
     var r = direc.mag();
+    var strokeW = 1;
 
     switch (key) {
         case "q":
         case "Q":
-            if(player.Q)
-                r = player.Q.getRange();
+            if(player.Qobj){
+                var obj = player.Qobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
             break;
 
         case "W":
         case "w":
-            if(player.W)
-                r = player.W.getRange();
+            if(player.Wobj){
+                var obj = player.Wobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
             break;
 
         case "E":
         case "e":
-            if(player.E)
-                r = player.E.getRange();
+            if(player.Wobj) {
+                var obj = player.Eobj.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
             // statements_1
             break;
 
         case "R":
         case "r":
-            if(player.R)
-                r = player.R.getRange();
+            if(player.Wobj){
+                var obj = player.R.getMovevableObj();
+                strokeW = obj.radius;
+                r = obj.range;
+            }
             break;
 
         default:
@@ -136,8 +158,10 @@ function showPreviewAbilityWay() {
     direc.setMag(r);
     direc.add(player.position);
 
-    stroke("#fff9");
+    stroke("#0006");
+    strokeWeight(strokeW * 2);
     line(player.position.x, player.position.y, direc.x, direc.y);
+    strokeWeight(1); // reset stroke Weight
 }
 
 function keyReleased() {
@@ -147,23 +171,19 @@ function keyReleased() {
                 hacked = !hacked;
                 break;
             case "Q":
-                if (player.Q && player.Q.available()) 
-                    objects.push(player.Q.active());
+                player.Q();
                 break;
 
             case "W":
-                if (player.W && player.W.available()) 
-                    objects.push(player.W.active());
+                player.W();
                 break;
 
             case "E":
-                if (player.E && player.E.available()) 
-                    objects.push(player.E.active());
+                player.E();
                 break;
 
             case "R":
-                if (player.R && player.R.available()) 
-                    objects.push(player.R.active());
+                player.R();
                 break;
 
             case "D":

@@ -159,6 +159,11 @@ class TroiAnhSanh_Lux extends Moveable_Ability_Object {
     }
 }
 
+// =============================== Vat the dung im ======================
+class TuongGio_Yasuo {
+	
+}
+
 // =============================== Cac vật thể khác =============================
 class Smoke {
     constructor(x, y, life, r) {

@@ -25,13 +25,32 @@ class Q_Yasuo extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
+        return this.getMovevableObj();
     }
 
-    getRange() {
-        return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
+    getMovevableObj() {
+        return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 }
+
+// class R_Yasuo extends Ability {
+// 	constructor(_owner) {
+//         var damage = 0;
+//         var cooldownTime = 1000;
+//         super(damage, cooldownTime);
+
+//         this.owner = _owner;
+//     }
+
+//     active() {
+//         this.lastActivatedTime = millis();
+//         return this.getMovevableObj();
+//     }
+
+//     getMovevableObj() {
+//         return new BaoKiem_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
+//     }
+// }
 
 class R_Jinx extends Ability {
     constructor(_owner) {
@@ -44,11 +63,11 @@ class R_Jinx extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
+        return this.getMovevableObj();
     }
 
-    getRange() {
-        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
+    getMovevableObj() {
+        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 }
 
@@ -63,10 +82,10 @@ class Q_Lux extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new TroiAnhSanh_Lux(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
+        return this.getMovevableObj();
     }
 
-    getRange() {
-        return new TroiAnhSanh_Lux(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
+    getMovevableObj() {
+        return new TroiAnhSanh_Lux(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 }
