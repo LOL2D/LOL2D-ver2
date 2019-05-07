@@ -1,22 +1,12 @@
-var player; 
+var player;
 var AI_Players = [];
 var objects = []; // lưu các vật thể trong game
 var images = {};
+var loading;
 
 var hacked = false;
 var autoFire = true;
 var numOfAI = 1;
-
-function preload() {
-    // objects
-    images.rocket = loadImage('images/rocket2.png');
-    images.locxoay = loadImage('images/locXoay.png');
-    images.troiAnhSang = loadImage('images/troiAnhSang.png');
-
-    // nhan vat
-    images.yasuo = loadImage('images/yasuo.png');
-    images.jinx = loadImage('images/jinx.png');
-}
 
 function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
@@ -25,85 +15,84 @@ function setup() {
     textAlign(CENTER, CENTER);
     preventRightClick();
 
-    newGame();  
-}
-
-function newGame() {
-    // khởi tạo
-    player = new Jinx("Your Name Here", random(width), random(height));
-
-    AI_Players = [];
-    for(var i = 0; i < numOfAI; i++) {
-        AI_Players.push(new AutoYasuo(null, random(width), random(height)));
-    }
-    
+    loadImages(); // load các hình
+    loading = new Loading(width * .5, height * .5, 30, "#0f0");
 }
 
 function draw() {
     background(30);
 
-    player.run();
+    if(!checkLoad()) { // khi chưa load xong hình thì hiện loading
+        loading.run();
 
-    // auto play
-    for(var a of AI_Players) {
-        a.run();
+    } else if(!player) { // ngược lại, nếu đã load xong hết thì new Game
+        newGame();
 
-        if (autoFire && random(1) > .95) {
-            var rand = random(10);
+    } else {
+        player.run();
 
-            if(rand < 2.5) {
-                a.Q();
+        // auto play
+        for (var a of AI_Players) {
+            a.run();
 
-            } else if(rand < 5) {
-                a.W();
+            if (autoFire && random(1) > .95) {
+                var rand = random(10);
 
-            } else if(rand < 7.5) {
-                a.E();
+                if (rand < 2.5) {
+                    a.Q();
 
-            } else {
-                a.R();
-            }
-        }
-    }
+                } else if (rand < 5) {
+                    a.W();
 
-    // vẽ và check các objects
-    for (var i = objects.length - 1; i >= 0; i--) {
-        objects[i].run();
+                } else if (rand < 7.5) {
+                    a.E();
 
-        if (!(objects[i] instanceof Smoke)) { // không phải khói thì mới cần check
-            var ox = objects[i].position.x;
-            var oy = objects[i].position.y;
-            var or = objects[i].radius;
-
-            var playerPos = player.getPosition();
-            if (collideCircleCircle(playerPos.x, playerPos.y, player.radius, ox, oy, or * 2)) {
-                objects[i].effect(player);
-            }
-
-            // duyệt qua mảng tướng máy
-            for(var a of AI_Players) {
-                var aPos = a.getPosition();
-                if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or* 2)) {
-                    objects[i].effect(a);
+                } else {
+                    a.R();
                 }
             }
         }
 
-        if (objects[i].isFinished()) {
-            objects.splice(i, 1); // nếu vật thể đã kết thúc -> xóa khỏi mảng
+        // vẽ và check các objects
+        for (var i = objects.length - 1; i >= 0; i--) {
+            objects[i].run();
+
+            if (!(objects[i] instanceof Smoke)) { // không phải khói thì mới cần check
+                var ox = objects[i].position.x;
+                var oy = objects[i].position.y;
+                var or = objects[i].radius;
+
+                var playerPos = player.getPosition();
+                if (collideCircleCircle(playerPos.x, playerPos.y, player.radius, ox, oy, or * 2)) {
+                    objects[i].effect(player);
+                }
+
+                // duyệt qua mảng tướng máy
+                for (var a of AI_Players) {
+                    var aPos = a.getPosition();
+                    if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or * 2)) {
+                        objects[i].effect(a);
+                    }
+                }
+            }
+
+            if (objects[i].isFinished()) {
+                objects.splice(i, 1); // nếu vật thể đã kết thúc -> xóa khỏi mảng
+            }
         }
-    }
 
-    if (keyIsPressed) {
-        showPreviewAbilityWay();
-    }
+        if (keyIsPressed) {
+            showPreviewAbilityWay();
+        }
 
-    if(mouseIsPressed) {
-        player.setTargetMove(mouseX, mouseY);
+        if (mouseIsPressed) {
+            player.setTargetMove(mouseX, mouseY);
+        }
     }
 
     // Hiện frameRate
     fill(255);
+    noStroke();
     text(round(frameRate()), 15, 15);
 }
 
@@ -115,7 +104,7 @@ function showPreviewAbilityWay() {
     switch (key) {
         case "q":
         case "Q":
-            if(player.Qobj){
+            if (player.Qobj) {
                 var obj = player.Qobj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
@@ -124,7 +113,7 @@ function showPreviewAbilityWay() {
 
         case "W":
         case "w":
-            if(player.Wobj){
+            if (player.Wobj) {
                 var obj = player.Wobj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
@@ -133,7 +122,7 @@ function showPreviewAbilityWay() {
 
         case "E":
         case "e":
-            if(player.Eobj) {
+            if (player.Eobj) {
                 var obj = player.Eobj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
@@ -143,7 +132,7 @@ function showPreviewAbilityWay() {
 
         case "R":
         case "r":
-            if(player.Robj){
+            if (player.Robj) {
                 var obj = player.Robj.getMovevableObj();
                 strokeW = obj.radius;
                 r = obj.range;
@@ -206,4 +195,31 @@ function preventRightClick() {
     document.getElementsByTagName("canvas")[0].addEventListener('contextmenu', function(evt) {
         evt.preventDefault();
     }, false);
+}
+
+// ===========================================
+function loadImages() {
+    // objects
+    images.rocket = loadImage('images/rocket2.png');
+    images.locxoay = loadImage('images/locXoay.png');
+    images.troiAnhSang = loadImage('images/troiAnhSang.png');
+
+    // nhan vat
+    images.yasuo = loadImage('images/yasuo.png');
+    images.jinx = loadImage('images/jinx.png');
+}
+
+function checkLoad() { // hàm check xem các images đã được load hết chưa
+    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx;
+}
+
+function newGame() {
+    // khởi tạo
+    player = new Jinx("Your Name Here", random(width), random(height));
+
+    AI_Players = [];
+    for (var i = 0; i < numOfAI; i++) {
+        AI_Players.push(new AutoYasuo(null, random(width), random(height)));
+    }
+
 }

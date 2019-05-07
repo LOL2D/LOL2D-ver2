@@ -72,7 +72,7 @@ class R_Jinx extends Ability {
 }
 
 class Q_Lux extends Ability {
-	constructor(_owner) {
+    constructor(_owner) {
         var damage = 7; // sát thương ban đầu = 0
         var cooldownTime = 1500;
         super(damage, cooldownTime);

@@ -138,7 +138,7 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
 }
 
 class TroiAnhSanh_Lux extends Moveable_Ability_Object {
-	constructor(_owner, _position, _direction, _damage) {
+    constructor(_owner, _position, _direction, _damage) {
         var image = images.troiAnhSang;
         var speed = 12;
         var radius = 15;
@@ -150,7 +150,7 @@ class TroiAnhSanh_Lux extends Moveable_Ability_Object {
 
     effect(c) {
         if (this.checkCharacter(c)) {
-        	if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
+            if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
                 c.loseHealth(this.damage);
                 this.charactersEffected.push(c); // cho vào mảng để ko bị trừ nữa
             }
@@ -161,7 +161,7 @@ class TroiAnhSanh_Lux extends Moveable_Ability_Object {
 
 // =============================== Vat the dung im ======================
 class TuongGio_Yasuo {
-	
+
 }
 
 // =============================== Cac vật thể khác =============================

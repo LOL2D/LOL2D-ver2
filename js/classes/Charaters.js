@@ -35,25 +35,25 @@ class Character {
 
     // ================= Các hàm gọi chiêu thức ==============
     Q() {
-        if(!this.died && this.Qobj && this.Qobj.available()) {
+        if (!this.died && this.Qobj && this.Qobj.available()) {
             objects.push(this.Qobj.active());
         }
     }
 
     W() {
-        if(!this.died && this.Wobj && this.Wobj.available()) {
+        if (!this.died && this.Wobj && this.Wobj.available()) {
             objects.push(this.Wobj.active());
         }
     }
 
     E() {
-        if(!this.died && this.Eobj && this.Eobj.available()) {
+        if (!this.died && this.Eobj && this.Eobj.available()) {
             objects.push(this.Eobj.active());
         }
     }
 
     R() {
-        if(!this.died && this.Robj && this.Robj.available()) {
+        if (!this.died && this.Robj && this.Robj.available()) {
             objects.push(this.Robj.active());
         }
     }
