@@ -19,7 +19,7 @@ class Ability {
     	}
     }
 
-    showRange() {
+    showRange() { // tương tự active() => dùng cho những chiêu tạo ra vật thể Moveable
         var direc = createVector(mouseX - this.owner.position.x, mouseY - this.owner.position.y);
         direc.setMag(this.range);
         direc.add(this.owner.position);
@@ -27,14 +27,12 @@ class Ability {
         stroke("#0006");
         strokeWeight(this.getMovevableObj().radius * 2);
         line(this.owner.position.x, this.owner.position.y, direc.x, direc.y);
-        // strokeWeight(1); // reset stroke Weight
     }
 }
 
 // =======================================================================
 
 class Q_Yasuo extends Ability {
-
     constructor(_owner) {
         var damage = 0;
         var cooldownTime = 1000;
@@ -47,6 +45,22 @@ class Q_Yasuo extends Ability {
         	this.owner, this.owner.getPosition(), 
         	this.owner.getDirectionMouse_Vector(), 
         	this.damage, this.range);
+    }
+}
+
+class W_Jinx extends Ability {
+	constructor(_owner) {
+        var damage = 15;
+        var cooldownTime = 500;
+        var range = 2000;
+        super(_owner, damage, cooldownTime, range);
+    }
+
+    getMovevableObj() {
+        return new SungDien_Jinx(
+            this.owner, this.owner.getPosition(),
+            this.owner.getDirectionMouse_Vector(),
+            this.damage, this.range);
     }
 }
 

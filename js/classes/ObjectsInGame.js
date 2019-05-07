@@ -120,13 +120,52 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
     effect(c) {
         if (this.checkCharacter(c)) {
             c.loseHealth(this.damage);
-            c.lamCham(.3, 1000); // làm chậm
 
             // hiệu ứng nổ khói
             for (var i = 0; i < 10; i++) {
                 objects.push(new Smoke(this.position.x + random(-50, 50),
                     this.position.y + random(-50, 50),
                     random(100, 500), random(20, 70)));
+            }
+
+            // finish sau khi nổ
+            this.travelDistance = this.range;
+        }
+    }
+}
+
+class SungDien_Jinx extends Moveable_Ability_Object {
+    constructor(_owner, _position, _direction, _damage, _range) {
+        var image = null;
+        var speed = 15;
+        var radius = 10;
+        super(_owner, image, _position, _direction, speed, _damage, radius, _range);
+    }
+
+    show() {
+        super.showWay();
+
+        push();
+        translate(this.position.x, this.position.y); // đưa bút vẽ tới vị trí vật thể
+        fill("#fff");
+        ellipse(0, 0, this.radius * 2);
+        pop(); // trả bút vẽ về vị trí mặc định
+
+        if (random(1) > .7) { // nhả khói
+            objects.push(new Smoke(this.position.x, this.position.y, 150, 10));
+        }
+    }
+
+    effect(c) {
+        if (this.checkCharacter(c)) {
+            c.loseHealth(this.damage);
+            c.lamCham(.9, 1000);
+
+            // hiệu ứng nổ khói
+            for (var i = 0; i < 2; i++) {
+                objects.push(new Smoke(this.position.x + random(-5, 5),
+                    this.position.y + random(-5, 5),
+                    random(100, 500), random(20, 40)));
             }
 
             // finish sau khi nổ

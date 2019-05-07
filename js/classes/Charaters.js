@@ -273,8 +273,8 @@ class Yasuo extends Character {
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Yasuo(this);
-        this.Wabi = new Q_Lux(this);
-        this.Eabi = null;
+        this.Wabi = new W_Jinx(this);
+        this.Eabi = new Q_Lux(this);
         this.Rabi = new R_Jinx(this);
     }
 }
@@ -294,8 +294,8 @@ class Jinx extends Character {
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Yasuo(this);
-        this.Wabi = new Q_Lux(this);
-        this.Eabi = null;
+        this.Wabi = new W_Jinx(this);
+        this.Eabi = new Q_Lux(this);
         this.Rabi = new R_Jinx(this);
     }
 }
