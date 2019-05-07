@@ -219,8 +219,8 @@ class Character {
     showState() { // hiển thị các hiệu ứng hiện có
         var info = "";
         if (this.effects.biCamLang) info = "Câm lặng"; // câm lặng có tầm quan trọng cao nhất
-        if (this.effects.biHatTung) info += " - Hất tung";
-        if (this.effects.biTroi) info += " - Trói";
+        if (this.effects.biHatTung) info += (info==""?"":" - ") + "Hất tung";
+        if (this.effects.biTroi) info += (info==""?"":" - ") + "Trói";
 
         if(info != "") {
             fill("#f0f9");
