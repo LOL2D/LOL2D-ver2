@@ -5,7 +5,7 @@ var images = {};
 var loading;
 
 var hacked = false; // hiện đường đạn
-var autoFire = false; // máy tự động bắn
+var autoFire = true; // máy tự động bắn
 var numOfAI = 3; // số lượng máy
 
 function setup() {
