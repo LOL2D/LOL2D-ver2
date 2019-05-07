@@ -1,6 +1,7 @@
 // Vật thể di chuyển được (đạn của jinx, lốc của ys, ..)
 class Moveable_Ability_Object { 
-	constructor(_image, _position, _direction, _speed, _damage, _radius, _range, _collapseWhenCollide) {
+	constructor(_owner, _image, _position, _direction, _speed, _damage, _radius, _range, _collapseWhenCollide) {
+		this.owner = _owner; // chủ nhân của vật thể này (character)
 		this.position = _position; // tọa độ bắt đầu (dạng vector)
 		this.speed = _speed; // vận tốc
 		this.image = _image; // hình ảnh hiển thị
@@ -66,14 +67,14 @@ class Moveable_Ability_Object {
 
 class LocXoay_Yasuo extends Moveable_Ability_Object {
 
-	constructor(_position, _direction, _hack) {
+	constructor(_owner, _position, _direction, _hack) {
 		var image = images.locxoay;
 		var speed = 10;
 		var damage = 10;
 		var radius = 40;
 		var range = 700;
 		var collapseWhenCollide = false;
-		super(image, _position, _direction, speed, damage, radius, range, collapseWhenCollide);
+		super(_owner, image, _position, _direction, speed, damage, radius, range, collapseWhenCollide);
 
 		this.hack = _hack;
 	}

@@ -3,65 +3,41 @@ class Character {
         this.image = _image;
         this.position = createVector(_x, _y); // tọa độ nhân vật
         this.radius = _r; // bán kính vẽ nhân vật
+        this.maxHealth = 100;
         this.health = 100; // lượng máu
-        this.color = (_isEnermy ? "#f00c" : "#0f0c");// là kẻ địch thì màu đỏ, ngược lại là xanh
+        this.color = (_isEnermy ? "#f00c" : "#0f0c"); // là kẻ địch thì màu đỏ, ngược lại là xanh
 
         this.speed = _speed; // vận tốc di chuyển
         this.targetMove = createVector(300, 400); // tọa độ cần tới (khi ấn chuột trên bản đồ)
         this.targetRadius = 25; // độ lớn khi hiển thị targetMove
+
+        // các hiệu ứng trên character
+        this.effects = {
+            biLamCham: false, // bị làm chậm
+            biTroi: false, // bị trói
+            biHatTung: false, // bị hất tung
+            biCamLang: false, // bị câm lặng    
+        }
+
     }
 
     run() { // hàm chạy chính (ở main chỉ gọi hàm này)
         this.showTargetMove();
         this.move();
         this.show();
+        this.showHealth();
     }
 
-    show() { // hàm hiển thị
-        image(this.image, this.position.x, this.position.y, this.radius * 2, this.radius * 2);
-
-        push();
-        translate(this.position.x, this.position.y); // di chuyển bút vẽ tới vị trí nhân vật
-        rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
-
-        noFill();
-        stroke(this.color);
-        strokeWeight(5);
-        ellipse(0, 0, this.radius * 2); // vẽ thân
-        strokeWeight(1); // reset strokeWeight
-
-        fill(255);
-        noStroke();
-        rect(this.radius * .5, 0, this.radius, 3); // vẽ hướng
-
-        pop(); // trả lại bút vẽ về như cũ
-    }
-
-    showTargetMove() { // hiển thị điểm cần tới
-        if (this.targetMove) {
-            if (this.targetRadius >= 5)
-                this.targetRadius -= 1.5;
-
-            fill(20, 200, 20);
-            ellipse(this.targetMove.x, this.targetMove.y, this.targetRadius * 2);
-        }
-    }
-
-    setTargetMove(x, y) {
-        // hàm này dùng để set tọa độ cần tới cho nhân vật
-        this.targetMove = createVector(x, y);
-        this.targetRadius = 25; // reset độ lớn
-    }
-
-    move() {
-        if (this.targetMove) {
+    // ================= Các hàm hành đông ====================
+    move() { // hàm di chuyển
+        if (this.targetMove && !this.effects.biTroi && !this.effects.biHatTung) {
             // khoảng cách so với điểm cần tới
             var distance = p5.Vector.dist(this.targetMove, this.position);
             if (distance > max(5, this.speed)) {
                 // tạo vector chỉ theo hướng cần tới
                 var sub = p5.Vector.sub(this.targetMove, this.position);
-                // thu nhỏ vector trên lại với độ dài = speed
-                var step = sub.setMag(this.speed);
+                // thu nhỏ vector trên lại với độ dài = speed (hoặc bị làm chậm)
+                var step = sub.setMag((this.effects.biLamCham ? (this.speed * (1 - this.effects.biLamCham)) : this.speed));
                 // di chuyển theo vector sau khi thu nhỏ
                 this.position.add(step);
 
@@ -74,6 +50,116 @@ class Character {
         }
     }
 
+    setTargetMove(x, y) { // hàm set tọa độ cần tới
+        this.targetMove = createVector(x, y);
+        this.targetRadius = 25; // reset độ lớn
+    }
+
+    lamCham(percent, time) {
+        // time ở dạng mili giây
+        this.effects.biLamCham = percent; // percent là phần trăm làm chậm (0 - 1)
+
+        var effects = this.effects;
+        setTimeout(function() { // setTimeOut .... khá rắc rối
+            effects.biLamCham = false;
+        }, time);
+    }
+
+    hatTung(time) {
+        if (!this.effects.biHatTung) {
+            // time ở dạng mili giây
+            this.effects.biHatTung = time; // percent là phần trăm làm chậm (0 - 1)
+            this.effects.thoiGianBatDau_HatTung = millis();
+            this.effects.radiusHatTung = this.radius; // độ lớn khi vẽ vật thể bị hất tung
+            this.effects.radiusHatTung_Max = this.radius * 1.5;
+
+        } else {
+            // dùng cho trùng lặp hất tung (hất tung khi vẫn đang trên không)
+            clearTimeout(this.effects.indexHatTung);
+            this.effects.thoiGianBatDau_HatTung = millis();
+        }
+
+        var effects = this.effects;
+        this.effects.indexHatTung = setTimeout(function() { // setTimeOut .... khá rắc rối
+            effects.biHatTung = false;
+        }, time);
+    }
+
+    // ===================== Các hàm hiển thị ====================
+    show() { // hàm hiển thị
+        var radius = this.radius;
+
+        if (this.effects.biHatTung) {
+            if (millis() - this.effects.thoiGianBatDau_HatTung < this.effects.biHatTung / 2) {
+                if (this.effects.radiusHatTung < this.effects.radiusHatTung_Max)
+                    this.effects.radiusHatTung++;
+            } else {
+                this.effects.radiusHatTung--;
+            }
+            radius = this.effects.radiusHatTung;
+        }
+
+        image(this.image, this.position.x, this.position.y, radius * 2, radius * 2);
+
+        push();
+        translate(this.position.x, this.position.y); // di chuyển bút vẽ tới vị trí nhân vật
+        rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
+
+        noFill();
+        stroke(this.color);
+        strokeWeight(5);
+        ellipse(0, 0, radius * 2); // vẽ thân
+        strokeWeight(1); // reset strokeWeight
+
+        fill(255);
+        noStroke();
+        rect(radius * .5, 0, radius, 3); // vẽ hướng
+
+        pop(); // trả lại bút vẽ về như cũ
+    }
+
+    showHealth() {
+        // các giá trị mặc định
+        var healthWidth = 150;
+        var healthHeight = 20;
+        var bgHealth = "#5559";
+
+        rectMode(CORNER); // chuyển về corner mode cho dễ vẽ
+        // vẽ
+        fill(bgHealth);
+        stroke(200);
+        rect(this.position.x - healthWidth * .5,
+            this.position.y + this.radius  + 10,
+            healthWidth,
+            healthHeight
+        );
+
+        fill(this.color);
+        noStroke();
+        rect(this.position.x - healthWidth * .5,
+            this.position.y + this.radius + 10,
+            map(this.health, 0, this.maxHealth, 0, healthWidth), // tính độ dài thanh máu
+            healthHeight
+        );
+
+        fill(255);
+        textSize(17);
+        text(this.health, this.position.x, this.position.y + this.radius + healthHeight)
+        rectMode(CENTER); // reset mode
+    }
+
+    showTargetMove() { // hiển thị điểm cần tới
+        if (this.targetMove) {
+            if (this.targetRadius >= 5)
+                this.targetRadius -= 1.5;
+
+            fill(20, 200, 20);
+            ellipse(this.targetMove.x, this.targetMove.y, this.targetRadius * 2);
+        }
+    }
+
+
+    // =================== Các hàm tính và lấy giá trị ================
     getDirectionMouse() { // hàm lấy hướng nhìn của nhân vật dạng góc
         // dùng hàm heading để lấy giá trị góc radian
         return this.getDirectionMouse_Vector().heading();
@@ -101,7 +187,7 @@ class Yasuo extends Character {
     }
 
     Q() {
-        return new LocXoay_Yasuo(this.getPosition(), this.getDirectionMouse_Vector(), hacked);
+        return new LocXoay_Yasuo(this, this.getPosition(), this.getDirectionMouse_Vector(), hacked);
     }
 }
 

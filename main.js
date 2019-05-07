@@ -1,12 +1,9 @@
 var yasuo, autoYasuo;
 var objects = []; // lưu các vật thể trong game
 var images = {};
-var hacked = true;
-
-var loading;
+var hacked = false;
 
 function preload() {
-    loading = true;
     images.locxoay = loadImage('images/locXoay.png');
     images.yasuo = loadImage('images/yasuo.png');
 }
@@ -15,10 +12,8 @@ function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
     rectMode(CENTER);
     imageMode(CENTER);
+    textAlign(CENTER, CENTER);
     preventRightClick();
-
-    // load data
-
 
     // khởi tạo
     yasuo = new Yasuo(random(width), random(height));
@@ -77,11 +72,11 @@ function keyPressed() {
             break;
 
         case "D":
-            // statements_1
+            yasuo.hatTung(500);
             break;
 
         case "F":
-            // statements_1
+            yasuo.lamCham(.5, 2000);
             break;
 
         default:
