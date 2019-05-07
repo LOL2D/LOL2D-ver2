@@ -1,15 +1,18 @@
 class Character {
-    constructor(_image, _x, _y, _r, _speed, _isEnermy) {
+    constructor(_name, _image, _x, _y, _r, _speed, _isEnermy) {
+        this.name = _name;
         this.image = _image;
         this.position = createVector(_x, _y); // tọa độ nhân vật
         this.radius = _r; // bán kính vẽ nhân vật
         this.maxHealth = 100;
         this.health = 100; // lượng máu
         this.color = (_isEnermy ? "#f00c" : "#0f0c"); // là kẻ địch thì màu đỏ, ngược lại là xanh
+        this.bgColor = "#0000";
 
         this.speed = _speed; // vận tốc di chuyển
         this.targetMove = createVector(300, 400); // tọa độ cần tới (khi ấn chuột trên bản đồ)
         this.targetRadius = 25; // độ lớn khi hiển thị targetMove
+        this.died = false; // chết hay chưa :v
 
         // các hiệu ứng trên character
         this.effects = {
@@ -22,13 +25,26 @@ class Character {
     }
 
     run() { // hàm chạy chính (ở main chỉ gọi hàm này)
-        this.showTargetMove();
-        this.move();
+        if (!this.died) {
+            this.showTargetMove();
+            this.move();
+            this.showHealth();
+        }
         this.show();
-        this.showHealth();
     }
 
     // ================= Các hàm hành đông ====================
+    loseHealth(damage) {
+        if (this.health >= damage) {
+            this.health -= damage;
+        } else {
+            this.health = 0;
+            this.died = true;
+            this.color = "#555"; // Mất màu :v
+            this.bgColor = "#555a";
+        }
+    }
+
     move() { // hàm di chuyển
         if (this.targetMove && !this.effects.biTroi && !this.effects.biHatTung) {
             // khoảng cách so với điểm cần tới
@@ -89,13 +105,20 @@ class Character {
     show() { // hàm hiển thị
         var radius = this.radius;
 
+        // hiển thị hiệu ứng hất tung
         if (this.effects.biHatTung) {
+
+            // có 2 giai đoạn : bay lên và hạ xuống , mỗi giai đoạn chiếm 1/2 thời gian hất tung
             if (millis() - this.effects.thoiGianBatDau_HatTung < this.effects.biHatTung / 2) {
-                if (this.effects.radiusHatTung < this.effects.radiusHatTung_Max)
-                    this.effects.radiusHatTung++;
-            } else {
-                this.effects.radiusHatTung--;
+
+                if (this.effects.radiusHatTung < this.effects.radiusHatTung_Max) {
+                    this.effects.radiusHatTung++; // đang bay lên => radius to dần
+                }
+
+            } else if (this.effects.radiusHatTung > this.radius) {
+                this.effects.radiusHatTung--; // đang bay xuống => radius nhỏ dần
             }
+
             radius = this.effects.radiusHatTung;
         }
 
@@ -105,15 +128,18 @@ class Character {
         translate(this.position.x, this.position.y); // di chuyển bút vẽ tới vị trí nhân vật
         rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
 
-        noFill();
+        fill(this.bgColor);
         stroke(this.color);
         strokeWeight(5);
         ellipse(0, 0, radius * 2); // vẽ thân
         strokeWeight(1); // reset strokeWeight
 
-        fill(255);
-        noStroke();
-        rect(radius * .5, 0, radius, 3); // vẽ hướng
+        if (!this.died) {
+            fill(255);
+            noStroke();
+            rect(radius * .5, 0, radius, 3); // vẽ hướng    
+        }
+
 
         pop(); // trả lại bút vẽ về như cũ
     }
@@ -129,7 +155,7 @@ class Character {
         fill(bgHealth);
         stroke(200);
         rect(this.position.x - healthWidth * .5,
-            this.position.y + this.radius  + 10,
+            this.position.y + this.radius + 10,
             healthWidth,
             healthHeight
         );
@@ -144,7 +170,7 @@ class Character {
 
         fill(255);
         textSize(17);
-        text(this.health, this.position.x, this.position.y + this.radius + healthHeight)
+        text(floor(this.health), this.position.x, this.position.y + this.radius + healthHeight)
         rectMode(CENTER); // reset mode
     }
 
@@ -156,7 +182,7 @@ class Character {
             fill(this.color);
             ellipse(this.targetMove.x, this.targetMove.y, this.targetRadius * 2);
 
-            if(hacked) {
+            if (hacked) {
                 stroke(this.color);
                 line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
             }
@@ -164,7 +190,7 @@ class Character {
     }
 
     showAbility() {
-        if(this.Q) {
+        if (this.Q) {
 
         }
     }
@@ -189,11 +215,11 @@ class Character {
 }
 
 class Yasuo extends Character {
-    constructor(_x, _y, _isEnermy) {
+    constructor(_name, _x, _y, _isEnermy) {
         var image = images.yasuo;
         var radius = 30;
         var speed = 5;
-        super(image, _x, _y, radius, speed, _isEnermy);
+        super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Q = new Q_Yasuo(this);
         this.W = new R_Jinx(this);
@@ -201,8 +227,8 @@ class Yasuo extends Character {
 }
 
 class AutoYasuo extends Yasuo {
-    constructor(_x, _y) {
-        super(_x, _y, true);
+    constructor(_name, _x, _y) {
+        super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
     }
 }

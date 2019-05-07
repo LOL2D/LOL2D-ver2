@@ -17,7 +17,7 @@ function setup() {
     preventRightClick();
 
     // khởi tạo
-    yasuo = new Yasuo(random(width), random(height));
+    yasuo = new Yasuo("Hoàng đẹp trai", random(width), random(height));
     autoYasuo = new AutoYasuo(random(width), random(height));
 }
 
@@ -28,19 +28,41 @@ function draw() {
     autoYasuo.run();
 
     if (random(1) > .98) {
-        if (autoYasuo.Q.available())
-            objects.push(autoYasuo.Q.active());
+        if (!autoYasuo.died && autoYasuo.Q.available()) {
+            if (random(1) > .5) {
+                objects.push(autoYasuo.Q.active());
+            } else {
+                objects.push(autoYasuo.W.active());
+            }
+        }
     }
 
     for (var i = objects.length - 1; i >= 0; i--) {
         objects[i].run();
+
+        if (!(objects[i] instanceof Smoke)) { // không phải khói thì mới cần check
+            var ox = objects[i].position.x;
+            var oy = objects[i].position.y;
+            var or = objects[i].radius;
+
+            var yasuoPos = yasuo.getPosition();
+            var autoYasuoPos = autoYasuo.getPosition();
+
+            if (collideCircleCircle(yasuoPos.x, yasuoPos.y, yasuo.radius, ox, oy, or)) {
+                objects[i].effect(yasuo);
+            }
+
+            if (collideCircleCircle(autoYasuoPos.x, autoYasuoPos.y, autoYasuo.radius, ox, oy, or)) {
+                objects[i].effect(autoYasuo);
+            }
+        }
 
         if (objects[i].isFinished()) {
             objects.splice(i, 1); // nếu vật thể đã kết thúc -> xóa khỏi mảng
         }
     }
 
-    if(keyIsPressed) {
+    if (keyIsPressed) {
         showPreviewAbilityWay();
     }
 
@@ -94,35 +116,36 @@ function showPreviewAbilityWay() {
 }
 
 function keyReleased() {
-    switch (key) {
-        case "Q":
-            if (yasuo.Q.available()) objects.push(yasuo.Q.active());
-            break;
+    if (!yasuo.died)
+        switch (key) {
+            case "Q":
+                if (yasuo.Q.available()) objects.push(yasuo.Q.active());
+                break;
 
-        case "W":
-            
-            break;
+            case "W":
 
-        case "E":
-            // statements_1
-            break;
+                break;
 
-        case "R":
-            if (yasuo.W.available()) objects.push(yasuo.W.active());
-            break;
+            case "E":
+                // statements_1
+                break;
 
-        case "D":
-            yasuo.hatTung(500);
-            break;
+            case "R":
+                if (yasuo.W.available()) objects.push(yasuo.W.active());
+                break;
 
-        case "F":
-            yasuo.lamCham(.5, 2000);
-            break;
+            case "D":
+                yasuo.hatTung(500);
+                break;
 
-        default:
-            // statements_def
-            break;
-    }
+            case "F":
+                yasuo.lamCham(.5, 2000);
+                break;
+
+            default:
+                // statements_def
+                break;
+        }
 }
 
 function windowResized() {

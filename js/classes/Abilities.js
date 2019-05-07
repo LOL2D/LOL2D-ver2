@@ -25,17 +25,17 @@ class Q_Yasuo extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
+        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 
     getRange() {
-    	return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector()).range;
+        return new LocXoay_Yasuo(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
     }
 }
 
 class R_Jinx extends Ability {
-	constructor(_owner) {
-        var damage = 20;
+    constructor(_owner) {
+        var damage = 0; // sát thương ban đầu = 0
         var cooldownTime = 500;
         super(damage, cooldownTime);
 
@@ -44,10 +44,10 @@ class R_Jinx extends Ability {
 
     active() {
         this.lastActivatedTime = millis();
-        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector());
+        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage);
     }
 
     getRange() {
-    	return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector()).range;
+        return new BoomSieuKhungKhiep_Jinx(this.owner, this.owner.getPosition(), this.owner.getDirectionMouse_Vector(), this.damage).range;
     }
 }

@@ -1,6 +1,6 @@
 // Vật thể di chuyển được (đạn của jinx, lốc của ys, ..)
 class Moveable_Ability_Object {
-    constructor(_owner, _image, _position, _direction, _speed, _damage, _radius, _range, _collapseWhenCollide) {
+    constructor(_owner, _image, _position, _direction, _speed, _damage, _radius, _range) {
         this.owner = _owner; // chủ nhân của vật thể này (character)
         this.position = _position; // tọa độ bắt đầu (dạng vector)
         this.speed = _speed; // vận tốc
@@ -9,16 +9,11 @@ class Moveable_Ability_Object {
         // hướng di chuyển (dạng vector, không phải dạng góc)
         // setMag để đưa độ dài direction về đúng = độ lớn vận tốc
         this.direction = _direction.setMag(this.speed);
+        this.travelDistance = 0; // quãng đường đã đi được
 
         this.range = _range; // phạm vi chiêu thức - khoảng cách xa nhất có thể bay tới (tính bằng pixels)
         this.radius = _radius; // bán kính vùng ảnh hưởng sát thương (hình tròn)
         this.damage = _damage; // sát thương gây ra khi trúnh mục tiêu
-
-        // biến true-false cho biết khi trúng mục tiêu có tự hủy không
-        // do có chiêu thức đi xuyên mục tiêu (R ez, ...)
-        this.collapseWhenCollide = _collapseWhenCollide;
-        this.travelDistance = 0; // quãng đường đã đi được
-
 
         // phần hack (nhìn thấy đường đi)
         this.targetMove = this.position.copy().add(this.direction.copy().setMag(this.range));
@@ -59,6 +54,10 @@ class Moveable_Ability_Object {
     isFinished() {
         return this.travelDistance >= this.range;
     }
+
+    checkCharacter(c) {
+        return !c.died && c != this.owner;
+    }
 }
 
 class LocXoay_Yasuo extends Moveable_Ability_Object {
@@ -68,8 +67,10 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
         var speed = 10;
         var radius = 40;
         var range = 700;
-        var collapseWhenCollide = false;
-        super(_owner, image, _position, _direction, speed, _damage, radius, range, collapseWhenCollide);
+        super(_owner, image, _position, _direction, speed, _damage, radius, range);
+
+        this.charactersEffected = []; // lưu những tướng đã dính damage của chiêu này
+        // do chiêu này xuyên qua tướng, nếu ko có mảng duyệt, tướng sẽ bị trừ máu ... đến chết :v
     }
 
     show() {
@@ -86,6 +87,17 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
 
         pop(); // trả bút vẽ về vị trí mặc định
     }
+
+    effect(c) {
+        if (this.checkCharacter(c)) {
+            if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
+                c.loseHealth(this.damage);
+                this.charactersEffected.push(c); // cho vào mảng để ko bị trừ nữa
+            }
+
+            c.hatTung(1000);
+        }
+    }
 }
 
 class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
@@ -94,15 +106,33 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
         var speed = 15;
         var radius = 35;
         var range = 2000;
-        var collapseWhenCollide = true;
-        super(_owner, image, _position, _direction, speed, _damage, radius, range, collapseWhenCollide);
+        super(_owner, image, _position, _direction, speed, _damage, radius, range);
     }
 
     show() {
-    	super.show();
-    	if(random(1) > .5) {
-    		objects.push(new Smoke(this.position.x, this.position.y, 200, 20))
-    	}
+        super.show();
+        this.damage += frameRate() / 60; // bom của jinx càng bay lâu damage càng  cao
+
+        if (random(1) > .5) {
+            objects.push(new Smoke(this.position.x, this.position.y, 200, 20));
+        }
+    }
+
+    effect(c) {
+        if (this.checkCharacter(c)) {
+            c.loseHealth(this.damage);
+            c.lamCham(.3, 1000); // làm chậm
+
+            // hiệu ứng nổ khói
+            for (var i = 0; i < 10; i++) {
+                objects.push(new Smoke(this.position.x + random(-50, 50),
+                    this.position.y + random(-50, 50),
+                    random(100, 500), random(20, 70)));
+            }
+
+            // finish sau khi nổ
+            this.travelDistance = this.range;
+        }
     }
 }
 
@@ -117,11 +147,11 @@ class Smoke {
     }
 
     run() {
-    	this.show();
+        this.show();
     }
 
     isFinished() {
-    	return (millis() - this.born > this.life);
+        return (millis() - this.born > this.life);
     }
 
     show() {
