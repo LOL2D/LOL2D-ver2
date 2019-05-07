@@ -1,11 +1,15 @@
 var player, autoYasuo;
 var objects = []; // lưu các vật thể trong game
 var images = {};
-var hacked = true;
+var hacked = false;
 
 function preload() {
+    // objects
     images.rocket = loadImage('images/rocket2.png');
     images.locxoay = loadImage('images/locXoay.png');
+    images.troiAnhSang = loadImage('images/troiAnhSang.png');
+
+    // nhan vat
     images.yasuo = loadImage('images/yasuo.png');
     images.jinx = loadImage('images/jinx.png');
 }
@@ -32,12 +36,26 @@ function draw() {
     player.run();
     autoYasuo.run();
 
-    if (!autoYasuo.died && random(1) > .96) {
-        if(autoYasuo.Q.available()) {
+    // auto play
+    if (!autoYasuo.died && random(1) > .9) {
+        var rand = random(10);
+
+        if(rand < 2.5 && autoYasuo.Q && autoYasuo.Q.available()) {
             objects.push(autoYasuo.Q.active());
+
+        } else if(rand < 5 && autoYasuo.W && autoYasuo.W.available()) {
+            objects.push(autoYasuo.W.active());
+
+        } else if(rand < 7.5 && autoYasuo.E && autoYasuo.E.available()) {
+            objects.push(autoYasuo.E.active());
+
+        } else if(autoYasuo.R && autoYasuo.R.available()) {
+            objects.push(autoYasuo.R.active());
+
         }
     }
 
+    // vẽ và check các objects
     for (var i = objects.length - 1; i >= 0; i--) {
         objects[i].run();
 
@@ -125,6 +143,9 @@ function showPreviewAbilityWay() {
 function keyReleased() {
     if (!player.died)
         switch (key) {
+            case "P":
+                hacked = !hacked;
+                break;
             case "Q":
                 if (player.Q && player.Q.available()) 
                     objects.push(player.Q.active());

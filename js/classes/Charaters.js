@@ -73,6 +73,16 @@ class Character {
         this.targetRadius = 25; // reset độ lớn
     }
 
+    troi(time) {
+        // time ở dạng mili giây
+        this.effects.biTroi = true;
+
+        var effects = this.effects;
+        setTimeout(function() { // setTimeOut .... khá rắc rối
+            effects.biTroi = false;
+        }, time);
+    }
+
     lamCham(percent, time) {
         // time ở dạng mili giây
         this.effects.biLamCham = percent; // percent là phần trăm làm chậm (0 - 1)
@@ -131,7 +141,7 @@ class Character {
         rotate(this.getDirectionMouse()); // xoay 1 góc theo hướng nhìn của chuột
 
         fill(this.bgColor);
-        stroke(this.color);
+        stroke(this.effects.biTroi ? "#fffb" : this.color); // nếu bị trói thì màu trắng
         strokeWeight(5);
         ellipse(0, 0, radius * 2); // vẽ thân
         strokeWeight(1); // reset strokeWeight
@@ -227,7 +237,7 @@ class Yasuo extends Character {
 
         this.Q = new Q_Yasuo(this);
         this.W = new R_Jinx(this);
-        this.E = null;
+        this.E = new Q_Lux(this);
         this.R = null;
     }
 }
@@ -246,8 +256,8 @@ class Jinx extends Character {
         var speed = 5.5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Q = null;
-        this.W = null;
+        this.Q = new Q_Lux(this);
+        this.W = new Q_Yasuo(this);
         this.E = null;
         this.R = new R_Jinx(this);
     }

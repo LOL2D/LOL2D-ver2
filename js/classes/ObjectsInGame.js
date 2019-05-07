@@ -114,7 +114,7 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
         super.show();
         this.damage += frameRate() / 120; // bom của jinx càng bay lâu damage càng cao
 
-        if (random(1) > .5) {
+        if (random(1) > .5) { // nhả khói
             objects.push(new Smoke(this.position.x, this.position.y, 200, 20));
         }
     }
@@ -133,6 +133,28 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
 
             // finish sau khi nổ
             this.travelDistance = this.range;
+        }
+    }
+}
+
+class TroiAnhSanh_Lux extends Moveable_Ability_Object {
+	constructor(_owner, _position, _direction, _damage) {
+        var image = images.troiAnhSang;
+        var speed = 12;
+        var radius = 15;
+        var range = 500;
+        super(_owner, image, _position, _direction, speed, _damage, radius, range);
+
+        this.charactersEffected = []; // tương tự bão kiếm của ys
+    }
+
+    effect(c) {
+        if (this.checkCharacter(c)) {
+        	if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
+                c.loseHealth(this.damage);
+                this.charactersEffected.push(c); // cho vào mảng để ko bị trừ nữa
+            }
+            c.troi(1500); // trói (làm chậm 100%)
         }
     }
 }
