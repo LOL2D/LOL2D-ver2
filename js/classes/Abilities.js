@@ -13,10 +13,10 @@ class Ability {
     }
 
     active() { // active này dùng cho những chiêu thức thêm vật thể Movevable vào game
-    	if(this.available()) {
-	        this.lastActivatedTime = millis();
-	        objects.push(this.getMovevableObj());
-    	}
+        if (this.available()) {
+            this.lastActivatedTime = millis();
+            objects.push(this.getMovevableObj());
+        }
     }
 
     showRange() { // tương tự active() => dùng cho những chiêu tạo ra vật thể Moveable
@@ -34,29 +34,29 @@ class Ability {
 
 class Q_Yasuo extends Ability {
     constructor(_owner) {
-    	var data = {
-	        damage : 0,
-	        cooldownTime : 1000,
-	        range : 700
-    	}
+        var data = {
+            damage: 0,
+            cooldownTime: 1000,
+            range: 700
+        }
         super(_owner, data);
     }
 
     getMovevableObj() {
         return new BaoKiem_Yasuo(
-        	this.owner, this.owner.getPosition(), 
-        	this.owner.getDirectionMouse_Vector(), 
-        	this.damage, this.range);
+            this.owner, this.owner.getPosition(),
+            this.owner.getDirectionMouse_Vector(),
+            this.damage, this.range);
     }
 }
 
 class W_Jinx extends Ability {
-	constructor(_owner) {
-		var data = {
-	        damage : 0,
-	        cooldownTime : 1500,
-	        range : 2000
-    	}
+    constructor(_owner) {
+        var data = {
+            damage: 0,
+            cooldownTime: 1500,
+            range: 2000
+        }
         super(_owner, data);
     }
 
@@ -70,11 +70,11 @@ class W_Jinx extends Ability {
 
 class R_Jinx extends Ability {
     constructor(_owner) {
-    	var data = {
-	        damage : 0,
-	        cooldownTime : 2000,
-	        range : 2000
-    	}
+        var data = {
+            damage: 0,
+            cooldownTime: 2000,
+            range: 2000
+        }
         super(_owner, data);
     }
 
@@ -88,16 +88,34 @@ class R_Jinx extends Ability {
 
 class Q_Lux extends Ability {
     constructor(_owner) {
-    	var data = {
-	        damage : 7,
-	        cooldownTime : 1500,
-	        range : 600
-    	}
+        var data = {
+            damage: 7,
+            cooldownTime: 1500,
+            range: 600
+        }
         super(_owner, data);
     }
 
     getMovevableObj() {
         return new TroiAnhSanh_Lux(
+            this.owner, this.owner.getPosition(),
+            this.owner.getDirectionMouse_Vector(),
+            this.damage, this.range);
+    }
+}
+
+class Q_Blit extends Ability {
+    constructor(_owner) {
+        var data = {
+            damage: 5,
+            cooldownTime: 1500,
+            range: 600
+        }
+        super(_owner, data);
+    }
+
+    getMovevableObj() {
+        return new BanTayHoaTien_Blit(
             this.owner, this.owner.getPosition(),
             this.owner.getDirectionMouse_Vector(),
             this.damage, this.range);

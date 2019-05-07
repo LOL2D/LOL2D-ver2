@@ -6,7 +6,7 @@ var loading;
 
 var hacked = false; // hiện đường đạn
 var autoFire = true; // máy tự động bắn
-var numOfAI = 3; // số lượng máy
+var numOfAI = 2; // số lượng máy
 
 function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
@@ -34,24 +34,6 @@ function draw() {
         text("Vui lòng tắt Unikey TIẾNG VIÊT để trải nghiệm game tốt hơn", width * .5, height * .5 + 40);
 
     } else {
-        player.run();
-        showPreviewAbilityWay();
-
-        // auto play
-        for (var a of AI_Players) {
-            a.run();
-
-            if (autoFire && random(1) > .95) {
-                var rand = random(10);
-
-                if (rand < 2.5) a.Q();
-                else if (rand < 5) a.W();
-                else if (rand < 7.5) a.E();
-                else a.R();
-
-            }
-        }
-
         // vẽ và check các objects
         for (var i = objects.length - 1; i >= 0; i--) {
             objects[i].run();
@@ -85,6 +67,25 @@ function draw() {
 
         if (mouseIsPressed) {
             player.setTargetMove(mouseX, mouseY);
+        }
+
+        // vẽ nhân vật
+        player.run();
+        showPreviewAbilityWay();
+
+        // auto play
+        for (var a of AI_Players) {
+            a.run();
+
+            if (autoFire && random(1) > .95) {
+                var rand = random(10);
+
+                if (rand < 2.5) a.Q();
+                else if (rand < 5) a.W();
+                else if (rand < 7.5) a.E();
+                else a.R();
+
+            }
         }
     }
 
@@ -140,6 +141,7 @@ function loadImages() {
     images.rocket = loadImage('images/rocket2.png');
     images.locxoay = loadImage('images/locXoay.png');
     images.troiAnhSang = loadImage('images/troiAnhSang.png');
+    images.banTay = loadImage('images/bantay.png');
 
     // nhan vat
     images.yasuo = loadImage('images/yasuo.png');
@@ -147,12 +149,12 @@ function loadImages() {
 }
 
 function checkLoad() { // hàm check xem các images đã được load hết chưa
-    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx;
+    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx && images.banTay;
 }
 
 function newGame() {
     // khởi tạo
-    player = new Jinx("Your Name Here", random(width), random(height));
+    player = new Jinx("Jinx Best", random(width), random(height));
 
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {

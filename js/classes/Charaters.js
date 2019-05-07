@@ -20,7 +20,8 @@ class Character {
             biLamCham: false, // bị làm chậm
             biTroi: false, // bị trói
             biHatTung: false, // bị hất tung
-            biCamLang: false, // bị câm lặng    
+            biCamLang: false, // bị câm lặng
+            biKeo: false
         }
     }
 
@@ -37,7 +38,7 @@ class Character {
 
     // ================= Các hàm gọi chiêu thức ==============
     coTheDungChieu() {
-        return !(this.died || this.effects.biHatTung || this.effects.biCamLang);
+        return !(this.died || this.effects.biHatTung || this.effects.biCamLang || this.effects.biKeo);
     }
 
     Q() {
@@ -78,7 +79,7 @@ class Character {
     }
 
     move() { // hàm di chuyển
-        if (this.targetMove && !this.effects.biTroi && !this.effects.biHatTung) {
+        if (this.targetMove && !this.effects.biTroi && !this.effects.biHatTung && !this.effects.biKeo) {
             // khoảng cách so với điểm cần tới
             var distance = p5.Vector.dist(this.targetMove, this.position);
             if (distance > max(5, this.speed)) {
@@ -94,6 +95,15 @@ class Character {
 
                 if (this.autoMove)
                     this.setTargetMove(random(width), random(height)); // test tự động di chuyển
+            }
+
+        } else if(this.effects.biKeo) {
+            // đi theo tay kéo
+            this.position = this.effects.biKeo.position.copy();
+
+            // nếu tay kéo kết thúc thì kết thúc
+            if(this.effects.biKeo.isFinished()) {
+                this.effects.biKeo = false;
             }
         }
     }
@@ -150,6 +160,10 @@ class Character {
         this.effects.indexHatTung = setTimeout(function() { // setTimeOut .... khá rắc rối
             effects.biHatTung = false;
         }, time);
+    }
+
+    keo(target) { // target ở đây chính là bàn tay hỏa tiễn
+        this.effects.biKeo = target;
     }
 
     // ===================== Các hàm hiển thị ====================
@@ -217,7 +231,11 @@ class Character {
 
     showState() { // hiển thị các hiệu ứng hiện có
         var info = "";
-        if (this.effects.biCamLang) info = "Câm lặng"; // câm lặng có tầm quan trọng cao nhất
+        // bị kéo có tầm quan trọng cao nhất
+        // do hiệu ứng kéo sẽ đè lên mọi hiệu ứng khác
+        // do đó cần để chuỗi Kéo ở đầu
+        if (this.effects.biKeo) info = "Kéo";
+        if (this.effects.biCamLang) info += (info==""?"":" - ") + "Câm lặng"; 
         if (this.effects.biHatTung) info += (info==""?"":" - ") + "Hất tung";
         if (this.effects.biTroi) info += (info==""?"":" - ") + "Trói";
         if (this.effects.biLamCham) info += (info==""?"":" - ") + "Chậm";
@@ -230,7 +248,8 @@ class Character {
     }
 
     getColorBaseState() { // lấy màu theo hiệu ứng hiện có
-        if (this.effects.biCamLang) return "#555"; // câm lặng có tầm quan trọng cao nhất
+        if (this.effects.biKeo) return "#97a";
+        if (this.effects.biCamLang) return "#555"; 
         if (this.effects.biHatTung) return "#ff0";
         if (this.effects.biTroi) return "#fff";
         if (this.effects.biLamCham) return "#00f";
@@ -342,7 +361,7 @@ class Jinx extends Character {
 
         this.Qabi = new Q_Yasuo(this);
         this.Wabi = new W_Jinx(this);
-        this.Eabi = new Q_Lux(this);
+        this.Eabi = new Q_Blit(this);
         this.Rabi = new R_Jinx(this);
     }
 }
