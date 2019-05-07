@@ -81,11 +81,11 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
 	show() {
 		push();
 		translate(this.position.x, this.position.y); // đưa bút vẽ tới vị trí vật thể
-		rotate(millis() / 100); // xoáy
+		rotate(frameCount / 5); // xoáy
 
 		// var tintValue = map(this.travelDistance, 0, this.range, 0, 255);
 		// tint(255, 255 - tintValue);
-		tint(this.range, this.range - this.travelDistance);
+		// tint(this.range, this.range - this.travelDistance);
 		image(this.image, 0, 0, this.radius * 2, this.radius * 2);
 
 		pop(); // trả bút vẽ về vị trí mặc định
