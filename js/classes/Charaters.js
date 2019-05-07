@@ -195,7 +195,8 @@ class Character {
         rectMode(CORNER); // chuyển về corner mode cho dễ vẽ
         // vẽ
         fill(bgHealth);
-        stroke(200);
+        stroke(200, 150);
+        strokeWeight(5);
         rect(this.position.x - healthWidth * .5,
             this.position.y + this.radius + 10,
             healthWidth,
@@ -218,7 +219,7 @@ class Character {
         // show name
         fill(200, 150);
         noStroke();
-        text(this.name, this.position.x, this.position.y + this.radius + 20 + healthHeight);
+        text(this.name, this.position.x, this.position.y + this.radius + 25 + healthHeight);
     }
 
     showTargetMove() { // hiển thị điểm cần tới
