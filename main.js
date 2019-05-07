@@ -1,9 +1,12 @@
-var yasuo;
+var yasuo, autoYasuo;
 var objects = []; // lưu các vật thể trong game
 var images = {};
 var hacked = true;
 
+var loading;
+
 function preload() {
+    loading = true;
     images.locxoay = loadImage('images/locXoay.png');
     images.yasuo = loadImage('images/yasuo.png');
 }
@@ -12,16 +15,24 @@ function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
     rectMode(CENTER);
     imageMode(CENTER);
-
-    yasuo = new Yasuo();
-
     preventRightClick();
+
+    // load data
+
+
+    // khởi tạo
+    yasuo = new Yasuo(random(width), random(height));
+    autoYasuo = new AutoYasuo(random(width), random(height));
 }
 
 function draw() {
     background(30);
 
     yasuo.run();
+    autoYasuo.run();
+
+    if(random(1) > .98) 
+        objects.push(autoYasuo.Q());
 
     for (var i = objects.length - 1; i >= 0; i--) {
         objects[i].run();
@@ -30,6 +41,9 @@ function draw() {
             objects.splice(i, 1); // nếu vật thể đã kết thúc -> xóa khỏi mảng
         }
     }
+
+    // if(random(1) > .95) 
+    //     objects.push(new LocXoay_Yasuo(createVector(random(width), random(height)), p5.Vector.random2D(), hacked));
 
     fill(255);
     text(round(frameRate()), 15, 15);
@@ -47,7 +61,7 @@ function mousePressed() {
 function keyPressed() {
     switch (key) {
         case "Q":
-            objects.push(new LocXoay_Yasuo(yasuo.getPosition(), yasuo.getDirectionMouse_Vector(), hacked));
+            objects.push(yasuo.Q());
             break;
 
         case "W":

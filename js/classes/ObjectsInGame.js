@@ -53,7 +53,7 @@ class Moveable_Ability_Object {
 	}
 
 	showWay() { //hiển thị đường đi của vật thể (như hack lmht)
-		stroke(this.range - this.travelDistance, 30);
+		stroke(this.range - this.travelDistance, 10);
 		strokeWeight(this.radius * 2);
 		line(this.position.x, this.position.y, this.targetMove.x, this.targetMove.y);
 		strokeWeight(1);
@@ -70,7 +70,7 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
 		var image = images.locxoay;
 		var speed = 10;
 		var damage = 10;
-		var radius = 70;
+		var radius = 40;
 		var range = 700;
 		var collapseWhenCollide = false;
 		super(image, _position, _direction, speed, damage, radius, range, collapseWhenCollide);
@@ -79,6 +79,8 @@ class LocXoay_Yasuo extends Moveable_Ability_Object {
 	}
 
 	show() {
+		this.radius += .7; // độ lớn lốc tăng dần
+
 		push();
 		translate(this.position.x, this.position.y); // đưa bút vẽ tới vị trí vật thể
 		rotate(frameCount / 5); // xoáy
