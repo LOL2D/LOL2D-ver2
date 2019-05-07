@@ -211,7 +211,7 @@ function loadImages() {
 }
 
 function checkLoad() { // hàm check xem các images đã được load hết chưa
-    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx && millis() > 3000;
+    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx;
 }
 
 function newGame() {
