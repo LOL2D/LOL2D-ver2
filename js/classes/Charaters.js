@@ -10,7 +10,7 @@ class Character {
         this.bgColor = "#0000";
 
         this.speed = _speed; // vận tốc di chuyển
-        this.targetMove = createVector(300, 400); // tọa độ cần tới (khi ấn chuột trên bản đồ)
+        this.targetMove = createVector(random(width), random(height)); // tọa độ cần tới (khi ấn chuột trên bản đồ)
         this.targetRadius = 25; // độ lớn khi hiển thị targetMove
         this.died = false; // chết hay chưa :v
 
@@ -38,11 +38,12 @@ class Character {
         if (this.health >= damage) {
             this.health -= damage;
         } else {
-            // this.health = 0;
-            // this.died = true;
-            // this.color = "#555"; // Mất màu :v
-            // this.bgColor = "#555a";
-            this.health = this.maxHealth; // test
+            this.health = 0;
+            this.died = true;
+            this.color = "#555"; // Mất màu :v
+            this.bgColor = "#555a";
+            menuWhenDie('open');
+            // this.health = this.maxHealth; // test
         }
     }
 
@@ -234,7 +235,7 @@ class Yasuo extends Character {
 class AutoYasuo extends Yasuo {
     constructor(_name, _x, _y) {
         super((_name || "Yasuo Máy"), _x, _y, true);
-        // this.autoMove = true;
+        this.autoMove = true;
     }
 }
 

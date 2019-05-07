@@ -17,6 +17,10 @@ function setup() {
     textAlign(CENTER, CENTER);
     preventRightClick();
 
+    newGame();  
+}
+
+function newGame() {
     // khởi tạo
     player = new Jinx("Hoàng đẹp trai", random(width), random(height));
     autoYasuo = new AutoYasuo(random(width), random(height));

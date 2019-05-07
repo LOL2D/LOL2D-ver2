@@ -16,7 +16,7 @@ class Ability {
 class Q_Yasuo extends Ability {
 
     constructor(_owner) {
-        var damage = 5;
+        var damage = 0;
         var cooldownTime = 1000;
         super(damage, cooldownTime);
 

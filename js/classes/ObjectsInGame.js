@@ -75,6 +75,7 @@ class BaoKiem_Yasuo extends Moveable_Ability_Object {
 
     show() {
         this.radius += .7; // độ lớn lốc tăng dần
+        this.damage += frameRate() / 240; // càng bay lâu damage càng cao
 
         push();
         translate(this.position.x, this.position.y); // đưa bút vẽ tới vị trí vật thể
@@ -111,7 +112,7 @@ class BoomSieuKhungKhiep_Jinx extends Moveable_Ability_Object {
 
     show() {
         super.show();
-        this.damage += frameRate() / 60; // bom của jinx càng bay lâu damage càng  cao
+        this.damage += frameRate() / 120; // bom của jinx càng bay lâu damage càng cao
 
         if (random(1) > .5) {
             objects.push(new Smoke(this.position.x, this.position.y, 200, 20));
