@@ -282,8 +282,11 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
     }
 
     isFinished() {
-    	// kết thúc khi: đang bay về, và khoảng cách so với vị trí ban đầu < vận tốc * 2
-    	return (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.owner.radius * 2);
+    	// kết thúc khi: 2 trường hợp
+    	// 1. không kéo được ai và bay hết tầm
+    	// 2. kéo được tướng và về tới nơi
+    	return ((this.state=="go" && this.charactersEffected.length ==0 && this.travelDistance >= this.range) 
+    		|| (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.owner.radius * 2));
     }
 }
 
