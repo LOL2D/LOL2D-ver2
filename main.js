@@ -50,7 +50,7 @@ function draw() {
 
                 // duyệt qua mảng tướng máy
                 for (var a of AI_Players) {
-                    if(!a.died) {
+                    if (!a.died) {
                         var aPos = a.getPosition();
                         if (collideCircleCircle(aPos.x, aPos.y, a.radius, ox, oy, or * 2)) {
                             objects[i].effect(a);
@@ -151,8 +151,8 @@ function loadImages() {
 }
 
 function checkLoad() { // hàm check xem các images đã được load hết chưa
-    return images.rocket && images.locxoay && images.troiAnhSang 
-        && images.yasuo && images.jinx && images.banTay && images.blitzcrank;
+    return images.rocket && images.locxoay && images.troiAnhSang &&
+        images.yasuo && images.jinx && images.banTay && images.blitzcrank;
 }
 
 function newGame() {
@@ -161,10 +161,13 @@ function newGame() {
 
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {
-        if(random(1) > .5){
+        var rand = random(10);
+        if (rand < 3) {
             AI_Players.push(new AutoYasuo(random(width), random(height)));
-        } else {
+        } else if (rand < 7) {
             AI_Players.push(new AutoBlitz(random(width), random(height)));
+        } else {
+            AI_Players.push(new AutoJinx(random(width), random(height)));
         }
     }
 }
