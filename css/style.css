@@ -1,5 +1,6 @@
 /* ======================== Reset button ===================*/
 #menuWhenDie {
+	text-align: center;
     display: none;
     z-index: 3;
     position: fixed;
@@ -32,4 +33,10 @@
 #menuWhenDie input[type="submit"]:hover {
     opacity: 1;
     background-color: rgba(70, 70, 70, 1);
+}
+
+#menuWhenDie p, #menuWhenDie h2 {
+	font-family: sans-serif;
+	text-align: center;
+	color: #999;
 }

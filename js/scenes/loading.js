@@ -30,9 +30,9 @@ function Loading() {
         } else {
             menuWhenDie('open');
 
-            noStroke();
-            fill(200);
-            text("Vui lòng tắt Unikey TIẾNG VIÊT để trải nghiệm game tốt hơn", width * .5, height * .5 + 40);
+            // noStroke();
+            // fill(200);
+            // text("Vui lòng tắt Unikey TIẾNG VIÊT để trải nghiệm game tốt hơn", width * .5, height * .5 + 40);
 
             // noLoop(); // dừng vòng lặp hiển thị
             // FUCK this shit, đừng bao giờ dùng noLoop();
