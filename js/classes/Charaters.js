@@ -229,12 +229,12 @@ class Character {
         stroke(this.getColorBaseState());
         strokeWeight(5);
         ellipse(0, 0, radius * 2); // vẽ thân
-        strokeWeight(1); // reset strokeWeight
 
         if (!this.died) {
-            fill(255);
-            noStroke();
-            rect(radius * .5, 0, radius, 3); // vẽ hướng    
+            // fill(255);
+            stroke(255)
+            strokeWeight(1);
+            line(0, 0, radius, 0); // vẽ hướng    
         }
 
         pop(); // trả lại bút vẽ về như cũ
