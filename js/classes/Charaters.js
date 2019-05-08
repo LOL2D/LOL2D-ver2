@@ -27,7 +27,18 @@ class Character {
 
     run() { // hàm chạy chính (ở main chỉ gọi hàm này)
         if (!this.died) {
-            if (!this.isEnermy || hacked) 
+            if (!this.isEnermy || hacked)
+                this.showTargetMove();
+            this.move();
+            this.showHealth();
+            this.showState();
+        }
+        this.show();
+    }
+
+    runAI() {
+        if (!this.died) {
+            if (!this.isEnermy || hacked)
                 this.showTargetMove();
             this.move();
             this.showHealth();
@@ -69,6 +80,7 @@ class Character {
     loseHealth(damage) {
         if (this.health >= damage) {
             this.health -= damage;
+
         } else {
             this.health = 0;
             this.died = true;
@@ -97,12 +109,12 @@ class Character {
                     this.setTargetMove(random(width), random(height)); // test tự động di chuyển
             }
 
-        } else if(this.effects.biKeo) {
+        } else if (this.effects.biKeo) {
             // đi theo tay kéo
             this.position = this.effects.biKeo.position.copy();
 
             // nếu tay kéo kết thúc thì kết thúc
-            if(this.effects.biKeo.finished) {
+            if (this.effects.biKeo.finished) {
                 this.effects.biKeo = false;
             }
         }
@@ -217,7 +229,7 @@ class Character {
             var y = this.position.y;
             var r = radius * .7;
 
-            if(random(1) > .9) {
+            if (random(1) > .9) {
                 var x = this.position.x + random(-this.radius, this.radius);
                 var y = this.position.y + random(-this.radius, this.radius);
                 objects.push(new Smoke(x, y, random(100, 200), random(10, 30)));
@@ -235,13 +247,13 @@ class Character {
         // do hiệu ứng kéo sẽ đè lên mọi hiệu ứng khác
         // do đó cần để chuỗi Kéo ở đầu
         if (this.effects.biKeo) info = "Kéo";
-        if (this.effects.biCamLang) info += (info==""?"":" - ") + "Câm lặng"; 
-        if (this.effects.biHatTung) info += (info==""?"":" - ") + "Hất tung";
-        if (this.effects.biTroi) info += (info==""?"":" - ") + "Trói";
-        if (this.effects.biLamCham) info += (info==""?"":" - ") + "Chậm";
+        if (this.effects.biCamLang) info += (info == "" ? "" : " - ") + "Câm lặng";
+        if (this.effects.biHatTung) info += (info == "" ? "" : " - ") + "Hất tung";
+        if (this.effects.biTroi) info += (info == "" ? "" : " - ") + "Trói";
+        if (this.effects.biLamCham) info += (info == "" ? "" : " - ") + "Chậm";
 
-        if(info != "") {
-            fill("#f0f9");
+        if (info != "") {
+            fill("#99f");
             noStroke();
             text(info, this.position.x, this.position.y - this.radius - 30);
         }
@@ -249,7 +261,7 @@ class Character {
 
     getColorBaseState() { // lấy màu theo hiệu ứng hiện có
         if (this.effects.biKeo) return "#97a";
-        if (this.effects.biCamLang) return "#555"; 
+        if (this.effects.biCamLang) return "#555";
         if (this.effects.biHatTung) return "#ff0";
         if (this.effects.biTroi) return "#fff";
         if (this.effects.biLamCham) return "#00f";
@@ -282,7 +294,7 @@ class Character {
         );
         rectMode(CENTER); // reset mode
 
-        
+
         noStroke();
         textSize(17);
 
