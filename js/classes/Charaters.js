@@ -31,25 +31,26 @@ class Character {
             if (!this.isEnermy || hacked)
                 this.showTargetMove();
             this.move();
+            this.collideEdge();
             this.showHealth();
             this.showState();
         }
         this.show();
     }
 
-    runAI() {
-        if (!this.died) {
-            if (!this.isEnermy || hacked)
-                this.showTargetMove();
-            this.move();
-            this.showHealth();
-            this.showState();
+    collideEdge() {
+        if(this.position.x < this.radius) {
+            this.position.x = this.radius
         }
-        this.show();
-    }
-
-    collideEdge(_khung) {
-
+        if(this.position.x > gamemap.width - this.radius) {
+            this.position.x = gamemap.width - this.radius
+        }
+        if(this.position.y < this.radius) {
+            this.position.y = this.radius
+        }
+        if(this.position.y > gamemap.height - this.radius) {
+            this.position.y = gamemap.height - this.radius
+        }
     }
 
     // ================= Các hàm gọi chiêu thức ==============
@@ -111,8 +112,11 @@ class Character {
             } else {
                 this.targetMove = null; // xóa dữ liệu tọa độ khi nhân vật đã tới nơi
 
-                if (this.autoMove)
-                    this.setTargetMove(random(width), random(height)); // test tự động di chuyển
+                if (this.autoMove) {
+                    var x = random(this.radius * 2, gamemap.width - this.radius * 2);
+                    var y = random(this.radius * 2, gamemap.height - this.radius * 2);
+                    this.setTargetMove(x, y); // test tự động di chuyển
+                }
             }
 
         } else if (this.effects.biKeo) {
