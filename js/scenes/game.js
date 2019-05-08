@@ -1,5 +1,5 @@
 function Game() {
-    
+
     // hàm khởi tạo
     this.setup = function() {
         
@@ -78,6 +78,9 @@ function Game() {
     }
 
     this.keyReleased = function() {
+        if(keyCode == 27) { // ESC
+            menuWhenDie('switch');
+        }
         switch (key.toUpperCase()) {
             case " ":
                 viewport.follow = !viewport.follow;

@@ -29,11 +29,12 @@ function newGame() {
     // khởi tạo
     gamemap = new GameMap(2000, 2000, 250);
 
-    player = getRandomCharacter();
+    player = createCharacter(document.getElementById("selectNhanVat").value);
+
     objects = [];
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {
-        AI_Players.push(getRandomCharacter(true));
+        AI_Players.push(createCharacter(null, true));
     }
 
     viewport = new ViewPort(player);
@@ -55,9 +56,12 @@ function checkNewGame() {
     }
 }
 
-function getRandomCharacter(_isAuto) {
+function createCharacter(_name, _isAuto) {
     var names = ["Yasuo", "Blitzcrank", "Jinx", "Lux"];
     var randomName = names[floor(random(names.length))];
+
+    if(_name) randomName = _name;
+
     if (_isAuto) {
         return eval("new Auto" + randomName + "(null, random(gamemap.width), random(gamemap.height))");
     }
@@ -65,5 +69,11 @@ function getRandomCharacter(_isAuto) {
 }
 
 function menuWhenDie(e) {
-    document.getElementById("menuWhenDie").style.display = (e == "open" ? "block" : "none");
+	var element = document.getElementById("menuWhenDie")
+	if(e == "switch") {
+		var current = element.style.display;
+		element.style.display = (current == "block" ? "none" : "block");
+	} else {
+		element.style.display = (e == "open" ? "block" : "none");	
+	}
 }

@@ -1,5 +1,35 @@
 /* ======================== Reset button ===================*/
-#menuWhenDie{display:none;z-index:3;position:fixed;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);}
-#menuWhenDie input{width:150px;padding:10px;border:none;font-size:22px;border-radius:3px;background-color:rgba(70,70,70,.6);color:white;opacity:0.8;cursor:pointer;-webkit-transition:0.1s;-o-transition:0.1s;transition:0.1s;}
-#menuWhenDie input:nth-child(2){width:70px;}
-#menuWhenDie input:hover{opacity:1;background-color:rgba(70,70,70,1);}
+#menuWhenDie {
+    display: none;
+    z-index: 3;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+#menuWhenDie input[type="submit"] {
+    width: 150px;
+    padding: 10px;
+    border: none;
+    font-size: 22px;
+    border-radius: 3px;
+    background-color: rgba(70, 70, 70, .6);
+    color: white;
+    opacity: 0.8;
+    cursor: pointer;
+    -webkit-transition: 0.1s;
+    -o-transition: 0.1s;
+    transition: 0.1s;
+}
+
+/*#menuWhenDie input[type="submit"]:nth-child(2) {
+    width: 70px;
+}*/
+
+#menuWhenDie input[type="submit"]:hover {
+    opacity: 1;
+    background-color: rgba(70, 70, 70, 1);
+}
