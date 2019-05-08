@@ -341,7 +341,7 @@ class Character {
     }
 }
 
-//=========================================================
+//==================== Characters ======================
 
 class Yasuo extends Character {
     constructor(_name, _x, _y, _isEnermy) {
@@ -357,17 +357,6 @@ class Yasuo extends Character {
     }
 }
 
-class AutoYasuo extends Yasuo {
-    constructor(_x, _y, _name) {
-        super((_name || "Yasuo Máy"), _x, _y, true);
-        this.autoMove = true;
-        // this.Qabi = null;
-        // this.Wabi = new Q_Blit(this);
-        // this.Eabi = null;
-        // this.Rabi = null;
-    }
-}
-
 class Jinx extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.jinx;
@@ -379,5 +368,42 @@ class Jinx extends Character {
         this.Wabi = new W_Jinx(this);
         this.Eabi = new Q_Blit(this);
         this.Rabi = new R_Jinx(this);
+    }
+}
+
+class Blitzcrank extends Character {
+    constructor(_name, _x, _y, _isEnermy) {
+        var image = images.blitzcrank;
+        var radius = 30;
+        var speed = 5.5;
+        super(_name, image, _x, _y, radius, speed, _isEnermy);
+
+        this.Qabi = new Q_Blit(this);
+        this.Wabi = new W_Jinx(this);
+        this.Eabi = new Q_Yasuo(this);
+        this.Rabi = new R_Jinx(this);
+    }
+}
+
+// =============== AI Character ==================
+class AutoYasuo extends Yasuo {
+    constructor(_x, _y, _name) {
+        super((_name || "Yasuo Máy"), _x, _y, true);
+        this.autoMove = true;
+        // this.Qabi = null;
+        // this.Wabi = new Q_Blit(this);
+        // this.Eabi = null;
+        // this.Rabi = null;
+    }
+}
+
+class AutoBlitz extends Blitzcrank {
+    constructor(_x, _y, _name) {
+        super((_name || "Blitzcrank Máy"), _x, _y, true);
+        this.autoMove = true;
+        // this.Qabi = null;
+        // this.Wabi = new Q_Blit(this);
+        // this.Eabi = null;
+        // this.Rabi = null;
     }
 }

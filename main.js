@@ -147,10 +147,12 @@ function loadImages() {
     // nhan vat
     images.yasuo = loadImage('images/yasuo.png');
     images.jinx = loadImage('images/jinx.png');
+    images.blitzcrank = loadImage('images/blitzcrank.png');
 }
 
 function checkLoad() { // hàm check xem các images đã được load hết chưa
-    return images.rocket && images.locxoay && images.troiAnhSang && images.yasuo && images.jinx && images.banTay;
+    return images.rocket && images.locxoay && images.troiAnhSang 
+        && images.yasuo && images.jinx && images.banTay && images.blitzcrank;
 }
 
 function newGame() {
@@ -159,7 +161,11 @@ function newGame() {
 
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {
-        AI_Players.push(new AutoYasuo(random(width), random(height)));
+        if(random(1) > .5){
+            AI_Players.push(new AutoYasuo(random(width), random(height)));
+        } else {
+            AI_Players.push(new AutoBlitz(random(width), random(height)));
+        }
     }
 }
 
