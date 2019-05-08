@@ -102,7 +102,7 @@ class Character {
             this.position = this.effects.biKeo.position.copy();
 
             // nếu tay kéo kết thúc thì kết thúc
-            if(this.effects.biKeo.isFinished()) {
+            if(this.effects.biKeo.finished) {
                 this.effects.biKeo = false;
             }
         }
@@ -339,7 +339,7 @@ class Yasuo extends Character {
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Yasuo(this);
-        this.Wabi = new W_Jinx(this);
+        this.Wabi = new Q_Blit(this);
         this.Eabi = new Q_Lux(this);
         this.Rabi = new R_Jinx(this);
     }

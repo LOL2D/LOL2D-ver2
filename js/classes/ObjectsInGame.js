@@ -17,6 +17,8 @@ class Moveable_Ability_Object {
 
         // phần hack (nhìn thấy đường đi)
         this.targetMove = this.position.copy().add(this.direction.copy().setMag(this.range));
+
+        this.finished = false; // = true nếu vật này đã được remove khỏi mảng
     }
 
     run() {
@@ -239,7 +241,7 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
         super(_owner, data);
 
         this.charactersEffected = []; // lưu những tướng đã dính damage của chiêu này
-        this.fromPos = _owner.getPosition(); // vị trí ban đầu
+        this.fromPos = this.owner.position; // vị trí ban đầu
         this.state = "go"; // trạng thái : bay tới hay bay về
     }
 
@@ -248,13 +250,12 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
 
         stroke(200, 100);
         strokeWeight(2);
-        ellipse(this.fromPos.x, this.fromPos.y, this.owner.radius * 2);
         line(this.fromPos.x, this.fromPos.y, this.position.x, this.position.y);
     }
 
     effect(c) {
     	if (this.checkCharacter(c)) {
-            if (this.charactersEffected.indexOf(c) < 0) { // nếu chưa có thì mới trừ máu
+            if (this.charactersEffected.length <= 0) { // chỉ kéo được 1 đứa
                 c.loseHealth(this.damage);
 	            c.keo(this);
 
@@ -273,7 +274,8 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
     		}
 
     	} else {
-    		this.position.sub(this.direction); // bay về
+    		var direc2 = p5.Vector.sub(this.position, this.fromPos).setMag(this.speed * 1.5);
+    		this.position.sub(direc2); // bay về
     	}
 
     	this.travelDistance += this.speed;
@@ -281,7 +283,7 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
 
     isFinished() {
     	// kết thúc khi: đang bay về, và khoảng cách so với vị trí ban đầu < vận tốc * 2
-    	return (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.speed * 2);
+    	return (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.owner.radius * 2);
     }
 }
 

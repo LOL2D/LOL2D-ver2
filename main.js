@@ -61,6 +61,7 @@ function draw() {
 
             // nếu vật thể đã kết thúc -> xóa khỏi mảng
             if (objects[i].isFinished()) {
+                objects[i].finished = true;
                 objects.splice(i, 1);
             }
         }
