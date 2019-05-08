@@ -29,6 +29,6 @@ class Loading {
 
 class showAbilityInfo {
     constructor() {
-
+        
     }
 }

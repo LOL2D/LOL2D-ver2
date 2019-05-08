@@ -23,12 +23,14 @@ class Ability {
     }
 
     showRange() { // tương tự active() => dùng cho những chiêu tạo ra vật thể Moveable
-        var direc = createVector(mouseX - this.owner.position.x, mouseY - this.owner.position.y);
+        // chuyển tọa độ chuột về đúng vị trí theo viewport
+        var convertedMouse = viewport.convert(mouseX, mouseY);
+        var direc = createVector(convertedMouse.x - this.owner.position.x, convertedMouse.y - this.owner.position.y);
         direc.setMag(this.range);
         direc.add(this.owner.position);
 
         stroke("#0006");
-        strokeWeight(this.getMovevableObj().radius * 2);
+        strokeWeight(this.radius * 2);
         line(this.owner.position.x, this.owner.position.y, direc.x, direc.y);
     }
 
@@ -41,6 +43,10 @@ class Ability {
             radius: this.radius,
             speed: this.speed
         };
+    }
+
+    getMovevableObj() {
+    	// mỗi class con khác nhau sẽ có cách xử lý khác nhau 
     }
 }
 
@@ -101,10 +107,10 @@ class Q_Lux extends Ability {
     constructor(_owner) {
         var data = {
             damage: 7,
-            cooldownTime: 1500,
-            range: 600,
+            cooldownTime: 1000,
+            range: 700,
             radius: 15,
-            speed: 12
+            speed: 15
         }
         super(_owner, data);
     }
@@ -117,8 +123,8 @@ class Q_Lux extends Ability {
 class Q_Blit extends Ability {
     constructor(_owner) {
         var data = {
-            damage: 20,
-            cooldownTime: 1500,
+            damage: 5,
+            cooldownTime: 1200,
             range: 750,
             radius: 25,
             speed: 11

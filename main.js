@@ -1,13 +1,19 @@
+// Các biến toàn cục
 var player;
 var AI_Players = [];
 var objects = []; // lưu các vật thể trong game
 var images = {};
-var loading, loading_Finished = false;
+var gamemap; // biến bản đồ
+var viewport; // biến theo dõi / tầm nhìn
+
+var loading; // biến hiệu ứng quay loading
+var loading_Finished = false;
 
 var hacked = false; // hiện đường đạn
 var autoFire = true; // máy tự động bắn
 var numOfAI = 3; // số lượng máy
 
+// hàm khởi tạo
 function setup() {
     createCanvas(windowWidth, windowHeight).position(0, 0);
     rectMode(CENTER);
@@ -20,6 +26,7 @@ function setup() {
     loading = new Loading(30, 10, "#0f0");
 }
 
+// vòng lặp game
 function draw() {
     background(20);
 
@@ -34,6 +41,12 @@ function draw() {
         text("Vui lòng tắt Unikey TIẾNG VIÊT để trải nghiệm game tốt hơn", width * .5, height * .5 + 40);
 
     } else {
+        // viewport di chuyển tầm nhìn hoạt động :
+        viewport.run();
+
+        // vẽ bản dồ
+        gamemap.run();
+
         // vẽ và check các objects
         for (var i = objects.length - 1; i >= 0; i--) {
             objects[i].run();
@@ -67,7 +80,9 @@ function draw() {
         }
 
         if (mouseIsPressed) {
-            player.setTargetMove(mouseX, mouseY);
+            // đổi vị trí mouse về đúng tầm nhìn của viewport
+            var convertedPos = viewport.convert(mouseX, mouseY);
+            player.setTargetMove(convertedPos.x, convertedPos.y);
         }
 
         // vẽ nhân vật
@@ -85,7 +100,6 @@ function draw() {
                 else if (rand < 5) a.W();
                 else if (rand < 7.5) a.E();
                 else a.R();
-
             }
         }
     }
@@ -121,6 +135,9 @@ function keyReleased() {
                 break;
             case "F":
                 break;
+            case " ":
+                viewport.follow = !viewport.follow;
+                break;
             default:
                 break;
         }
@@ -152,11 +169,11 @@ function loadImages() {
 }
 
 function isLoadFinished() { // hàm check xem các images đã được load hết chưa
-    if(loading_Finished) return true;
+    if (loading_Finished) return true;
 
-    if(images.rocket && images.locxoay && images.troiAnhSang &&
-        images.yasuo && images.jinx && images.banTay 
-        && images.blitzcrank && images.lux) {
+    if (images.rocket && images.locxoay && images.troiAnhSang &&
+        images.yasuo && images.jinx && images.banTay &&
+        images.blitzcrank && images.lux) {
 
         loading_Finished = true;
     }
@@ -167,29 +184,35 @@ function isLoadFinished() { // hàm check xem các images đã được load h�
 function getRandomCharacter(_isAuto) {
     var names = ["Yasuo", "Blitzcrank", "Jinx", "Lux"];
     var randomName = names[floor(random(names.length))];
-    if(_isAuto) {
-        return eval("new Auto" + randomName + "(null, random(width), random(height))");
+    if (_isAuto) {
+        return eval("new Auto" + randomName + "(null, random(gamemap.width), random(gamemap.height))");
     }
-    return eval("new " + randomName + "('" + randomName + "', random(width), random(height))");
+    return eval("new " + randomName + "('" + randomName + "', random(gamemap.width), random(gamemap.height))");
 }
 
 function newGame() {
     // khởi tạo
-    player = getRandomCharacter();
+    gamemap = new GameMap(1000, 1000, 250);
 
+    player = getRandomCharacter();
+    objects = [];
     AI_Players = [];
     for (var i = 0; i < numOfAI; i++) {
         AI_Players.push(getRandomCharacter(true));
     }
+
+    viewport = new ViewPort(player);
+    console.log(viewport);
 }
 
 function showPreviewAbilityWay() {
-    if (keyIsDown(81))
+    if (keyIsDown(81)) {
         player.Qabi && player.Qabi.showRange();
-    else if (keyIsDown(87))
+    } else if (keyIsDown(87)) {
         player.Wabi && player.Wabi.showRange();
-    else if (keyIsDown(69))
+    } else if (keyIsDown(69)) {
         player.Eabi && player.Eabi.showRange();
-    else if (keyIsDown(82))
+    } else if (keyIsDown(82)) {
         player.Rabi && player.Rabi.showRange();
+    }
 }

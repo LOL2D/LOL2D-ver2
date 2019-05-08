@@ -48,6 +48,10 @@ class Character {
         this.show();
     }
 
+    collideEdge(_khung) {
+
+    }
+
     // ================= Các hàm gọi chiêu thức ==============
     coTheDungChieu() {
         return !(this.died || this.effects.biHatTung || this.effects.biCamLang || this.effects.biKeo);
@@ -349,7 +353,7 @@ class Character {
 
     getDirectionMouse_Vector() { // hàm lấy hướng nhìn của nhân vật dạng vector
         // tạo vector tọa độ chuột
-        var mouse = createVector(mouseX, mouseY);
+        var mouse = viewport.convert(mouseX, mouseY);
         // tạo vector chỉ hướng từ nhân vật tới chuột
         var vecToMouse = p5.Vector.sub(mouse, this.position);
         return vecToMouse;
