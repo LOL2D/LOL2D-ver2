@@ -21,7 +21,8 @@ class Character {
             biTroi: false, // bị trói
             biHatTung: false, // bị hất tung
             biCamLang: false, // bị câm lặng
-            biKeo: false
+            biKeo: false, // bị kéo
+            biMatMau: false // bị mất máu
         }
     }
 
@@ -80,6 +81,7 @@ class Character {
     loseHealth(damage) {
         if (this.health >= damage) {
             this.health -= damage;
+            this.matMau(damage, 700);
 
         } else {
             this.health = 0;
@@ -123,6 +125,15 @@ class Character {
     setTargetMove(x, y) { // hàm set tọa độ cần tới
         this.targetMove = createVector(x, y);
         this.targetRadius = 25; // reset độ lớn
+    }
+
+    matMau(value, time) {
+        this.effects.biMatMau = value;
+
+        var effects = this.effects;
+        setTimeout(function() {
+            effects.biMatMau = false;
+        }, time);
     }
 
     camLang(time) {
@@ -239,6 +250,14 @@ class Character {
             line(x - r, y - r, x + r, y + r);
             line(x + r, y - r, x - r, y + r);
         }
+
+        // hiệu ứng mất máu
+        if (this.effects.biMatMau) {
+            strokeWeight(2);
+            stroke("#f00");
+            fill("#f00");
+            text("- " + floor(this.effects.biMatMau), this.position.x, this.position.y - this.radius * 2.5);
+        }
     }
 
     showState() { // hiển thị các hiệu ứng hiện có
@@ -347,13 +366,13 @@ class Yasuo extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.yasuo;
         var radius = 30;
-        var speed = 3;
+        var speed = 4;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Yasuo(this);
-        this.Wabi = new Q_Blit(this);
-        this.Eabi = new Q_Lux(this);
-        this.Rabi = new R_Jinx(this);
+        this.Wabi = null; //new Q_Blit(this);
+        this.Eabi = null; //new Q_Lux(this);
+        this.Rabi = null; //new R_Jinx(this);
     }
 }
 
@@ -361,12 +380,12 @@ class Jinx extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.jinx;
         var radius = 30;
-        var speed = 5.5;
+        var speed = 4;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
-        this.Qabi = new Q_Yasuo(this);
+        this.Qabi = null; //new Q_Yasuo(this);
         this.Wabi = new W_Jinx(this);
-        this.Eabi = new Q_Blit(this);
+        this.Eabi = null; //new Q_Blit(this);
         this.Rabi = new R_Jinx(this);
     }
 }
@@ -375,34 +394,55 @@ class Blitzcrank extends Character {
     constructor(_name, _x, _y, _isEnermy) {
         var image = images.blitzcrank;
         var radius = 30;
-        var speed = 5.5;
+        var speed = 5;
         super(_name, image, _x, _y, radius, speed, _isEnermy);
 
         this.Qabi = new Q_Blit(this);
-        this.Wabi = new W_Jinx(this);
-        this.Eabi = new Q_Yasuo(this);
-        this.Rabi = new R_Jinx(this);
+        this.Wabi = null; //new W_Jinx(this);
+        this.Eabi = null; //new Q_Yasuo(this);
+        this.Rabi = null; //new R_Jinx(this);
+    }
+}
+
+class Lux extends Character {
+    constructor(_name, _x, _y, _isEnermy) {
+        var image = images.lux;
+        var radius = 30;
+        var speed = 4.2;
+        super(_name, image, _x, _y, radius, speed, _isEnermy);
+
+        this.Qabi = new Q_Lux(this); //new Q_Blit(this);
+        this.Wabi = null; //new W_Jinx(this);
+        this.Eabi = null; //new Q_Yasuo(this);
+        this.Rabi = null; //new R_Jinx(this);
     }
 }
 
 // =============== AI Character ==================
 class AutoYasuo extends Yasuo {
-    constructor(_x, _y, _name) {
+    constructor(_name, _x, _y) {
         super((_name || "Yasuo Máy"), _x, _y, true);
         this.autoMove = true;
     }
 }
 
 class AutoJinx extends Jinx {
-    constructor(_x, _y, _name) {
+    constructor(_name, _x, _y) {
         super((_name || "Jinx Máy"), _x, _y, true);
         this.autoMove = true;
     }
 }
 
-class AutoBlitz extends Blitzcrank {
-    constructor(_x, _y, _name) {
+class AutoBlitzcrank extends Blitzcrank {
+    constructor(_name, _x, _y) {
         super((_name || "Blitzcrank Máy"), _x, _y, true);
+        this.autoMove = true;
+    }
+}
+
+class AutoLux extends Lux {
+    constructor(_name, _x, _y) {
+        super((_name || "Lux Máy"), _x, _y, true);
         this.autoMove = true;
     }
 }

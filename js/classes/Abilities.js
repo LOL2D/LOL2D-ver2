@@ -51,7 +51,7 @@ class Q_Yasuo extends Ability {
         var data = {
             damage: 0,
             cooldownTime: 1000,
-            range: 500,
+            range: 600,
             radius: 30,
             speed: 7
         }
@@ -68,7 +68,7 @@ class W_Jinx extends Ability {
         var data = {
             damage: 0,
             cooldownTime: 1500,
-            range: 2000,
+            range: 1000,
             radius: 10,
             speed: 15
         }
@@ -117,11 +117,11 @@ class Q_Lux extends Ability {
 class Q_Blit extends Ability {
     constructor(_owner) {
         var data = {
-            damage: 5,
+            damage: 20,
             cooldownTime: 1500,
-            range: 600,
+            range: 750,
             radius: 25,
-            speed: 8
+            speed: 11
         }
         super(_owner, data);
     }

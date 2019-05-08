@@ -202,6 +202,7 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
 
     show() {
         super.show();
+        this.damage += frameRate() / 120;
 
         stroke(200, 100);
         strokeWeight(2);
