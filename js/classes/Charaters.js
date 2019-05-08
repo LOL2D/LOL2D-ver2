@@ -348,7 +348,7 @@ class Yasuo extends Character {
 class AutoYasuo extends Yasuo {
     constructor(_x, _y, _name) {
         super((_name || "Yasuo Máy"), _x, _y, true);
-        // this.autoMove = true;
+        this.autoMove = true;
         // this.Qabi = null;
         // this.Wabi = new Q_Blit(this);
         // this.Eabi = null;

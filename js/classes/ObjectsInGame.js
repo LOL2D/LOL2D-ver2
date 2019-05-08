@@ -254,39 +254,39 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
     }
 
     effect(c) {
-    	if (this.checkCharacter(c)) {
+        if (this.checkCharacter(c)) {
             if (this.charactersEffected.length <= 0) { // chỉ kéo được 1 đứa
                 c.loseHealth(this.damage);
-	            c.keo(this);
+                c.keo(this);
 
-	            this.charactersEffected.push(c);
-	            this.state = "back"; // dính địch thì bay về
+                this.charactersEffected.push(c);
+                this.state = "back"; // dính địch thì bay về
             }
         }
     }
 
     move() {
-    	if(this.state == "go") {
-    		this.position.add(this.direction); // bay tới
+        if (this.state == "go") {
+            this.position.add(this.direction); // bay tới
 
-    		if(this.travelDistance >= this.range) {
-    			this.state = "back"; // bay hết tầm thì về
-    		}
+            if (this.travelDistance >= this.range) {
+                this.state = "back"; // bay hết tầm thì về
+            }
 
-    	} else {
-    		var direc2 = p5.Vector.sub(this.position, this.fromPos).setMag(this.speed * 1.5);
-    		this.position.sub(direc2); // bay về
-    	}
+        } else {
+            var direc2 = p5.Vector.sub(this.position, this.fromPos).setMag(this.speed * 1.5);
+            this.position.sub(direc2); // bay về
+        }
 
-    	this.travelDistance += this.speed;
+        this.travelDistance += this.speed;
     }
 
     isFinished() {
-    	// kết thúc khi: 2 trường hợp
-    	// 1. không kéo được ai và bay hết tầm
-    	// 2. kéo được tướng và về tới nơi
-    	return ((this.state=="go" && this.charactersEffected.length ==0 && this.travelDistance >= this.range) 
-    		|| (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.owner.radius * 2));
+        // kết thúc khi: 2 trường hợp
+        // 1. không kéo được ai và bay hết tầm
+        // 2. kéo được tướng và về tới nơi
+        return ((this.state == "go" && this.charactersEffected.length == 0 && this.travelDistance >= this.range) ||
+            (this.state == "back" && p5.Vector.dist(this.fromPos, this.position) < this.owner.radius * 2));
     }
 }
 
