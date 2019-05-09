@@ -6,6 +6,9 @@ function Loading() {
         // loading animation
         loadAni = new LoadingAnimation(30, 10, "#0f0");
 
+        // đóng menu để load
+        menuWhenDie("close");
+
         if (!checkImages()) {
             // objects
             images.rocket = loadImage('images/rocket2.png');
