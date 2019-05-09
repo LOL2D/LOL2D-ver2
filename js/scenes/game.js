@@ -85,8 +85,7 @@ function Game() {
 
     this.keyReleased = function() {
         if(keyCode == 27) { // ESC
-            this.paused = !this.paused;
-            menuWhenDie('switch');
+            this.paused = menuWhenDie('switch');
         }
         switch (key.toUpperCase()) {
             case " ":

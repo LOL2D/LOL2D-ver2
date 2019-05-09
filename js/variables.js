@@ -74,6 +74,8 @@ function menuWhenDie(e) {
 	} else {
 		element.style.display = (e == "open" ? "block" : "none");	
 	}
+
+    return element.style.display == "block";
 }
 
 function randHex() {
