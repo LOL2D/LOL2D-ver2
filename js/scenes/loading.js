@@ -2,7 +2,7 @@ function Loading() {
 
     var loadAni;
 
-    this.setup = function() {
+    this.enter = function() {
         // loading animation
         loadAni = new LoadingAnimation(30, 10, "#0f0");
 

@@ -1,9 +1,9 @@
 function Game() {
-    this.paused = false;
+    this.paused;
 
     // hàm khởi tạo
-    this.setup = function() {
-        
+    this.enter = function() {
+        this.paused = false;
     }
 
     // vòng lặp game
