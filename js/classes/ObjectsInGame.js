@@ -198,6 +198,8 @@ class BanTayHoaTien_Blit extends Moveable_Ability_Object {
         this.charactersEffected = []; // lưu những tướng đã dính damage của chiêu này
         this.fromPos = this.owner.position; // vị trí ban đầu
         this.state = "go"; // trạng thái : bay tới hay bay về
+
+        this.owner.troi(500);
     }
 
     show() {

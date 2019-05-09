@@ -53,7 +53,7 @@ class Character {
         }
     }
 
-    // ================= Các hàm gọi chiêu thức ==============
+    // ================= Các hàm gọi chiêu thức =============
     coTheDungChieu() {
         return !(this.died || this.effects.biHatTung || this.effects.biCamLang || this.effects.biKeo);
     }
@@ -145,30 +145,49 @@ class Character {
     }
 
     camLang(time) {
-        this.effects.biCamLang = true;
+        if (!this.effects.biCamLang) {
+            // time ở dạng mili giây
+            this.effects.biCamLang = time; 
+
+        } else {
+            // dùng cho trùng lặp
+            clearTimeout(this.effects.indexCamLang);
+        }
 
         var effects = this.effects;
-        setTimeout(function() { // setTimeOut .... khá rắc rối
+        this.effects.indexCamLang = setTimeout(function() { // setTimeOut .... khá rắc rối
             effects.biCamLang = false;
         }, time);
     }
 
     troi(time) {
-        // time ở dạng mili giây
-        this.effects.biTroi = true;
+        if (!this.effects.biTroi) {
+            // time ở dạng mili giây
+            this.effects.biTroi = time; 
+
+        } else {
+            // dùng cho trùng lặp
+            clearTimeout(this.effects.indexTroi);
+        }
 
         var effects = this.effects;
-        setTimeout(function() { // setTimeOut .... khá rắc rối
+        this.effects.indexTroi = setTimeout(function() { // setTimeOut .... khá rắc rối
             effects.biTroi = false;
         }, time);
     }
 
     lamCham(percent, time) {
-        // time ở dạng mili giây
-        this.effects.biLamCham = percent; // percent là phần trăm làm chậm (0 - 1)
+        if (!this.effects.biLamCham) {
+            // time ở dạng mili giây
+            this.effects.biLamCham = percent; 
+
+        } else {
+            // dùng cho trùng lặp
+            clearTimeout(this.effects.indexLamCham);
+        }
 
         var effects = this.effects;
-        setTimeout(function() { // setTimeOut .... khá rắc rối
+        this.effects.indexLamCham = setTimeout(function() { // setTimeOut .... khá rắc rối
             effects.biLamCham = false;
         }, time);
     }
@@ -176,7 +195,7 @@ class Character {
     hatTung(time) {
         if (!this.effects.biHatTung) {
             // time ở dạng mili giây
-            this.effects.biHatTung = time; // percent là phần trăm làm chậm (0 - 1)
+            this.effects.biHatTung = time;
             this.effects.thoiGianBatDau_HatTung = millis();
             this.effects.radiusHatTung = this.radius; // độ lớn khi vẽ vật thể bị hất tung
             this.effects.radiusHatTung_Max = this.radius * 1.5;

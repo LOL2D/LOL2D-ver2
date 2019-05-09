@@ -9,6 +9,10 @@ class Ability {
         this.speed = _data.speed; // tốc độ di chuyển của chiêu
 
         this.lastActivatedTime = millis(); // mốc thời gian dùng chiêu trước đó
+
+        if(urfMode) {
+            this.cooldownTime -= urfValue * this.cooldownTime;
+        }
     }
 
     available() {

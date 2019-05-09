@@ -1,4 +1,5 @@
 function Game() {
+    this.paused = false;
 
     // hàm khởi tạo
     this.setup = function() {
@@ -7,6 +8,11 @@ function Game() {
 
     // vòng lặp game
     this.draw = function() {
+
+        // nếu đang tạm dừng thì ko làm gì hết
+        if(this.paused) return;
+
+        // xóa màn hình
         background(20);
 
         // viewport di chuyển tầm nhìn hoạt động :
@@ -79,6 +85,7 @@ function Game() {
 
     this.keyReleased = function() {
         if(keyCode == 27) { // ESC
+            this.paused = !this.paused;
             menuWhenDie('switch');
         }
         switch (key.toUpperCase()) {
