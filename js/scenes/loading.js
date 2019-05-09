@@ -8,16 +8,16 @@ function Loading() {
 
         if (!checkImages()) {
             // objects
-            images.rocket = loadImage('../../images/rocket2.png');
-            images.locxoay = loadImage('../../images/locXoay.png');
-            images.troiAnhSang = loadImage('../../images/troiAnhSang.png');
-            images.banTay = loadImage('../../images/bantay.png');
+            images.rocket = loadImage('images/rocket2.png');
+            images.locxoay = loadImage('images/locXoay.png');
+            images.troiAnhSang = loadImage('images/troiAnhSang.png');
+            images.banTay = loadImage('images/bantay.png');
 
             // nhan vat
-            images.yasuo = loadImage('../../images/character/yasuo.png');
-            images.jinx = loadImage('../../images/character/jinx.png');
-            images.blitzcrank = loadImage('../../images/character/blitzcrank.png');
-            images.lux = loadImage('../../images/character/lux.png');
+            images.yasuo = loadImage('images/character/yasuo.png');
+            images.jinx = loadImage('images/character/jinx.png');
+            images.blitzcrank = loadImage('images/character/blitzcrank.png');
+            images.lux = loadImage('images/character/lux.png');
         }
     }
 
