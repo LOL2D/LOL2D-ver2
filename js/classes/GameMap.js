@@ -72,10 +72,6 @@ class ViewPort {
     }
 
     run() {
-        if (this.target.died) {
-            this.follow = false;
-        }
-
         translate(-this.position.x + width * .5, -this.position.y + height * .5);
 
         if (this.follow) {
