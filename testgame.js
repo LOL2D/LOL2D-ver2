@@ -123,16 +123,16 @@ void setup() {
     textSize(20);
 };
 
-var rotate1 = function(a) {
+var rotate1 = function (a) {
     rotate(a * (PI / 180));
 };
-var cos1 = function(a) {
+var cos1 = function (a) {
     return Math.cos(a / 180 * Math.PI);
 };
-var sin1 = function(a) {
+var sin1 = function (a) {
     return Math.sin(a / 180 * Math.PI);
 };
-var atan3 = function(a, b) {
+var atan3 = function (a, b) {
     return atan2(a, b) / PI * 180;
 };
 var MX, MY;
@@ -207,7 +207,7 @@ var shops = {
         addCost: 0,
         level: 0,
         maxLevel: 10,
-        onBuy: function() {
+        onBuy: function () {
             p.healthRegen += 0.006;
         }
     }, {
@@ -216,7 +216,7 @@ var shops = {
         addCost: 0,
         level: 0,
         maxLevel: 8,
-        onBuy: function() {
+        onBuy: function () {
             p.healthMax += 50;
         }
     }, {
@@ -225,7 +225,7 @@ var shops = {
         addCost: 0,
         level: 0,
         maxLevel: 10,
-        onBuy: function() {
+        onBuy: function () {
             p.staminaRegen += 1;
         }
     }, {
@@ -234,7 +234,7 @@ var shops = {
         addCost: 0,
         level: 0,
         maxLevel: 10,
-        onBuy: function() {
+        onBuy: function () {
             p.staminaMax += 25;
         }
     }, {
@@ -243,7 +243,7 @@ var shops = {
         addCost: 0,
         level: 0,
         maxLevel: 10,
-        onBuy: function() {
+        onBuy: function () {
             p.defense -= 0.05;
         }
     }, ]
@@ -326,7 +326,7 @@ var wepMath = {
             bpS: 5,
             rSp: 0.01,
             wgh: 0,
-            dis: function() {
+            dis: function () {
                 fill(90, 218, 250);
                 rect(0, -20, 3, 15);
                 fill(playerColor);
@@ -351,7 +351,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 0.9,
-            dis: function() {
+            dis: function () {
                 fill(87, 86, 87);
                 rect(0, -20, 3, 10);
                 fill(playerColor);
@@ -374,7 +374,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 0.8,
-            dis: function() {
+            dis: function () {
                 fill(0, 0, 0);
                 rect(0, -20, 3, 10);
                 fill(playerColor);
@@ -397,7 +397,7 @@ var wepMath = {
             bpS: 1,
             rSp: 100,
             wgh: 1.3,
-            dis: function() {
+            dis: function () {
                 fill(77, 77, 77);
                 rect(0, -23, 4, 15);
                 fill(playerColor);
@@ -420,7 +420,7 @@ var wepMath = {
             bpS: 1,
             rSp: 5,
             wgh: 1.2,
-            dis: function() {
+            dis: function () {
                 fill(125, 124, 125);
                 rect(0, -20, 4, 10);
                 fill(playerColor);
@@ -443,7 +443,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 0,
-            dis: function() {
+            dis: function () {
                 fill(0, 0, 0);
                 rect(0, -20, 3, 10);
                 fill(playerColor);
@@ -469,7 +469,7 @@ var wepMath = {
             bpS: 1,
             rSp: 40,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -15, 2, 24);
                 fill(122, 122, 122);
@@ -494,7 +494,7 @@ var wepMath = {
             bpS: 1,
             rSp: 40,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(31, 31, 31);
                 rect(-6, -15, 2, 24);
                 fill(0, 0, 0);
@@ -519,7 +519,7 @@ var wepMath = {
             bpS: 1,
             rSp: 30,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(13, 13, 13);
                 rect(-6, -15, 2, 24);
                 fill(122, 122, 122);
@@ -544,7 +544,7 @@ var wepMath = {
             bpS: 1,
             rSp: 50,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(89, 87, 83);
                 rect(-6, -18, 9, 3);
                 fill(77, 75, 77);
@@ -571,7 +571,7 @@ var wepMath = {
             bpS: 1,
             rSp: 50,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(82, 82, 80);
                 rect(-6, -15, 2, 24);
                 fill(173, 159, 33);
@@ -596,7 +596,7 @@ var wepMath = {
             bpS: 1,
             rSp: 50,
             wgh: 1.4,
-            dis: function() {
+            dis: function () {
                 fill(110, 100, 110);
                 rect(-6, -15, 2, 24);
                 fill(175, 227, 143);
@@ -625,7 +625,7 @@ var wepMath = {
             bpS: 1,
             rSp: 60,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 2, 24);
                 fill(176, 91, 0);
@@ -650,7 +650,7 @@ var wepMath = {
             bpS: 1,
             rSp: 60,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(41, 41, 41);
                 rect(-6, -20, 2, 24);
                 fill(36, 36, 36);
@@ -675,7 +675,7 @@ var wepMath = {
             bpS: 1,
             rSp: 60,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 2, 24);
                 fill(97, 96, 96);
@@ -700,7 +700,7 @@ var wepMath = {
             bpS: 1,
             rSp: 40,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 2, 24);
                 fill(79, 63, 63);
@@ -725,7 +725,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 2, 24);
                 fill(31, 30, 31);
@@ -755,7 +755,7 @@ var wepMath = {
             bpS: 5,
             rSp: 25,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 3, 24);
                 //rect(-2,-20,3,24);
@@ -781,7 +781,7 @@ var wepMath = {
             bpS: 6,
             rSp: 8,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 3, 24);
                 rect(-2, -20, 3, 24);
@@ -807,7 +807,7 @@ var wepMath = {
             bpS: 6,
             rSp: 100,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 3, 24);
                 //rect(-2,-20,3,24);
@@ -833,7 +833,7 @@ var wepMath = {
             bpS: 10,
             rSp: 20,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 2, 24);
                 //rect(-2,-20,3,24);
@@ -859,7 +859,7 @@ var wepMath = {
             bpS: 8,
             rSp: 5,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 3, 16);
                 rect(-2, -20, 3, 16);
@@ -885,7 +885,7 @@ var wepMath = {
             bpS: 6,
             rSp: 120,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(71, 71, 71);
                 rect(-6, -20, 3, 24);
                 fill(0, 0, 0);
@@ -915,7 +915,7 @@ var wepMath = {
             bpS: 1,
             rSp: 25,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(77, 76, 77);
                 rect(-6, -20, 3, 34);
                 fill(122, 65, 15);
@@ -940,7 +940,7 @@ var wepMath = {
             bpS: 1,
             rSp: 150,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(64, 63, 64);
                 rect(-6, -20, 3, 34);
                 fill(87, 86, 87);
@@ -965,7 +965,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(0, 0, 0);
                 rect(-6, -20, 3, 34);
                 fill(128, 128, 128);
@@ -991,7 +991,7 @@ var wepMath = {
             bpS: 1,
             rSp: 100,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(64, 63, 64);
                 rect(-6, -20, 2, 34);
                 fill(191, 85, 10);
@@ -1016,7 +1016,7 @@ var wepMath = {
             bpS: 1,
             rSp: 20,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(64, 63, 64);
                 rect(-6, -20, 4, 24);
                 fill(87, 86, 87);
@@ -1041,7 +1041,7 @@ var wepMath = {
             bpS: 1,
             rSp: 100,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(38, 38, 38);
                 rect(-6, -20, 3, 34);
                 fill(168, 108, 5);
@@ -1070,7 +1070,7 @@ var wepMath = {
             bpS: 1,
             rSp: 200,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(11, 92, 11);
                 rect(-8, -20, 10, 8);
                 fill(71, 71, 71);
@@ -1097,7 +1097,7 @@ var wepMath = {
             bpS: 1,
             rSp: 200,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 fill(0, 0, 0);
                 rect(-8, -20, 12, 6);
                 fill(46, 46, 46);
@@ -1124,7 +1124,7 @@ var wepMath = {
             bpS: 1,
             rSp: 250,
             wgh: 3,
-            dis: function() {
+            dis: function () {
                 if (subScene === "game") {
                     p.wepAcc -= 0.001;
                 }
@@ -1156,7 +1156,7 @@ var wepMath = {
             bpS: 1,
             rSp: 250,
             wgh: 3.5,
-            dis: function() {
+            dis: function () {
                 if (subScene === "game") {
                     p.wepAcc -= 0.001;
                 }
@@ -1195,7 +1195,7 @@ var wepMath = {
             bpS: 1,
             rSp: 60,
             wgh: 1,
-            dis: function() {
+            dis: function () {
                 fill(0, 0, 0);
                 rect(-6, -20, 6, 10);
                 fill(255, 0, 0);
@@ -1228,7 +1228,7 @@ var wepMath = {
             bpS: 1,
             rSp: 50,
             wgh: 2,
-            dis: function() {
+            dis: function () {
                 fill(61, 61, 61);
                 rect(-6, -20, 5, 20);
                 //rect(-2,-20,3,24);
@@ -1255,7 +1255,7 @@ var wepMath = {
             bpS: 1,
             rSp: 2,
             wgh: 0.1,
-            dis: function() {
+            dis: function () {
                 fill(87, 86, 87);
                 rect(0, -20, 3, 10);
                 fill(playerColor);
@@ -1280,7 +1280,7 @@ var wepMath = {
             bpS: 15,
             rSp: 80,
             wgh: 0,
-            dis: function() {
+            dis: function () {
                 fill(234, 240, 51);
                 rect(0, -20, 8, 8);
                 fill(playerColor);
@@ -1303,7 +1303,7 @@ var equModel = 0;
 var playerModel = [{
     name: "Default",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1313,7 +1313,7 @@ var playerModel = [{
 }, {
     name: "Dooms day preper",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(179, 149, 0);
         rect(0, 0 + 12, 20, 12, 6);
         fill(71, 58, 0);
@@ -1328,7 +1328,7 @@ var playerModel = [{
 }, {
     name: "Bandit",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(230, 39, 71);
@@ -1342,7 +1342,7 @@ var playerModel = [{
 }, {
     name: "Marksman",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1357,7 +1357,7 @@ var playerModel = [{
 }, {
     name: "Cop",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1373,7 +1373,7 @@ var playerModel = [{
 }, {
     name: "Game Warden",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1391,7 +1391,7 @@ var playerModel = [{
 }, {
     name: "CDC agent",
     hc: color(255, 175, 15),
-    display: function() {
+    display: function () {
         fill(255, 175, 15);
         ellipse(0, 0, 20, 20);
         fill(54, 53, 54);
@@ -1410,7 +1410,7 @@ var playerModel = [{
 }, {
     name: "SWAT",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1424,7 +1424,7 @@ var playerModel = [{
 }, {
     name: "Army",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(38, 135, 0);
         rect(0, 0 + 12, 20, 8, 6);
         fill(82, 204, 0);
@@ -1443,7 +1443,7 @@ var playerModel = [{
 }, {
     name: "Sniper",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(playerColor);
         ellipse(0, 0, 20, 20);
         fill(0, 0, 0);
@@ -1459,7 +1459,7 @@ var playerModel = [{
 }, {
     name: "Spec ops",
     hc: color(138, 138, 138),
-    display: function() {
+    display: function () {
         fill(97, 96, 97);
         ellipse(0, 0, 20, 20);
         fill(48, 48, 48);
@@ -1478,7 +1478,7 @@ var playerModel = [{
 }, {
     name: "Spec ops HevWep",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(97, 97, 97);
         rect(0, 12, 20, 12, 6);
         fill(36, 36, 36);
@@ -1504,7 +1504,7 @@ var playerModel = [{
 }, {
     name: "Spec ops sniper",
     hc: 0,
-    display: function() {
+    display: function () {
         fill(115, 114, 110);
         rect(0, 0 + 12, 20, 8, 6);
         fill(0, 0, 0);
@@ -1538,7 +1538,7 @@ var playerModel = [{
 }, {
     name: "unit BR-90 Elite",
     hc: color(138, 138, 138),
-    display: function() {
+    display: function () {
         fill(97, 97, 97);
         rect(0, 10, 20, 12, 3);
         fill(36, 36, 36);
@@ -1742,11 +1742,11 @@ var wepShop = {
 // -================== items ===================-
 var items = [{
         name: "money",
-        onPickUp: function() {
+        onPickUp: function () {
             g.money += 10;
             stats.moneyEarned++;
         },
-        display: function() {
+        display: function () {
             fill(26, 153, 20);
             rect(0, 0, 5, 8);
             fill(161, 255, 156);
@@ -1754,19 +1754,19 @@ var items = [{
         },
     }, {
         name: "HealthKit",
-        onPickUp: function() {
+        onPickUp: function () {
             p.health += 20;
         },
-        display: function() {
+        display: function () {
             fill(158, 0, 0);
             rect(0, 0, 8, 8);
         },
     }, {
         name: "gems",
-        onPickUp: function() {
+        onPickUp: function () {
             g.gems++;
         },
-        display: function() {
+        display: function () {
             fill(54, 135, 130);
             beginShape();
             vertex(-8, 0);
@@ -1814,214 +1814,214 @@ var achv = [{
         name: "Target partice",
         info: "Fire 100 bullets",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.bulletsShot >= 100) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[3] = true;
         }
     }, {
         name: "Spray and pray",
         info: "Fire 1,000 bullets",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.bulletsShot >= 1000) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[5] = true;
         }
     }, {
         name: "Bullet Storm",
         info: "Fire 10,000 bullets",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.bulletsShot >= 10000) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[10] = true;
         }
     }, {
         name: "Killer",
         info: "Kill 20 zombies",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.ZombiesKilled >= 20) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[2] = true;
         }
     }, {
         name: "Purger",
         info: "Kill 100 zombies",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.ZombiesKilled >= 100) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[4] = true;
         }
     }, {
         name: "Annihilator",
         info: "Kill 1000 zombies",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.ZombiesKilled >= 1000) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[12] = true;
         }
     }, {
         name: "Rich",
         info: "Earn 100$ and spend 50$",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.moneyEarned >= 100 && stats.moneySpent >= 50) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[1] = true;
         }
     }, {
         name: "Money bags",
         info: "Earn 500$ and spend 250$",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.moneyEarned >= 500 && stats.moneySpent >= 250) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[8] = true;
         }
     }, {
         name: "Tycoon",
         info: "Earn 2,500$ and spend 1,500$",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.moneyEarned >= 2500 && stats.moneySpent >= 1500) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[11] = true;
         }
     }, {
         name: "Tough",
         info: "Survive 15 waves",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.highestWave >= 15) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[9] = true;
         }
     }, {
         name: "Hardcore",
         info: "Survive 35 waves",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.highestWave >= 35) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[7] = true;
         }
     }, {
         name: "Legendary",
         info: "Survive 65 waves",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (stats.highestWave >= 65) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[13] = true;
         }
     }, {
         name: "Failed",
         info: "Sad",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (p.health <= 0 && g.wave <= 1) {
                 return true;
             }
         },
-        rewd: function() {}
+        rewd: function () {}
     }, {
         name: "Contaminated",
         info: "Sleep it off",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (p.health <= 1 && g.wave % 2 === 0) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[6] = true;
         }
     }, {
         name: "Balanced",
         info: "snap",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (~~p.health === ~~(p.healthMax / 2) && ~~p.stamina === ~~(p.staminaMax / 2)) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
 
         }
     }, {
         name: "Savior",
         info: "Save the game",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (saveCode !== "") {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             unLockedModels[6] = true;
         }
     }, {
         name: "Lottery",
         info: "Be lucky",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (random(0, 100000) === 1) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             g.money += 10000;
         }
     }, {
         name: "Is Tazal",
         info: "be Tazal",
         lock: false,
-        chek: function() {
+        chek: function () {
             if (false) {
                 return true;
             }
         },
-        rewd: function() {
+        rewd: function () {
             noLoop();
         }
     },
@@ -2040,7 +2040,7 @@ var knife = {
 
 
 
-var clogo = function(r, g, b, r1, g1, b1, x, y, s) {
+var clogo = function (r, g, b, r1, g1, b1, x, y, s) {
     strokeCap(SQUARE);
 
     for (var e = 0; e < 360; e += 120) {
@@ -2077,7 +2077,7 @@ var maps = [{
         size: 400,
         name: "Basic - Super Small",
         lock: true, //Unlocked
-        display: function() {
+        display: function () {
             fill(61, 61, 61);
             rect(200, 200, 400, 400);
             fill(92, 64, 7);
@@ -2087,7 +2087,7 @@ var maps = [{
         size: 600,
         name: "Basic - Small",
         lock: true, //Unlocked
-        display: function() {
+        display: function () {
             fill(61, 61, 61);
             rect(300, 300, 600, 600);
             fill(92, 64, 7);
@@ -2098,7 +2098,7 @@ var maps = [{
         size: 800,
         name: "Basic - Normal",
         lock: true, //Unlocked
-        display: function() {
+        display: function () {
             fill(61, 61, 61);
             rect(400, 400, 800, 800);
             fill(92, 64, 7);
@@ -2109,7 +2109,7 @@ var maps = [{
         size: 1000,
         name: "Basic - big",
         lock: true, //Unlocked
-        display: function() {
+        display: function () {
             fill(61, 61, 61);
             rect(500, 500, 1000, 1000);
             fill(92, 64, 7);
@@ -2139,7 +2139,7 @@ var input = []; //stores user key input
 
 rectMode(CENTER);
 
-var incodeArray = function(a) {
+var incodeArray = function (a) {
     if (a.length > 31) {
         println("Error:max array size");
         return;
@@ -2150,7 +2150,7 @@ var incodeArray = function(a) {
     }
     return aa.toString(32) + "w" + a.length.toString(32);
 };
-var decodeSave = function(s) {
+var decodeSave = function (s) {
     var o = [];
     s = s.split("w", 2);
     for (var i = 0; i < parseInt(s[1], 32); i++) {
@@ -2176,7 +2176,7 @@ var decodeSave = function(s) {
     highestWave  : 0,
 */
 
-var getSave = function() {
+var getSave = function () {
     println("Save : ");
     var tSave = "";
     var _tempA = [];
@@ -2240,7 +2240,7 @@ var getSave = function() {
 };
 
 //0wizgw5z0w6z0w5z0w6z0w6z0w4z800wez5z4z3z2z1z0z0z0z1kvz1z
-var setSave = function(s) {
+var setSave = function (s) {
 
     s = s.split("z");
     var _tempA = decodeSave(s[0]);
@@ -2309,7 +2309,7 @@ if (saveCode !== "") {
     Sets up game, resets values
 */
 // ====================================
-var startGame = function() {
+var startGame = function () {
     powerup = {
         delay: 5500,
         timer: 0,
@@ -2352,7 +2352,7 @@ var startGame = function() {
     zombiespawnPoint
     returns spawn point for zombies
 */
-var zombieSpawnPoint = function() {
+var zombieSpawnPoint = function () {
     var zs = maps[selmap].size / 2;
     if (random() < 0.5) {
         return [
@@ -2370,7 +2370,7 @@ var zombieSpawnPoint = function() {
     Menu buttons
 */
 // ====================================
-var button = function(x, y, w, h, txt, ts) {
+var button = function (x, y, w, h, txt, ts) {
     noStroke();
     textAlign(CENTER, CENTER);
     if (ts !== undefined) {
@@ -2418,7 +2418,7 @@ var button = function(x, y, w, h, txt, ts) {
     }
     noStroke();
 };
-var slider = function(v, x, y, w, h, mi, mx, na) {
+var slider = function (v, x, y, w, h, mi, mx, na) {
     fill(217, 217, 217);
     rect(x, y, w, h);
     fill(145, 145, 145);
@@ -2440,7 +2440,7 @@ var slider = function(v, x, y, w, h, mi, mx, na) {
 */
 // ====================================
 //Play movement function
-var playerMovement = function() {
+var playerMovement = function () {
     //calcs the player speed
     var calcSpeed = p.speed - wep[p.equWep[p.equ]].wgh;
 
@@ -2477,14 +2477,14 @@ var playerMovement = function() {
 
 };
 //Displays the player ( xcord , ycord , angle )
-var playerDisplay = function(x, y, a) {
+var playerDisplay = function (x, y, a) {
     pushMatrix();
     translate(x, y);
     rotate1(a);
     playerModel[equModel].display();
     popMatrix();
 };
-var player = function() {
+var player = function () {
     p.health = (g.hurt < 1) ? constrain(p.health + p.healthRegen, -1, p.healthMax) : p.health;
 
     //keeps the player on the map
@@ -2524,7 +2524,7 @@ var player = function() {
     Pointer/ weapon sights
 */
 // ====================================
-var rediDisplay = function() {
+var rediDisplay = function () {
     noFill();
     pushMatrix();
     translate(MX, MY);
@@ -2554,7 +2554,7 @@ var rediDisplay = function() {
     Displays useful info on screen
 */
 // ====================================
-var hud = function() {
+var hud = function () {
     noStroke();
     textAlign(CENTER);
     rectMode(LEFT);
@@ -2741,7 +2741,7 @@ var hud = function() {
 */
 // ====================================
 
-var mapDisplay = function() {
+var mapDisplay = function () {
     maps[selmap].display();
 };
 
@@ -2752,7 +2752,7 @@ var mapDisplay = function() {
     s : speed
 */
 // ====================================
-var anGooParticle = function(x, y, a, s) {
+var anGooParticle = function (x, y, a, s) {
     this.x = x;
     this.y = y;
     this.angle = a;
@@ -2762,7 +2762,7 @@ var anGooParticle = function(x, y, a, s) {
     this.lifeTimer = 255;
     this.Size = random(3, 8);
 };
-anGooParticle.prototype.run = function() {
+anGooParticle.prototype.run = function () {
 
     this.x += (this.s * cos1(this.angle));
     this.y += (this.s * sin1(this.angle));
@@ -2772,7 +2772,7 @@ anGooParticle.prototype.run = function() {
         this.dead = true;
     }
 };
-anGooParticle.prototype.display = function() {
+anGooParticle.prototype.display = function () {
     pushMatrix();
     translate(this.x, this.y);
     fill(113, 230, 55, this.lifeTimer);
@@ -2780,7 +2780,7 @@ anGooParticle.prototype.display = function() {
     popMatrix();
 
 };
-anGooParticle.prototype.isDead = function() {
+anGooParticle.prototype.isDead = function () {
     return this.dead;
 };
 
@@ -2789,14 +2789,14 @@ anGooParticle.prototype.isDead = function() {
     x,y : spawn cords
 */
 // ====================================
-var gooParticle = function(x, y) {
+var gooParticle = function (x, y) {
     this.x = x;
     this.y = y;
     this.dead = false;
     this.lifeTimer = 355;
     this.Size = random(5, 10);
 };
-gooParticle.prototype.run = function() {
+gooParticle.prototype.run = function () {
 
     this.lifeTimer -= 1 * particleDieTimer;
     if (this.lifeTimer < 0) {
@@ -2811,7 +2811,7 @@ gooParticle.prototype.run = function() {
     x,y : spawn cords
 */
 // ====================================
-var ScreenGooParticle = function(x, y) {
+var ScreenGooParticle = function (x, y) {
     this.x = x;
     this.y = y;
     this.dead = false;
@@ -2819,7 +2819,7 @@ var ScreenGooParticle = function(x, y) {
     this.Size = random(70, 120);
     this.lifeTimer = 455 + this.Size;
 };
-ScreenGooParticle.prototype.run = function() {
+ScreenGooParticle.prototype.run = function () {
     this.lifeTimer -= 1 * particleDieTimer;
     if (this.lifeTimer < 0) {
         this.dead = true;
@@ -2835,7 +2835,7 @@ ScreenGooParticle.prototype.run = function() {
     cool particles
 */
 // ====================================
-var boomsparticle = function(x, y) {
+var boomsparticle = function (x, y) {
     this.x = x;
     this.y = y;
     this.dead = false;
@@ -2845,7 +2845,7 @@ var boomsparticle = function(x, y) {
     this.vy = random(6, -6);
     this.s = random(10, 15);
 };
-boomsparticle.prototype.run = function() {
+boomsparticle.prototype.run = function () {
     this.y -= this.vy;
     this.x -= this.vx;
     this.vx *= 0.93;
@@ -2858,14 +2858,14 @@ boomsparticle.prototype.run = function() {
     fill(255, 119, 0, (255 - this.timer) / 2);
     ellipse(this.x, this.y, this.s, this.s);
 };
-var boomparticle = function(x, y) {
+var boomparticle = function (x, y) {
     this.x = x;
     this.y = y;
     this.dead = false;
     this.timer = 0;
     this.t = 0;
 };
-boomparticle.prototype.run = function() {
+boomparticle.prototype.run = function () {
     this.timer += 2;
     if (this.timer > 100) {
         this.dead = true;
@@ -2903,7 +2903,7 @@ boomparticle.prototype.run = function() {
     x,y : spawn cords
 */
 // ====================================
-var crateParticle = function(x, y) {
+var crateParticle = function (x, y) {
     this.x = x;
     this.y = y;
     this.dead = false;
@@ -2911,7 +2911,7 @@ var crateParticle = function(x, y) {
     this.lifeTimer = 355;
     this.Size = random(8, 20);
 };
-crateParticle.prototype.run = function() {
+crateParticle.prototype.run = function () {
     this.lifeTimer -= 1 * particleDieTimer;
     if (this.lifeTimer < 0) {
         this.dead = true;
@@ -2930,7 +2930,7 @@ crateParticle.prototype.run = function() {
  */
 // ====================================
 {
-    var Grenade = function(x, y, tx, ty) {
+    var Grenade = function (x, y, tx, ty) {
         this.x = x;
         this.y = y;
         this.tx = tx;
@@ -2939,7 +2939,7 @@ crateParticle.prototype.run = function() {
         this.fuse = 200;
         this.r = random(0, 180);
     };
-    Grenade.prototype.run = function() {
+    Grenade.prototype.run = function () {
         this.x += (this.tx - this.x) * 0.1;
         this.y += (this.ty - this.y) * 0.1;
         this.r += 0.1;
@@ -2970,7 +2970,7 @@ crateParticle.prototype.run = function() {
 
         }
     };
-    Grenade.prototype.display = function() {
+    Grenade.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
         rotate1(this.r);
@@ -2981,7 +2981,7 @@ crateParticle.prototype.run = function() {
 
         popMatrix();
     };
-    Grenade.prototype.isDead = function() {
+    Grenade.prototype.isDead = function () {
         return this.dead;
     };
 }
@@ -2992,7 +2992,7 @@ crateParticle.prototype.run = function() {
     a : angle
 */
 // ====================================
-var shell = function(x, y, a) {
+var shell = function (x, y, a) {
     this.x = x;
     this.y = y;
     this.angle = a;
@@ -3003,7 +3003,7 @@ var shell = function(x, y, a) {
     this.xx = 0;
     this.yy = 5;
 };
-shell.prototype.run = function() {
+shell.prototype.run = function () {
     this.lifeTimer -= 1 * particleDieTimer;
     this.xx += this.velocity;
     this.yy += random(-this.velocity / 2, this.velocity / 2);
@@ -3028,14 +3028,14 @@ shell.prototype.run = function() {
 */
 // ====================================
 {
-    var spit = function(x, y, a) {
+    var spit = function (x, y, a) {
         this.x = x;
         this.y = y;
         this.angle = a + 90;
         this.dead = false;
         this.dist = 0;
     };
-    spit.prototype.run = function() {
+    spit.prototype.run = function () {
         this.x += (5.5 * cos1(this.angle));
         this.y += (5.5 * sin1(this.angle));
         this.dist = dist(p.x, p.y, this.x, this.y);
@@ -3055,7 +3055,7 @@ shell.prototype.run = function() {
             otherEn.push(new anGooParticle(this.x, this.y, (this.angle - 90) + random(-2, 2), random(1, 2)));
         }
     };
-    spit.prototype.display = function() {
+    spit.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
 
@@ -3066,7 +3066,7 @@ shell.prototype.run = function() {
 
         popMatrix();
     };
-    spit.prototype.isDead = function() {
+    spit.prototype.isDead = function () {
         return this.dead;
     };
 }
@@ -3079,7 +3079,7 @@ shell.prototype.run = function() {
     i - item id ( index in the items array )
     
 */
-var item = function(x, y, i) {
+var item = function (x, y, i) {
     this.x = x + random(-20, 20);
     this.y = y + random(-20, 20);
     this.angle = random(0, 180);
@@ -3087,7 +3087,7 @@ var item = function(x, y, i) {
     this.lifeTimer = 1000;
     this.i = i;
 };
-item.prototype.run = function() {
+item.prototype.run = function () {
     this.lifeTimer--;
 
     if (dist(p.x, p.y, this.x, this.y) < 30) {
@@ -3122,7 +3122,7 @@ item.prototype.run = function() {
 */
 // ====================================
 {
-    var barrel = function(x, y, a) {
+    var barrel = function (x, y, a) {
         this.x = x;
         this.y = y;
         this.v = 0;
@@ -3130,7 +3130,7 @@ item.prototype.run = function() {
         this.dead = false;
         this.life = 55;
     };
-    barrel.prototype.run = function() {
+    barrel.prototype.run = function () {
 
         this.x += (this.v * cos1(this.angle));
         this.y += (this.v * sin1(this.angle));
@@ -3175,7 +3175,7 @@ item.prototype.run = function() {
             }
         }
     };
-    barrel.prototype.display = function() {
+    barrel.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
         if (this.life < 50) {
@@ -3188,7 +3188,7 @@ item.prototype.run = function() {
 
         popMatrix();
     };
-    barrel.prototype.isDead = function() {
+    barrel.prototype.isDead = function () {
         return this.dead;
     };
 }
@@ -3199,7 +3199,7 @@ item.prototype.run = function() {
 */
 // ====================================
 {
-    var crate = function(x, y, a) {
+    var crate = function (x, y, a) {
         this.x = x;
         this.y = y;
         this.v = 0;
@@ -3207,7 +3207,7 @@ item.prototype.run = function() {
         this.dead = false;
         this.life = 50;
     };
-    crate.prototype.run = function() {
+    crate.prototype.run = function () {
 
         this.x += (this.v * cos1(this.angle));
         this.y += (this.v * sin1(this.angle));
@@ -3241,7 +3241,7 @@ item.prototype.run = function() {
             }
         }
     };
-    crate.prototype.display = function() {
+    crate.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
         rotate1(this.angle);
@@ -3256,7 +3256,7 @@ item.prototype.run = function() {
 
         popMatrix();
     };
-    crate.prototype.isDead = function() {
+    crate.prototype.isDead = function () {
         return this.dead;
     };
 }
@@ -3271,7 +3271,7 @@ item.prototype.run = function() {
 */
 // ====================================
 {
-    var bullet = function(x, y, a, s, d, p) {
+    var bullet = function (x, y, a, s, d, p) {
         this.x = x;
         this.y = y;
         this.damage = d;
@@ -3280,14 +3280,14 @@ item.prototype.run = function() {
         this.pirc = p;
         this.dead = false;
     };
-    bullet.prototype.run = function() {
+    bullet.prototype.run = function () {
         this.x += (this.speed * cos1(this.angle));
         this.y += (this.speed * sin1(this.angle));
         if (dist(p.x, p.y, this.x, this.y) > 600 || this.pirc <= 0) {
             this.dead = true;
         }
     };
-    bullet.prototype.display = function() {
+    bullet.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
         rotate1(this.angle - 90);
@@ -3297,13 +3297,13 @@ item.prototype.run = function() {
         rect(0, 0, 3, 15, 1);
         popMatrix();
     };
-    bullet.prototype.isDead = function() {
+    bullet.prototype.isDead = function () {
         return this.dead;
     };
 
 
     {
-        var bullet1 = function(x, y, a, s, d, p) {
+        var bullet1 = function (x, y, a, s, d, p) {
             this.x = x;
             this.y = y;
             this.damage = d;
@@ -3312,7 +3312,7 @@ item.prototype.run = function() {
             this.pirc = p;
             this.dead = false;
         };
-        bullet1.prototype.run = function() {
+        bullet1.prototype.run = function () {
             this.speed += 1;
             this.x += (this.speed * cos1(this.angle));
             this.y += (this.speed * sin1(this.angle));
@@ -3320,7 +3320,7 @@ item.prototype.run = function() {
                 this.dead = true;
             }
         };
-        bullet1.prototype.display = function() {
+        bullet1.prototype.display = function () {
             pushMatrix();
             translate(this.x, this.y);
             rotate1(this.angle - 90);
@@ -3330,7 +3330,7 @@ item.prototype.run = function() {
             rect(0, 0, 3, 15, 1);
             popMatrix();
         };
-        bullet1.prototype.isDead = function() {
+        bullet1.prototype.isDead = function () {
 
             return this.dead;
 
@@ -3338,7 +3338,7 @@ item.prototype.run = function() {
     }
 
     {
-        var bullet2 = function(x, y, a, s, d, p) {
+        var bullet2 = function (x, y, a, s, d, p) {
             this.x = x;
             this.y = y;
             this.damage = d;
@@ -3347,7 +3347,7 @@ item.prototype.run = function() {
             this.pirc = p;
             this.dead = false;
         };
-        bullet2.prototype.run = function() {
+        bullet2.prototype.run = function () {
             this.speed = constrain(this.speed - 2, 0, 100);
             this.x += (this.speed * cos1(this.angle));
             this.y += (this.speed * sin1(this.angle));
@@ -3355,7 +3355,7 @@ item.prototype.run = function() {
                 this.dead = true;
             }
         };
-        bullet2.prototype.display = function() {
+        bullet2.prototype.display = function () {
             pushMatrix();
             translate(this.x, this.y);
             rotate1(this.angle - 90);
@@ -3365,7 +3365,7 @@ item.prototype.run = function() {
             ellipse(0, 0, 5, 25);
             popMatrix();
         };
-        bullet2.prototype.isDead = function() {
+        bullet2.prototype.isDead = function () {
             if (this.dead) {
                 particl.push(new boomparticle(this.x, this.y));
                 for (var i = entitys.length - 1; i >= 0; i--) {
@@ -3384,7 +3384,7 @@ item.prototype.run = function() {
         };
     }
 
-    var bullet3 = function(x, y, a, s, d, P) {
+    var bullet3 = function (x, y, a, s, d, P) {
         this.x = x;
         this.y = y;
         this.damage = d;
@@ -3394,7 +3394,7 @@ item.prototype.run = function() {
         this.dead = false;
 
         var u = entitys;
-        u.sort(function(av, bv) {
+        u.sort(function (av, bv) {
             return dist(av.x, av.y, p.x, p.y) - dist(bv.x, bv.y, p.x, p.y);
         });
         this.a = u[0];
@@ -3402,7 +3402,7 @@ item.prototype.run = function() {
 
 
     };
-    bullet3.prototype.run = function() {
+    bullet3.prototype.run = function () {
         //   this.anglea = atan3(this.a.y - this.y,  this.a.x - this.x);
 
         //    this.angle=this.anglea;
@@ -3414,7 +3414,7 @@ item.prototype.run = function() {
             this.dead = true;
         }
     };
-    bullet3.prototype.display = function() {
+    bullet3.prototype.display = function () {
         pushMatrix();
         translate(this.x, this.y);
         rotate1(this.angle - 90);
@@ -3424,7 +3424,7 @@ item.prototype.run = function() {
         rect(0, 0, 3, 15, 1);
         popMatrix();
     };
-    bullet3.prototype.isDead = function() {
+    bullet3.prototype.isDead = function () {
         return this.dead;
     };
 
@@ -3440,7 +3440,7 @@ item.prototype.run = function() {
 {
     //normal zombie    
     {
-        var normalZombie = function() {
+        var normalZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3452,7 +3452,7 @@ item.prototype.run = function() {
             this.size = 20;
             this.moneyDrop = 1;
         };
-        normalZombie.prototype.run = function() {
+        normalZombie.prototype.run = function () {
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
                 p.health -= 1 * p.defense;
                 g.hurt = 100;
@@ -3494,7 +3494,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        normalZombie.prototype.display = function() {
+        normalZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3513,7 +3513,7 @@ item.prototype.run = function() {
 
     //Spit zombie
     {
-        var spitZombie = function() {
+        var spitZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3526,7 +3526,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 4;
         };
-        spitZombie.prototype.run = function() {
+        spitZombie.prototype.run = function () {
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
                 p.health--;
                 g.hurt = 100;
@@ -3577,7 +3577,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        spitZombie.prototype.display = function() {
+        spitZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3596,7 +3596,7 @@ item.prototype.run = function() {
 
     //Alpha spitter zombie
     {
-        var alphaspitZombie = function() {
+        var alphaspitZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3609,7 +3609,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 4;
         };
-        alphaspitZombie.prototype.run = function() {
+        alphaspitZombie.prototype.run = function () {
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
                 p.health--;
                 g.hurt = 100;
@@ -3669,7 +3669,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        alphaspitZombie.prototype.display = function() {
+        alphaspitZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3689,7 +3689,7 @@ item.prototype.run = function() {
 
     //baby zombie
     {
-        var babyZombie = function(x, y) {
+        var babyZombie = function (x, y) {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             this.x = x; //300 + 400*round(random(-1,1));
             this.y = y; //300 + 400*round(random(-1,1));
@@ -3700,7 +3700,7 @@ item.prototype.run = function() {
             this.size = 10;
             this.moneyDrop = 0;
         };
-        babyZombie.prototype.run = function() {
+        babyZombie.prototype.run = function () {
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
                 p.health -= 1 * p.defense;
                 g.hurt = 100;
@@ -3738,7 +3738,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        babyZombie.prototype.display = function() {
+        babyZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3757,7 +3757,7 @@ item.prototype.run = function() {
 
     //mother zombie
     {
-        var momZombie = function() {
+        var momZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3770,7 +3770,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 10;
         };
-        momZombie.prototype.run = function() {
+        momZombie.prototype.run = function () {
             this.stun -= (this.stun > 1) ? 1 : 0;
             var zspd = this.speed * (1 / this.stun);
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
@@ -3824,7 +3824,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        momZombie.prototype.display = function() {
+        momZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3843,7 +3843,7 @@ item.prototype.run = function() {
 
     //charger zombie    
     {
-        var chargeZombie = function() {
+        var chargeZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3856,7 +3856,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 6;
         };
-        chargeZombie.prototype.run = function() {
+        chargeZombie.prototype.run = function () {
 
             var zspd = this.speed;
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
@@ -3909,7 +3909,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        chargeZombie.prototype.display = function() {
+        chargeZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -3927,7 +3927,7 @@ item.prototype.run = function() {
 
     //vomit zombie
     {
-        var vomitZombie = function() {
+        var vomitZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -3940,7 +3940,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 5;
         };
-        vomitZombie.prototype.run = function() {
+        vomitZombie.prototype.run = function () {
             this.stun -= (this.stun > 1) ? 1 : 0;
             var zspd = this.speed * (1 / this.stun);
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
@@ -4000,7 +4000,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        vomitZombie.prototype.display = function() {
+        vomitZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4017,7 +4017,7 @@ item.prototype.run = function() {
     }
 
     {
-        var splatterZombie = function() {
+        var splatterZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -4030,7 +4030,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 5;
         };
-        splatterZombie.prototype.run = function() {
+        splatterZombie.prototype.run = function () {
             this.stun -= (this.stun > 1) ? 1 : 0;
             var zspd = this.speed * (1 / this.stun);
 
@@ -4099,7 +4099,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        splatterZombie.prototype.display = function() {
+        splatterZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4116,7 +4116,7 @@ item.prototype.run = function() {
     }
 
     {
-        var splatterSpawnZombie = function() {
+        var splatterSpawnZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -4129,7 +4129,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 5;
         };
-        splatterSpawnZombie.prototype.run = function() {
+        splatterSpawnZombie.prototype.run = function () {
             this.stun -= (this.stun > 1) ? 1 : 0;
             var zspd = this.speed * (1 / this.stun);
 
@@ -4192,7 +4192,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        splatterSpawnZombie.prototype.display = function() {
+        splatterSpawnZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4209,7 +4209,7 @@ item.prototype.run = function() {
     }
 
     {
-        var blingZombie = function() {
+        var blingZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -4222,7 +4222,7 @@ item.prototype.run = function() {
             this.attackTimer = 0;
             this.moneyDrop = 0;
         };
-        blingZombie.prototype.run = function() {
+        blingZombie.prototype.run = function () {
             this.stun -= (this.stun > 1) ? 1 : 0;
             var zspd = this.speed * (1 / this.stun);
 
@@ -4284,7 +4284,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        blingZombie.prototype.display = function() {
+        blingZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4301,7 +4301,7 @@ item.prototype.run = function() {
     }
 
     {
-        var metalZombie = function() {
+        var metalZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -4314,7 +4314,7 @@ item.prototype.run = function() {
             this.moneyDrop = 1;
 
         };
-        metalZombie.prototype.run = function() {
+        metalZombie.prototype.run = function () {
             if (dist(this.x, this.y, p.x, p.y) < this.size) {
                 p.health -= 1 * p.defense;
                 g.hurt = 100;
@@ -4358,7 +4358,7 @@ item.prototype.run = function() {
                 }
             }
         };
-        metalZombie.prototype.display = function() {
+        metalZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4376,7 +4376,7 @@ item.prototype.run = function() {
     }
 
     {
-        var theZombie = function() {
+        var theZombie = function () {
             this.id = ~~random(0, 10000000); //gives the zombie a random id
             var spwn = zombieSpawnPoint();
             this.x = spwn[0];
@@ -4390,7 +4390,7 @@ item.prototype.run = function() {
             this.dies = stats.ZombiesKilled;
             this.attackTimer = 0;
         };
-        theZombie.prototype.run = function() {
+        theZombie.prototype.run = function () {
             if (stats.ZombiesKilled - this.dies > 2) {
                 this.dies = stats.ZombiesKilled;
                 //this.life = this.lifeo;
@@ -4458,7 +4458,7 @@ item.prototype.run = function() {
             }
 
         };
-        theZombie.prototype.display = function() {
+        theZombie.prototype.display = function () {
             pushMatrix();
 
             translate(this.x, this.y);
@@ -4496,7 +4496,7 @@ item.prototype.run = function() {
     waves - 
     zombie/entity spawn patterns and delays
 */
-var waves = function() {
+var waves = function () {
     g.waveTimer--;
     if ((g.waveTimer <= 0 && entitys.length < 5) ||
         (entitys.length <= 1)
@@ -4635,7 +4635,7 @@ var waves = function() {
     fireMath -
     handles the weapon firing, reloading and delay timers
 */
-var fireMath = function() {
+var fireMath = function () {
     var w = wep[p.equWep[p.equ]];
     /*
     if(clicked&&wepMath.clickedTwice<2){
@@ -4752,7 +4752,7 @@ var fireMath = function() {
     Runs / displays the game.
 */
 var knifeAngle = -130;
-var game = function() {
+var game = function () {
 
     //cam.x+=((p.x+(pMX-width/2)/2)-cam.x)*camEasing;
     //cam.y+=((p.y+(pMY-height/2)/2)-cam.y)*camEasing;
@@ -4976,7 +4976,7 @@ var game = function() {
     a : the weapon type
     
 */
-var shopWepDisplay = function(a, b) {
+var shopWepDisplay = function (a, b) {
 
     strokeWeight(3);
     stroke(5, 5, 5);
@@ -5110,7 +5110,7 @@ var shopWepDisplay = function(a, b) {
     deadScreen - 
     Screen if player died
 */
-var deadScreen = function() {
+var deadScreen = function () {
     cursor();
     image(shopBackGround, 0, 0, 600, 600);
     fill(158, 158, 158, 80);
@@ -5144,7 +5144,7 @@ var deadScreen = function() {
 /**  TODO CLEAN UP */
 
 
-var shop = function() {
+var shop = function () {
     cursor();
     image(shopBackGround, 0, 0, 600, 600);
     fill(158, 158, 158, 80);
@@ -5391,7 +5391,7 @@ var shop = function() {
     runs everything
     
 */
-draw = function() {
+draw = function () {
 
     scale(width / 600, height / 600);
     MX = map(mouseX, 0, width, 0, 600);
