@@ -1,13 +1,13 @@
 class Character {
-    constructor(_name, _image, _x, _y, _r, _speed, _isEnermy) {
+    constructor(_name, _image, _x, _y, _r, _speed, _isEnemy) {
         this.name = _name;
         this.image = _image;
         this.position = createVector(_x, _y); // tọa độ nhân vật
         this.radius = _r; // bán kính vẽ nhân vật
         this.maxHealth = 100;
         this.health = 100; // lượng máu
-        this.isEnermy = _isEnermy;
-        this.color = (_isEnermy ? "#f00c" : "#0f0c"); // là kẻ địch thì màu đỏ, ngược lại là xanh
+        this.isEnermy = _isEnemy;
+        this.color = (_isEnemy ? "#f00c" : "#0f0c"); // là kẻ địch thì màu đỏ, ngược lại là xanh
         this.bgColor = "#0000";
 
         this.speed = _speed; // vận tốc di chuyển
@@ -390,11 +390,11 @@ class Character {
 //==================== Characters ======================
 
 class Yasuo extends Character {
-    constructor(_name, _x, _y, _isEnermy) {
+    constructor(_name, _x, _y, _isEnemy) {
         var image = images.yasuo;
         var radius = 30;
         var speed = 4;
-        super(_name, image, _x, _y, radius, speed, _isEnermy);
+        super(_name, image, _x, _y, radius, speed, _isEnemy);
 
         this.Qabi = new Q_Yasuo(this);
         this.Wabi = null; //new Q_Blit(this);
@@ -404,11 +404,11 @@ class Yasuo extends Character {
 }
 
 class Jinx extends Character {
-    constructor(_name, _x, _y, _isEnermy) {
+    constructor(_name, _x, _y, _isEnemy) {
         var image = images.jinx;
         var radius = 30;
         var speed = 4;
-        super(_name, image, _x, _y, radius, speed, _isEnermy);
+        super(_name, image, _x, _y, radius, speed, _isEnemy);
 
         this.Qabi = null; //new Q_Yasuo(this);
         this.Wabi = new W_Jinx(this);
@@ -418,11 +418,11 @@ class Jinx extends Character {
 }
 
 class Blitzcrank extends Character {
-    constructor(_name, _x, _y, _isEnermy) {
+    constructor(_name, _x, _y, _isEnemy) {
         var image = images.blitzcrank;
         var radius = 30;
         var speed = 5;
-        super(_name, image, _x, _y, radius, speed, _isEnermy);
+        super(_name, image, _x, _y, radius, speed, _isEnemy);
 
         this.Qabi = new Q_Blit(this);
         this.Wabi = null; //new W_Jinx(this);
@@ -432,16 +432,30 @@ class Blitzcrank extends Character {
 }
 
 class Lux extends Character {
-    constructor(_name, _x, _y, _isEnermy) {
+    constructor(_name, _x, _y, _isEnemy) {
         var image = images.lux;
         var radius = 30;
         var speed = 4.2;
-        super(_name, image, _x, _y, radius, speed, _isEnermy);
+        super(_name, image, _x, _y, radius, speed, _isEnemy);
 
         this.Qabi = new Q_Lux(this); //new Q_Blit(this);
         this.Wabi = null; //new W_Jinx(this);
         this.Eabi = null; //new Q_Yasuo(this);
         this.Rabi = null; //new R_Jinx(this);
+    }
+}
+
+class Yasuo_tt7 extends Character {
+    constructor(_name, _x, _y, _isEnemy) {
+        var image = images.yasuo;
+        var radius = 30;
+        var speed = 4.2;
+        super(_name, image, _x, _y, radius, speed, _isEnemy);
+
+        this.Qabi = new Q_Lux(this); 
+        this.Wabi = new Q_Yasuo(this);
+        this.Eabi = new Q_Blit(this);
+        this.Rabi = new R_Jinx(this); 
     }
 }
 

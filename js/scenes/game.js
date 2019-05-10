@@ -10,7 +10,7 @@ function Game() {
     this.draw = function() {
 
         // nếu đang tạm dừng thì ko làm gì hết
-        if(this.paused) return;
+        if (this.paused) return;
 
         // xóa màn hình
         background(20);
@@ -84,42 +84,46 @@ function Game() {
     }
 
     this.keyReleased = function() {
-        if(keyCode == 27) { // ESC
+        if (keyCode == 27) { // ESC
             this.paused = menuWhenDie('switch');
         }
-        switch (key.toUpperCase()) {
-            case " ":
-                viewport.follow = !viewport.follow;
-                break;
-            case "P":
-                hacked = !hacked;
-                break;
-            case "O":
-                autoFire = !autoFire;
-                break;
-        }
-
-        if (player && !player.died)
+        
+        if (!this.paused) {
             switch (key.toUpperCase()) {
-                case "Q":
-                    player.Q();
+                case " ":
+                    viewport.follow = !viewport.follow;
                     break;
-                case "W":
-                    player.W();
+                case "P":
+                    hacked = !hacked;
                     break;
-                case "E":
-                    player.E();
-                    break;
-                case "R":
-                    player.R();
-                    break;
-                case "D":
-                    break;
-                case "F":
-                    break;
-                default:
+                case "O":
+                    autoFire = !autoFire;
                     break;
             }
+
+            if (player && !player.died) {
+                switch (key.toUpperCase()) {
+                    case "Q":
+                        player.Q();
+                        break;
+                    case "W":
+                        player.W();
+                        break;
+                    case "E":
+                        player.E();
+                        break;
+                    case "R":
+                        player.R();
+                        break;
+                    case "D":
+                        break;
+                    case "F":
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
     function showPreviewAbilityWay() {

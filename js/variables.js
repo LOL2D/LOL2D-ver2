@@ -36,20 +36,24 @@ function newGame() {
     }
 
     viewport = new ViewPort(player);
+
+    // chuyển cảnh qua game
+    sceneManager.showScene(Game);
 }
 
 function checkNewGame() {
-    var haveLife = false;
-    for (var a of AI_Players) {
-        if (!a.died) {
-            haveLife = true;
+    var allDied = true;
+    for (var comp of AI_Players) {
+        if (!comp.died) {
+            allDied = false;
             break;
         }
     }
 
-    if (player.died || !haveLife) {
-    	// nếu chết thì mở lại scene Loading
+    if (player.died || allDied) {
         menuWhenDie('open');
+
+        // nếu chết thì mở lại scene Loading
         // sceneManager.showScene( Loading );
     }
 }
@@ -102,7 +106,6 @@ window.onload = function() {
             menuWhenDie("close");
 
             newGame(); // ván mới
-            sceneManager.showScene(Game);
         });
 
     // chác chơi
