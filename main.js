@@ -24,8 +24,8 @@ function setup() {
     rectMode(CENTER)
 
     gamemap = new GameMap({
-        width: 10000,
-        height: 10000
+        width: 2000,
+        height: 2000
     })
 
     camera = new Camera()
@@ -62,11 +62,6 @@ function setup() {
             }
         }))
     }
-
-    new Ability({
-        owner: player,
-        info: EFFECTS.SlowDown //ABILITIES.Q_Rammus
-    })
 }
 
 function draw() {
@@ -80,7 +75,7 @@ function draw() {
 
     player.run()
 
-    for(let ability of abilities) {
+    for (let ability of abilities) {
         ability.run()
     }
 
@@ -115,6 +110,18 @@ function keyPressed() {
             position: player.position.copy(),
             velocity: vel
         }))
+
+    } else if (key == 'f' || key == 'F') {
+        new Ability({
+            owner: player,
+            info: ABILITIES.Flash
+        })
+
+    } else if (key == 'd' || key == 'D') {
+        new Ability({
+            owner: player,
+            info: ABILITIES.Teleport
+        })
     }
 }
 
@@ -240,6 +247,13 @@ class Character extends EventableClass {
         push()
         translate(this.position.x, this.position.y)
 
+        // vẽ hướng cần tới
+        let vectorHuong = p5.Vector.sub(this.targetPosition, this.position)
+        stroke(255, 50)
+        strokeWeight(1)
+        line(0, 0, vectorHuong.x, vectorHuong.y)
+
+        // vẽ hình ảnh
         if (this.picture) {
             image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
 
@@ -303,8 +317,12 @@ class AICharacter extends Character {
 
     move() {
         if (!super.move()) {
-            let x = random(width - this.radius * 2) + this.radius
-            let y = random(height - this.radius * 2) + this.radius
+
+            let bound = gamemap.getBound()
+
+            let x = random(bound.left + this.radius, bound.right - this.radius)
+            let y = random(bound.top + this.radius, bound.bottom - this.radius)
+
             this.targetPosition = createVector(x, y)
         }
     }
@@ -319,8 +337,12 @@ class Ability extends EventableClass {
 
         super(info)
 
+        const {
+            range = 0
+        } = info
+
         this.owner = owner
-        this.info = info
+        this.range = range
 
         this.onBorn()
     }
@@ -601,12 +623,45 @@ const ABILITIES = {
     },
     W_Yasuo: {
 
+    },
+    Flash: {
+        onBorn: function () {
+            let distance = 150
+            let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
+            direction.limit(distance)
+
+            this.owner.position.add(direction)
+            this.owner.targetPosition = this.owner.position.copy()
+        }
+    },
+    Teleport: {
+        onBorn: function () {
+            this.lifeTime = 1000
+            this.bornTime = millis()
+            this.teleportTarget = camera.screenToWorld(mouseX, mouseY)
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            // console.log('... Đang dịch chuyển')
+            fill(0, 0, 255)
+            circle(this.teleportTarget.x, this.teleportTarget.y, 30)
+        },
+        checkFinish: function () {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.position = this.teleportTarget.copy()
+            this.owner.targetPosition = this.teleportTarget.copy()
+
+            abilities.splice(abilities.indexOf(this), 1)
+        }
     }
 }
 
 const EFFECTS = {
     SlowDown: {
-        onBorn: function() {
+        onBorn: function () {
             this.lifeTime = 3000
             this.oldSpeed = this.owner.getSpeed()
             this.bornTime = millis()
@@ -614,9 +669,9 @@ const EFFECTS = {
 
             abilities.push(this)
         },
-        onAlive: function() {
+        onAlive: function () {
         },
-        checkFinish: function() {
+        checkFinish: function () {
             return millis() - this.bornTime > this.lifeTime
         },
         onFinish: function () {
