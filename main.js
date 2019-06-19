@@ -1,6 +1,5 @@
 let gamemap, camera
-
-let moveable
+let objects = []
 
 let player
 let comps = []
@@ -19,11 +18,11 @@ function setup() {
     imageMode(CENTER)
     rectMode(CENTER)
 
-    moveable = new MoveableObject({
+    objects.push(new MoveableObject({
         picture: images['rocket'],
         position: createVector(100, 100),
         velocity: createVector(6, -2)
-    })
+    }))
 
     gamemap = new GameMap({
         width: 10000,
@@ -32,10 +31,7 @@ function setup() {
 
     // Khởi tạo người chơi
     player = new Character({
-        name: 'Hoang Yasuo',
-        picture: images['yasuo'],
-        position: createVector(100, 100),
-        radius: 35
+        picture: images['yasuo']
     })
 
     camera = new Camera({
@@ -43,73 +39,84 @@ function setup() {
     })
 
     // thêm máy
-    let jinx = new AICharacter({
-        name: 'Giang Jinx',
-        picture: images['jinx'],
-        position: createVector(random(width), random(height)),
-        radius: 35,
-        movementSpeed: 2
-    })
-
-    comps.push(jinx)
+    for (let i = 0; i < 5; i++) {
+        comps.push(new AICharacter({
+            picture: randomProperty(images),
+            position: createVector(random(width), random(height))
+        }))
+    }
 }
 
 function draw() {
-    background(30)
+    background(25)
 
     camera.beginState()
     camera.follow()
 
-    gamemap.displayEdges({
-        strokeColor: '#5f5',
-        strokeWeightValue: 2
-    })
-    gamemap.displayGrid()
+    gamemap.showGrid()
+    gamemap.showEdges()
 
-    moveable.move()
-    moveable.display()
+    for (let o of objects) {
+        o.move()
+        o.show()
+    }
 
+    player.lookAt(camera.screenToWorld(mouseX, mouseY))
     player.move()
-    player.collideEdges({
-        edges: gamemap.getBound()
+    player.collideBound({
+        bound: gamemap.getBound()
     })
-    player.display()
+    player.showTargetPosition()
+    player.show()
 
     for (let comp of comps) {
         comp.move()
-        comp.collideEdges({
-            edges: gamemap.getBound()
+        comp.collideBound({
+            bound: gamemap.getBound()
         })
-        comp.display()
+        comp.show()
     }
 
     camera.endState()
 }
 
 function mousePressed() {
-    let mouse = camera.screenToWorld(mouseX, mouseY)
-    player.setTargetPosition(mouse.x, mouse.y)
+    player.setTargetPosition(camera.screenToWorld(mouseX, mouseY))
+}
 
-    let vel = p5.Vector.sub(createVector(mouse.x, mouse.y), player.position)
-    vel.setMag(15)
+function keyPressed() {
+    if (key == 'q' || key == 'Q') {
 
-    moveable = new MoveableObject({
-        picture: images['rocket'],
-        position: player.position.copy(),
-        velocity: vel
-    })
+        let mouse = camera.screenToWorld(mouseX, mouseY)
+
+        // create new rocket
+        let vel = p5.Vector.sub(createVector(mouse.x, mouse.y), player.position)
+        vel.setMag(15)
+
+        objects = [];
+        objects.push(new MoveableObject({
+            picture: images['rocket'],
+            position: player.position.copy(),
+            velocity: vel
+        }))
+    }
 }
 
 function mouseWheel(e) {
     let currentScale = camera.getScale()
-    let newScale = currentScale + e.delta / 700
+    let newScale = currentScale - e.delta / 700
 
-    if(newScale > 0)
+    if (newScale > 0)
         camera.setScale(newScale)
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight, true)
+}
+
+const randomProperty = function (obj) {
+    var keys = Object.keys(obj)
+    return obj[keys[keys.length * Math.random() << 0]];
 }
 
 // =========================================
@@ -121,10 +128,10 @@ class Character {
 
         let {
             picture,
-            radius = 100,
+            radius = 35,
             position = createVector(500, 100),
             name = 'Character',
-            movementSpeed = 5
+            movementSpeed = 4
 
         } = config
 
@@ -135,10 +142,33 @@ class Character {
         this.movementSpeed = movementSpeed
 
         this.targetPosition = position.copy()
+        this.lookAtPosition = position.copy()
+    }
+
+    lookAt(x, y) {
+        if(x instanceof p5.Vector) {
+            this.lookAtPosition = x
+        } else {
+            this.lookAtPosition = createVector(x, y)
+        }
+    }
+
+    getLookAtAngle() {
+        let direction = p5.Vector.sub(this.lookAtPosition, this.position)
+        return direction.heading()
     }
 
     setTargetPosition(x, y) {
-        this.targetPosition = createVector(x, y)
+        if(x instanceof p5.Vector) {
+            this.targetPosition = x
+        } else {
+            this.targetPosition = createVector(x, y)
+        }
+    }
+
+    showTargetPosition() {
+        fill(0, 255, 0)
+        circle(this.targetPosition.x, this.targetPosition.y, 15)
     }
 
     move() {
@@ -155,25 +185,31 @@ class Character {
         return false
     }
 
-    display() {
-        // toạ độ cần tới
-        fill(255, 0, 0)
-        circle(this.targetPosition.x, this.targetPosition.y, 15)
+    show() {
+        push()
+        translate(this.position.x, this.position.y)
 
-        // hiển thị
         if (this.picture) {
-            image(this.picture, this.position.x, this.position.y, this.radius * 2, this.radius * 2)
+            image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
 
         } else {
-            fill(255)
+            fill(100)
             noStroke()
-            circle(this.position.x, this.position.y, this.radius * 2)
+            circle(0, 0, this.radius * 2)
         }
+
+        // vẽ hướng nhìn
+        rotate(this.getLookAtAngle())
+        stroke(255)
+        strokeWeight(1)
+        line(0, 0, this.radius, 0)  
+
+        pop()
     }
 
-    collideEdges(config = {}) {
+    collideBound(config = {}) {
         const {
-            edges = {},
+            bound = {},
             callBack = function () { }
         } = config
 
@@ -182,7 +218,7 @@ class Character {
             bottom = Infinity,
             left = -Infinity,
             right = Infinity
-        } = edges
+        } = bound
 
         let isCollided = false
 
@@ -216,58 +252,60 @@ class AICharacter extends Character {
 
     move() {
         if (!super.move()) {
-            this.targetPosition = createVector(random(width), random(height))
+            let x = random(width - this.radius * 2) + this.radius
+            let y = random(height - this.radius * 2) + this.radius
+            this.targetPosition = createVector(x, y)
         }
     }
 }
 
 class GameMap {
-	constructor(config = {}) {
+    constructor(config = {}) {
 
-		const {
-			position,
-			width = 500,
-			height = 500,
-			gridSize = 250
-		} = config
+        const {
+            position,
+            width = 500,
+            height = 500,
+            gridSize = 250
+        } = config
 
-		this.position = position || createVector(width * .5, height * .5)
-		this.width = width
-		this.height = height
-		this.gridSize = gridSize
-	}
+        this.position = position || createVector(width * .5, height * .5)
+        this.width = width
+        this.height = height
+        this.gridSize = gridSize
+    }
 
-	displayEdges(config = {}) {
-		
-		const {
+    showEdges(config = {}) {
+
+        const {
             strokeColor = '#fffa',
-			strokeWeightValue = 1
-		} = config
+            strokeWeightValue = 1
+        } = config
 
-		push()
-		translate(this.position.x - this.width * .5, this.position.y - this.height * .5)
+        push()
+        translate(this.position.x - this.width * .5, this.position.y - this.height * .5)
 
-		stroke(strokeColor)
-		strokeWeight(strokeWeightValue)
-		line(0, 0, this.width, 0)
-		line(0, 0, 0, this.height)
-		line(0, this.height, this.width, this.height)
-		line(this.width, 0, this.width, this.height)
+        stroke(strokeColor)
+        strokeWeight(strokeWeightValue)
+        line(0, 0, this.width, 0)
+        line(0, 0, 0, this.height)
+        line(0, this.height, this.width, this.height)
+        line(this.width, 0, this.width, this.height)
 
-		pop()
-	}
+        pop()
+    }
 
-	displayGrid(config = {}) {
-		const {
-			edges = this.getBound(),
-			color = "#5556",
-			strokeWeightValue = 3
-		} = config
+    showGrid(config = {}) {
+        const {
+            edges = this.getBound(),
+            color = "#5556",
+            strokeWeightValue = 3
+        } = config
 
-		let left = max(edges.left, this.position.x - this.width / 2)
-		let right = min(edges.right, this.position.x + this.width / 2)
-		let top = max(edges.top, this.position.y - this.height / 2)
-		let bottom = min(edges.bottom, this.position.y + this.height / 2)
+        let left = max(edges.left, this.position.x - this.width / 2)
+        let right = min(edges.right, this.position.x + this.width / 2)
+        let top = max(edges.top, this.position.y - this.height / 2)
+        let bottom = min(edges.bottom, this.position.y + this.height / 2)
 
         stroke(color);
         strokeWeight(strokeWeightValue);
@@ -292,138 +330,133 @@ class GameMap {
         }
     }
 
-	getBound() {
-		let x = this.position.x
-		let y = this.position.y
-		let w1 = this.width * .5
-		let h1 = this.height * .5
+    getBound() {
+        const { x, y } = this.position
+        let w1 = this.width * .5
+        let h1 = this.height * .5
 
-		return {
-			top: y - h1,
-			bottom: y + h1,
-			left: x - w1,
-			right: x + w1
-		}
-	}
+        return {
+            top: y - h1,
+            bottom: y + h1,
+            left: x - w1,
+            right: x + w1
+        }
+    }
 }
 
 class Camera {
-	constructor(config = {}) {
+    constructor(config = {}) {
 
-		const {
-			position = createVector(0, 0), // vị trí camera
-			target = { // target là 1 vật thể, có chứa thuộc tính position bên trong
-				position: createVector(0, 0)
-			},
-			followTarget = true, // di chuyển camera theo target hay không
-			followSpeed = 0.1,
-			scale = 1,
-			borderSize = 30,
-			constrainBound = {
-				top: -Infinity,
-				bottom: Infinity,
-				left: -Infinity,
-				right: Infinity
-			}
-		} = config
+        const {
+            position = createVector(0, 0), // vị trí camera
+            target = { // target là 1 vật thể, có chứa thuộc tính position bên trong
+                position: createVector(0, 0)
+            },
+            followTarget = true, // di chuyển camera theo target hay không
+            followSpeed = 0.1,
+            scale = 1,
+            borderSize = 30,
+            constrainBound = {
+                top: -Infinity,
+                bottom: Infinity,
+                left: -Infinity,
+                right: Infinity
+            }
+        } = config
 
-		this.position = position
-		this.target = target
-		this.followTarget = followTarget
-		this.followSpeed = followSpeed
-		this.scale = scale
-		this.borderSize = borderSize
-		this.constrainBound = constrainBound
-	}
-
-	beginState() { // Bắt đầu translate - push
-		push()
-		translate(width * .5, height * .5)
-		scale(this.scale)
-		translate(-this.position.x, -this.position.y)
-	}
-
-	endState() { // Kết thúc việc translate - pop
-		pop()
-	}
-
-	follow(config = {}) {
-		if (this.followTarget) {
-			const {
-				timeScale = 1,
-				target = this.target,
-				followSpeed = this.followSpeed,
-				isConstrain = false
-			} = config
-
-			this.position = p5.Vector.lerp(this.position, target.position, followSpeed * timeScale)
-
-			if (isConstrain) {
-				const { left, right, top, bottom } = this.constrainBound
-
-				this.position.x = constrain(this.position.x, left, right)
-				this.position.y = constrain(this.position.y, top, bottom)
-			}
-
-		} else if (mouseX > width - this.borderSize || mouseX < this.borderSize ||
-			mouseY > height - this.borderSize || mouseY < this.borderSize) {
-
-			var vec = createVector(mouseX - width / 2, mouseY - height / 2).setMag(30);
-			this.position.add(vec);
-
-			// noStroke();
-			// fill(200, 20);
-			// var r = this.borderSize;
-			// if (mouseY < r) rect(width / 2, r / 2, width, r); // top
-			// if (mouseY > height - r) rect(width / 2, height - r / 2, width, r); // down
-			// if (mouseX < r) rect(r / 2, height / 2, this.borderSize, height); // left
-			// if (mouseX > width - r) rect(width - r / 2, height / 2, r, height); // right
-		}
-	}
-
-	setTarget(newTarget) {
-		this.target = newTarget
-		return this
-	}
-
-	setScale(scaleValue) {
-		this.scale = scaleValue
-		return this
+        this.position = position
+        this.target = target
+        this.followTarget = followTarget
+        this.followSpeed = followSpeed
+        this.scale = scale
+        this.borderSize = borderSize
+        this.constrainBound = constrainBound
     }
-    
+
+    beginState() { // Bắt đầu translate - push
+        push()
+        translate(width * .5, height * .5)
+        scale(this.scale)
+        translate(-this.position.x, -this.position.y)
+    }
+
+    endState() { // Kết thúc việc translate - pop
+        pop()
+    }
+
+    follow(config = {}) {
+        if (this.followTarget) {
+            const {
+                timeScale = 1,
+                target = this.target,
+                followSpeed = this.followSpeed,
+                isConstrain = false
+            } = config
+
+            this.position = p5.Vector.lerp(this.position, target.position, followSpeed * timeScale)
+
+            if (isConstrain) {
+                const { left, right, top, bottom } = this.constrainBound
+
+                this.position.x = constrain(this.position.x, left, right)
+                this.position.y = constrain(this.position.y, top, bottom)
+            }
+
+        } else if (mouseX > width - this.borderSize || mouseX < this.borderSize ||
+            mouseY > height - this.borderSize || mouseY < this.borderSize) {
+
+            var vec = createVector(mouseX - width / 2, mouseY - height / 2).setMag(30);
+            this.position.add(vec);
+
+            // noStroke();
+            // fill(200, 20);
+            // var r = this.borderSize;
+            // if (mouseY < r) rect(width / 2, r / 2, width, r); // top
+            // if (mouseY > height - r) rect(width / 2, height - r / 2, width, r); // down
+            // if (mouseX < r) rect(r / 2, height / 2, this.borderSize, height); // left
+            // if (mouseX > width - r) rect(width - r / 2, height / 2, r, height); // right
+        }
+    }
+
+    setTarget(newTarget) {
+        this.target = newTarget
+        return this
+    }
+
+    setScale(scaleValue) {
+        this.scale = scaleValue
+        return this
+    }
+
     getScale() {
         return this.scale
     }
 
-	getBound() {
-		let {x, y} = this.position
-		let dx = width / 2 / this.scale
-		let dy = height / 2 / this.scale
-		return {
-			left: x - dx,
-			right: x + dx,
-			top: y - dy,
-			bottom: y + dy
-		}
-	}
+    getBound() {
+        let { x, y } = this.position
+        let dx = width / 2 / this.scale
+        let dy = height / 2 / this.scale
+        return {
+            left: x - dx,
+            right: x + dx,
+            top: y - dy,
+            bottom: y + dy
+        }
+    }
 
-	// Chuyển đổi vị trí thực của vật thể (theo hệ toạ độ của mapgame) về vị trí trên màn hình (theo hệ toạ độ màn hình)
-	worldToScreen(worldX, worldY) {
-		let screenX = (worldX - this.position.x) * this.scale + width * .5
-		let screenY = (worldY - this.position.y) * this.scale + height * .5
-		return createVector(screenX, screenY)
-	}
+    // Chuyển đổi vị trí thực của vật thể (theo hệ toạ độ của mapgame) về vị trí trên màn hình (theo hệ toạ độ màn hình)
+    worldToScreen(worldX, worldY) {
+        let screenX = (worldX - this.position.x) * this.scale + width * .5
+        let screenY = (worldY - this.position.y) * this.scale + height * .5
+        return createVector(screenX, screenY)
+    }
 
-	// Ngược lại worldToScreen
-	screenToWorld(screenX, screenY) {
-		let worldX = (screenX - width * .5) / this.scale + this.position.x
-		let worldY = (screenY - height * .5) / this.scale + this.position.y
-		return createVector(worldX, worldY)
-	}
-}
-
-class Ability {
-
+    // Ngược lại worldToScreen
+    screenToWorld(screenX, screenY) {
+        let worldX = (screenX - width * .5) / this.scale + this.position.x
+        let worldY = (screenY - height * .5) / this.scale + this.position.y
+        return createVector(worldX, worldY)
+    }
 }
 
 class MoveableObject {
@@ -445,9 +478,9 @@ class MoveableObject {
         this.position.add(this.velocity)
     }
 
-    display() {
-        if(this.picture) {
-            
+    show() {
+        if (this.picture) {
+
             push()
             translate(this.position.x, this.position.y)
             rotate(this.velocity.heading())
@@ -458,7 +491,7 @@ class MoveableObject {
         } else {
             fill(255)
             noStroke()
-            circle(this.position.x, this.position/y, this.radius * 2)
+            circle(this.position.x, this.position / y, this.radius * 2)
         }
     }
 }
