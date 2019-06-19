@@ -3,14 +3,19 @@ let objects = []
 
 let player
 let comps = []
-let images = {}
+let abilities = []
+let images = {
+    characters: {},
+    moveableObjects: {}
+}
+
 
 function preload() {
-    images['yasuo'] = loadImage('./images/character/yasuo.png')
-    images['jinx'] = loadImage('./images/character/jinx.png')
-    images['blitzcrank'] = loadImage('./images/character/blitzcrank.png')
+    images.characters['yasuo'] = loadImage('./images/character/yasuo.png')
+    images.characters['jinx'] = loadImage('./images/character/jinx.png')
+    images.characters['blitzcrank'] = loadImage('./images/character/blitzcrank.png')
 
-    images['rocket'] = loadImage('./images/rocket2.png')
+    images.moveableObjects['rocket'] = loadImage('./images/rocket2.png')
 }
 
 function setup() {
@@ -18,33 +23,50 @@ function setup() {
     imageMode(CENTER)
     rectMode(CENTER)
 
-    objects.push(new MoveableObject({
-        picture: images['rocket'],
-        position: createVector(100, 100),
-        velocity: createVector(6, -2)
-    }))
-
     gamemap = new GameMap({
         width: 10000,
         height: 10000
     })
 
+    camera = new Camera()
+
     // Khởi tạo người chơi
     player = new Character({
-        picture: images['yasuo']
+        picture: images.characters['yasuo'],
+        onBorn: function () {
+        },
+        onAlive: function () {
+            this.lookAt(camera.screenToWorld(mouseX, mouseY))
+            this.move()
+            this.collideBound({
+                bound: gamemap.getBound()
+            })
+            this.showTargetPosition()
+            this.show()
+        }
     })
 
-    camera = new Camera({
-        target: player
-    })
+    camera.setTarget(player)
 
     // thêm máy
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
         comps.push(new AICharacter({
-            picture: randomProperty(images),
-            position: createVector(random(width), random(height))
+            picture: randomProperty(images.characters),
+            position: createVector(random(width), random(height)),
+            onAlive: function () {
+                this.move()
+                this.collideBound({
+                    bound: gamemap.getBound()
+                })
+                this.show()
+            }
         }))
     }
+
+    new Ability({
+        owner: player,
+        info: EFFECTS.SlowDown //ABILITIES.Q_Rammus
+    })
 }
 
 function draw() {
@@ -56,26 +78,20 @@ function draw() {
     gamemap.showGrid()
     gamemap.showEdges()
 
-    for (let o of objects) {
-        o.move()
-        o.show()
-    }
+    player.run()
 
-    player.lookAt(camera.screenToWorld(mouseX, mouseY))
-    player.move()
-    player.collideBound({
-        bound: gamemap.getBound()
-    })
-    player.showTargetPosition()
-    player.show()
+    for(let ability of abilities) {
+        ability.run()
+    }
 
     for (let comp of comps) {
-        comp.move()
-        comp.collideBound({
-            bound: gamemap.getBound()
-        })
-        comp.show()
+        comp.run()
     }
+
+    // for (let o of objects) {
+    //     o.move()
+    //     o.show()
+    // }
 
     camera.endState()
 }
@@ -95,7 +111,7 @@ function keyPressed() {
 
         objects = [];
         objects.push(new MoveableObject({
-            picture: images['rocket'],
+            picture: images.moveableObjects['rocket'],
             position: player.position.copy(),
             velocity: vel
         }))
@@ -122,9 +138,30 @@ const randomProperty = function (obj) {
 // =========================================
 // ============= CLASSES ===================
 // =========================================
-
-class Character {
+class EventableClass {
     constructor(config = {}) {
+        const {
+            onBorn = function () { },
+            onAlive = function () { },
+            onFinish = function () { },
+            checkFinish = function () { }
+        } = config
+
+        this.onBorn = onBorn //.bind(this)
+        this.onAlive = onAlive //.bind(this)
+        this.onFinish = onFinish //.bind(this)
+        this.checkFinish = checkFinish
+    }
+
+    run() {
+        this.onAlive()
+        this.checkFinish() && this.onFinish()
+    }
+}
+
+class Character extends EventableClass {
+    constructor(config = {}) {
+        super(config)
 
         let {
             picture,
@@ -143,10 +180,24 @@ class Character {
 
         this.targetPosition = position.copy()
         this.lookAtPosition = position.copy()
+
+        this.onBorn()
+    }
+
+    getSpeed() {
+        return this.movementSpeed
+    }
+
+    setSpeed(speed) {
+        this.movementSpeed = speed
+    }
+
+    speedUp(v) {
+        this.movementSpeed += v
     }
 
     lookAt(x, y) {
-        if(x instanceof p5.Vector) {
+        if (x instanceof p5.Vector) {
             this.lookAtPosition = x
         } else {
             this.lookAtPosition = createVector(x, y)
@@ -159,7 +210,7 @@ class Character {
     }
 
     setTargetPosition(x, y) {
-        if(x instanceof p5.Vector) {
+        if (x instanceof p5.Vector) {
             this.targetPosition = x
         } else {
             this.targetPosition = createVector(x, y)
@@ -201,8 +252,8 @@ class Character {
         // vẽ hướng nhìn
         rotate(this.getLookAtAngle())
         stroke(255)
-        strokeWeight(1)
-        line(0, 0, this.radius, 0)  
+        strokeWeight(2)
+        line(0, 0, this.radius, 0)
 
         pop()
     }
@@ -255,6 +306,59 @@ class AICharacter extends Character {
             let x = random(width - this.radius * 2) + this.radius
             let y = random(height - this.radius * 2) + this.radius
             this.targetPosition = createVector(x, y)
+        }
+    }
+}
+
+class Ability extends EventableClass {
+    constructor(config = {}) {
+        const {
+            owner,
+            info
+        } = config
+
+        super(info)
+
+        this.owner = owner
+        this.info = info
+
+        this.onBorn()
+    }
+}
+
+class MoveableObject {
+    constructor(config = {}) {
+        const {
+            position = createVector(0, 0),
+            velocity = createVector(0, 0),
+            radius = 30,
+            picture
+        } = config
+
+        this.position = position
+        this.velocity = velocity
+        this.radius = radius
+        this.picture = picture
+    }
+
+    move() {
+        this.position.add(this.velocity)
+    }
+
+    show() {
+        if (this.picture) {
+
+            push()
+            translate(this.position.x, this.position.y)
+            rotate(this.velocity.heading())
+            image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
+
+            pop()
+
+        } else {
+            fill(255)
+            noStroke()
+            circle(this.position.x, this.position.y, this.radius * 2)
         }
     }
 }
@@ -459,45 +563,71 @@ class Camera {
     }
 }
 
-class MoveableObject {
-    constructor(config = {}) {
-        const {
-            position = createVector(0, 0),
-            velocity = createVector(0, 0),
-            radius = 30,
-            picture
-        } = config
 
-        this.position = position
-        this.velocity = velocity
-        this.radius = radius
-        this.picture = picture
+// ================== DATABASE ABILITIES ==================
+const ABILITIES = {
+    Q_Rammus: {
+        onBorn: function () {
+            this.lifeTime = 5000
+            this.oldSpeed = this.owner.getSpeed()
+            this.bornTime = millis()
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            this.owner.speedUp(0.04)
+        },
+        checkFinish: function () {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.setSpeed(this.oldSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    R_Patheon: {
+        onBorn: function () {
+            this.bornTime = millis()
+        },
+        onAlive: function () {
+
+        },
+        checkFinish: function () {
+
+        },
+        onFinish: function () {
+
+        }
+    },
+    W_Yasuo: {
+
     }
+}
 
-    move() {
-        this.position.add(this.velocity)
-    }
+const EFFECTS = {
+    SlowDown: {
+        onBorn: function() {
+            this.lifeTime = 3000
+            this.oldSpeed = this.owner.getSpeed()
+            this.bornTime = millis()
+            this.owner.setSpeed(this.oldSpeed / 10)
 
-    show() {
-        if (this.picture) {
-
-            push()
-            translate(this.position.x, this.position.y)
-            rotate(this.velocity.heading())
-            image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
-
-            pop()
-
-        } else {
-            fill(255)
-            noStroke()
-            circle(this.position.x, this.position / y, this.radius * 2)
+            abilities.push(this)
+        },
+        onAlive: function() {
+        },
+        checkFinish: function() {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.setSpeed(this.oldSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
         }
     }
 }
 
-class Q_Lux extends MoveableObject {
-    constructor(config = {}) {
-        super(config)
+const OBJECTS = {
+    TuongGio: {
+
     }
 }
