@@ -192,7 +192,7 @@ const ABILITIES = {
 
             this.jumpAt = 1000
             this.downAt = 2000
-            this.finishAt = 2400
+            this.finishAt = 3100
             this.timeBorn = millis()
 
             this.effectRange = 0
@@ -211,7 +211,7 @@ const ABILITIES = {
 
             this.owner.setSpeed(0)
 
-            let r = 1
+            let r = 2.5
             if (period < this.jumpAt) {
                 camera.position.add(random(-r, r), random(-r, r))
                 this.effectRange = map(period, 0, this.jumpAt, 0, this.effectRangeMax)
@@ -234,7 +234,7 @@ const ABILITIES = {
             }
 
             // nơi cần tới
-            fill('#f001')
+            noFill()
             stroke(255, 100)
             strokeWeight(1)
             circle(this.targetR.x, this.targetR.y, this.effectRange * 2)
@@ -246,10 +246,23 @@ const ABILITIES = {
             this.owner.setSpeed(this.owner.defaultSpeed)
             this.owner.invisible = false
 
-            for(let i = 0; i < 5; i++) {
+            let r = this.effectRangeMax
+            
+            for(let i = 0; i < 15; i++) {
+                let randomVecInRange = createVector(random(-r, r), random(-r, r))
+                let randomPosInRange = this.owner.position.copy().add(randomVecInRange)
+
+                let distance = p5.Vector.dist(this.owner.position, randomPosInRange)
+                let life_time = map(distance, 0, this.effectRangeMax, 500, 1500)
+
                 new Ability({
                     owner: this.owner,
-                    info: EFFECTS.Smoke
+                    info: EFFECTS.Smoke,
+                    customInfo: {
+                        position: randomPosInRange,
+                        radius: random(10, 20),
+                        lifeTime: life_time
+                    }
                 })
             }
 
@@ -560,12 +573,18 @@ class Ability extends EventableClass {
     constructor(config = {}) {
         const {
             owner,
-            info
+            info,
+            customInfo = {}
         } = config
 
         super(info)
         this.owner = owner
+
         this.onBorn()
+
+        for(let custom in customInfo) {
+            this[custom] = customInfo[custom]
+        }
     }
 }
 
