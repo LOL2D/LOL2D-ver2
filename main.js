@@ -105,12 +105,15 @@ function keyReleased() {
     } else if (key == 'q' || key == 'Q') {
         new Ability({
             owner: player,
-            info: ABILITIES.Q_Rammus
+            info: ABILITIES.Q_Shaco
         })
     } else if (key == 'w' || key == 'W') {
 
     } else if (key == 'e' || key == 'E') {
-
+        new Ability({
+            owner: player,
+            info: ABILITIES.R_Patheon
+        })
     } else if (key == 'r' || key == 'R') {
         new Ability({
             owner: player,
@@ -312,9 +315,40 @@ const ABILITIES = {
             })
         }
     },
+    Q_Shaco: {
+        onBorn: function () {
+            this.timeBorn = millis()
+            this.lifeTime = 4000
+            this.range = 200
+
+            let targetQ = getVectorPosition({
+                fromPosition: this.owner.position.copy(),
+                toPosition: camera.screenToWorld(mouseX, mouseY),
+                limit: this.range
+            })
+
+            this.owner.position = targetQ
+            this.owner.targetPosition = targetQ
+            this.owner.setSpeed(this.owner.getSpeed() + 1)
+            this.owner.invisible = true
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+
+        },
+        checkFinish: function () {
+            return millis() - this.timeBorn > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.invisible = false
+            this.owner.setSpeed(this.owner.defaultSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
     Flash: {
         onBorn: function () {
-            this.range = 200
+            this.range = 300
             let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
             direction.limit(this.range)
 
@@ -329,24 +363,34 @@ const ABILITIES = {
             this.teleportTarget = camera.screenToWorld(mouseX, mouseY)
             this.targetRadiusMax = 40
 
+            this.angle = 0
+
+            this.showEffectTeleport = function(pos, radius) {
+                push()
+                translate(pos.x, pos.y)
+                rotate(this.angle)
+                noFill()
+                strokeWeight(5)
+                stroke('#1d2c5e')
+                ellipse(0, 0, radius * 1.5, radius * 3)
+                ellipse(0, 0, radius * 3, radius * 1.5)
+                pop()
+            }
+
             this.owner.setSpeed(0)
             abilities.push(this)
         },
         onAlive: function () {
             let period = millis() - this.bornTime
+            let radius = map(period, 0, this.lifeTime, this.targetRadiusMax, 10)
+            let rotateSpeed = map(period, 0, this.lifeTime, 0, PI / 5)
+            this.angle += rotateSpeed
 
-            push()
-            translate(this.teleportTarget.x, this.teleportTarget.y)
+            // vị trí tới
+            this.showEffectTeleport(this.teleportTarget, radius)
 
-            let r = map(period, 0, this.lifeTime, this.targetRadiusMax, 10)
-            rotate(frameCount / r * 2)
-            noFill()
-            strokeWeight(5)
-            stroke('#1d2c5e')
-            ellipse(0, 0, r * 1.5, r * 3)
-            ellipse(0, 0, r * 3, r * 1.5)
-
-            pop()
+            // vị trí người chơi
+            this.showEffectTeleport(this.owner.position, radius)
         },
         checkFinish: function () {
             return millis() - this.bornTime > this.lifeTime
@@ -413,7 +457,7 @@ const EFFECTS = {
         }
     },
     Force: {
-        onBorn: function() {
+        onBorn: function () {
             this.position = createVector(0, 0)
             this.range = 100
         }
@@ -432,7 +476,7 @@ const OBJECTS = {
             this.speed = 0
             this.radius = 25
 
-            camera.setTarget(this)
+            // camera.setTarget(this)
 
             abilities.push(this)
         },
@@ -469,7 +513,7 @@ const OBJECTS = {
         },
         onFinish: function () {
             // hiệu ứng nổ
-            for(let i = 0; i < 10; i++) {
+            for (let i = 0; i < 10; i++) {
 
                 let r = this.radius * 2
                 let newPosition = this.position.copy().add(random(-r, r), random(-r, r))
@@ -582,6 +626,17 @@ class Character extends EventableClass {
         return direction.heading()
     }
 
+    showLookAtDirection() {
+        // vẽ hướng nhìn
+        push()
+        translate(this.position.x, this.position.y)
+        rotate(this.getLookAtAngle())
+        stroke(255)
+        strokeWeight(2)
+        line(0, 0, this.radius, 0)
+        pop()
+    }
+
     setTargetPosition(x, y) {
         if (x instanceof p5.Vector) {
             this.targetPosition = x
@@ -610,8 +665,6 @@ class Character extends EventableClass {
     }
 
     show() {
-        if (this.invisible) return
-
         push()
         translate(this.position.x, this.position.y)
 
@@ -622,7 +675,13 @@ class Character extends EventableClass {
         line(0, 0, vectorHuong.x, vectorHuong.y)
 
         // vẽ hình ảnh
-        if (this.picture) {
+        if(this.invisible) {
+            noFill()
+            stroke(200, 100)
+            strokeWeight(1)
+            circle(0, 0, this.radius * 2)
+            
+        } else if (this.picture) {
             image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
 
         } else {
@@ -630,14 +689,9 @@ class Character extends EventableClass {
             noStroke()
             circle(0, 0, this.radius * 2)
         }
-
-        // vẽ hướng nhìn
-        rotate(this.getLookAtAngle())
-        stroke(255)
-        strokeWeight(2)
-        line(0, 0, this.radius, 0)
-
         pop()
+
+        this.showLookAtDirection()
     }
 
     collideBound(config = {}) {
