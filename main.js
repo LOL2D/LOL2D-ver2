@@ -211,26 +211,25 @@ const ABILITIES = {
 
             this.owner.setSpeed(0)
 
-            let r = 2.5
             if (period < this.jumpAt) {
-                camera.position.add(random(-r, r), random(-r, r))
+                camera.shake(2)
                 this.effectRange = map(period, 0, this.jumpAt, 0, this.effectRangeMax)
 
             } else if (period < this.downAt) {
                 this.owner.invisible = true
 
-                let newScale = map(period, this.jumpAt, this.downAt, 1, .5)
+                let newScale = map(period, this.jumpAt, this.downAt, 1, .4)
                 camera.setScale(newScale)
 
             } else if (period < this.finishAt) {
 
-                let newScale = map(period, this.downAt, this.finishAt, .5, 1)
+                let newScale = map(period, this.downAt, this.finishAt, .4, 1)
                 camera.setScale(newScale)
 
                 this.owner.position = this.targetR.copy()
                 this.owner.targetPosition = this.targetR.copy()
 
-                camera.position.add(random(-r, r), random(-r, r))
+                camera.shake(5)
             }
 
             // nơi cần tới
@@ -699,6 +698,10 @@ class Camera {
         this.scale = scale
         this.borderSize = borderSize
         this.constrainBound = constrainBound
+    }
+
+    shake(value) {
+        this.position.add(random(-value, value), random(-value, value))
     }
 
     beginState() { // Bắt đầu translate - push
