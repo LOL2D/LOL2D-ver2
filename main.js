@@ -12,6 +12,7 @@ function preload() {
     images.characters['blitzcrank'] = loadImage('./images/character/blitzcrank.png')
 
     images.others['rocket'] = loadImage('./images/rocket2.png')
+    images.others['locxoay'] = loadImage('./images/locXoay.png')
 }
 
 function setup() {
@@ -28,7 +29,7 @@ function setup() {
 
     // Khởi tạo người chơi
     player = new Character({
-        picture: images.characters['yasuo'],
+        picture: images.characters['jinx'],
         onBorn: function () {
         },
         onAlive: function () {
@@ -113,7 +114,7 @@ function keyReleased() {
     } else if (key == 'r' || key == 'R') {
         new Ability({
             owner: player,
-            info: ABILITIES.R_Patheon
+            info: ABILITIES.R_Jinx
         })
 
     } else if (key == 't' || key == 'T') {
@@ -148,13 +149,25 @@ const getVectorDirection = function (config = {}) {
     const {
         toPosition = createVector(0, 0),
         fromPosition = createVector(0, 0),
-        range = Infinity
+        limit = null,
+        mag = null
     } = config
 
     let direction = p5.Vector.sub(toPosition, fromPosition)
-    let limit = direction.limit(range)
 
-    return fromPosition.copy().add(limit)
+    let addValue = createVector(0, 0)
+    if (limit) addValue = direction.limit(limit)
+    if (mag) addValue = direction.setMag(mag)
+
+    return addValue
+}
+
+const getVectorPosition = function (config = {}) {
+    const {
+        fromPosition
+    } = config
+
+    return fromPosition.copy().add(getVectorDirection(config))
 }
 
 // ================== DATABASE ABILITIES ==================
@@ -169,8 +182,8 @@ const ABILITIES = {
         onAlive: function () {
             this.owner.speedUp(0.04)
 
-            if(this.owner.getSpeed() > this.owner.defaultSpeed * 2) {
-                if(random() > 0.8)
+            if (this.owner.getSpeed() > this.owner.defaultSpeed * 2) {
+                if (random() > 0.8)
                     new Ability({
                         owner: this.owner,
                         info: EFFECTS.Smoke
@@ -188,7 +201,7 @@ const ABILITIES = {
     },
     R_Patheon: {
         onBorn: function () {
-            this.range = 5000
+            this.range = 3000
 
             this.jumpAt = 1000
             this.downAt = 2000
@@ -196,12 +209,12 @@ const ABILITIES = {
             this.timeBorn = millis()
 
             this.effectRange = 0
-            this.effectRangeMax = 250
+            this.effectRangeMax = 200
 
-            this.targetR = getVectorDirection({
+            this.targetR = getVectorPosition({
                 fromPosition: this.owner.position.copy(),
                 toPosition: camera.screenToWorld(mouseX, mouseY),
-                range: this.range
+                limit: this.range
             })
 
             abilities.push(this)
@@ -209,20 +222,23 @@ const ABILITIES = {
         onAlive: function () {
             let period = millis() - this.timeBorn
 
+            // Khi đang dùng chiêu này thì ko thể di chuyển
             this.owner.setSpeed(0)
 
+            // Khi chuẩn bị nhảy
             if (period < this.jumpAt) {
                 camera.shake(2)
                 this.effectRange = map(period, 0, this.jumpAt, 0, this.effectRangeMax)
 
+                // Khi đang trên không trung
             } else if (period < this.downAt) {
                 this.owner.invisible = true
 
                 let newScale = map(period, this.jumpAt, this.downAt, 1, .4)
                 camera.setScale(newScale)
 
+                // Khi đang rơi xuống
             } else if (period < this.finishAt) {
-
                 let newScale = map(period, this.downAt, this.finishAt, .4, 1)
                 camera.setScale(newScale)
 
@@ -232,7 +248,7 @@ const ABILITIES = {
                 camera.shake(5)
             }
 
-            // nơi cần tới
+            // vẽ vùng ảnh hưởng
             noFill()
             stroke(255, 100)
             strokeWeight(1)
@@ -246,14 +262,19 @@ const ABILITIES = {
             this.owner.invisible = false
 
             let r = this.effectRangeMax
-            
-            for(let i = 0; i < 15; i++) {
+
+            // tạo khói trong vùng ảnh hưởng
+            for (let i = 0; i < 15; i++) {
+
+                // lấy 1 vị trí ngẫu nhiên trong vùng ảnh hưởng
                 let randomVecInRange = createVector(random(-r, r), random(-r, r))
                 let randomPosInRange = this.owner.position.copy().add(randomVecInRange)
 
-                let distance = p5.Vector.dist(this.owner.position, randomPosInRange)
-                let life_time = map(distance, 0, this.effectRangeMax, 500, 1500)
+                // khói sống lâu hay ko phụ thuộc khoảng cách từ vị trí tìm được tới tâm ảnh hưởng
+                let distance = p5.Vector.dist(this.targetR, randomPosInRange)
+                let life_time = map(distance, 0, this.effectRangeMax, 100, 1500)
 
+                // tạo khói với những customInfo vừa tính
                 new Ability({
                     owner: this.owner,
                     info: EFFECTS.Smoke,
@@ -270,6 +291,27 @@ const ABILITIES = {
             abilities.splice(abilities.indexOf(this), 1)
         }
     },
+    R_Jinx: {
+        onBorn: function () {
+            // tính hướng bắn
+            let speed = 15
+            let direction = getVectorDirection({
+                fromPosition: this.owner.position.copy(),
+                toPosition: camera.screenToWorld(mouseX, mouseY),
+                mag: speed
+            })
+
+            // bắn ra TenLuaDanDaoSieuKhungKhiep
+            new Ability({
+                owner: this.owner,
+                info: OBJECTS.TenLuaDanDaoSieuKhungKhiep,
+                customInfo: {
+                    direction: direction,
+                    position: this.owner.position.copy()
+                }
+            })
+        }
+    },
     Flash: {
         onBorn: function () {
             this.range = 200
@@ -282,17 +324,29 @@ const ABILITIES = {
     },
     Teleport: {
         onBorn: function () {
-            this.lifeTime = 3500
+            this.lifeTime = 4000
             this.bornTime = millis()
             this.teleportTarget = camera.screenToWorld(mouseX, mouseY)
+            this.targetRadiusMax = 40
 
             this.owner.setSpeed(0)
-
             abilities.push(this)
         },
         onAlive: function () {
-            fill(0, 0, 255)
-            circle(this.teleportTarget.x, this.teleportTarget.y, 30)
+            let period = millis() - this.bornTime
+
+            push()
+            translate(this.teleportTarget.x, this.teleportTarget.y)
+
+            let r = map(period, 0, this.lifeTime, this.targetRadiusMax, 10)
+            rotate(frameCount / r * 2)
+            noFill()
+            strokeWeight(5)
+            stroke('#1d2c5e')
+            ellipse(0, 0, r * 1.5, r * 3)
+            ellipse(0, 0, r * 3, r * 1.5)
+
+            pop()
         },
         checkFinish: function () {
             return millis() - this.bornTime > this.lifeTime
@@ -328,7 +382,7 @@ const EFFECTS = {
         }
     },
     Smoke: {
-        onBorn: function() {
+        onBorn: function () {
             this.lifeTime = random(500, 2000)
             this.timeBorn = millis()
 
@@ -339,7 +393,7 @@ const EFFECTS = {
 
             abilities.push(this)
         },
-        onAlive: function() {
+        onAlive: function () {
             let period = millis() - this.timeBorn
             let alpha = map(period, 0, this.lifeTime, 255, 0)
 
@@ -351,11 +405,17 @@ const EFFECTS = {
             this.position.add(random(-r, r), random(-r, r))
             this.radius += 1
         },
-        checkFinish: function() {
+        checkFinish: function () {
             return millis() - this.timeBorn > this.lifeTime
         },
-        onFinish: function() {
+        onFinish: function () {
             abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    Force: {
+        onBorn: function() {
+            this.position = createVector(0, 0)
+            this.range = 100
         }
     }
 }
@@ -363,16 +423,85 @@ const EFFECTS = {
 const OBJECTS = {
     TenLuaDanDaoSieuKhungKhiep: {
         onBorn: function () {
+            this.lifeTime = 10000
+            this.timeBorn = millis()
 
+            // khởi tạo hướng
+            this.direction = createVector(0, 0)
+            this.position = createVector(0, 0)
+            this.speed = 0
+            this.radius = 25
+
+            camera.setTarget(this)
+
+            abilities.push(this)
         },
         onAlive: function () {
+            // di chuyển theo hướng
+            this.position.add(this.direction)
 
+            // hien thi ten lua
+            push()
+            translate(this.position.x, this.position.y)
+            rotate(this.direction.heading())
+
+            image(images.others['rocket'], 0, 0, this.radius * 2, this.radius * 2)
+            pop()
+
+            // tạo khói ở đuôi
+            if (random() > 0.5) {
+                let dir = this.direction.copy().setMag(this.radius)
+                let pos = this.position.copy().sub(dir)
+
+                new Ability({
+                    owner: this.owner,
+                    info: EFFECTS.Smoke,
+                    customInfo: {
+                        position: pos,
+                        radius: random(this.radius / 2, this.radius),
+                        lifeTime: random(200, 700)
+                    }
+                })
+            }
         },
         checkFinish: function () {
-
+            return millis() - this.timeBorn > this.lifeTime
         },
         onFinish: function () {
+            // hiệu ứng nổ
+            for(let i = 0; i < 10; i++) {
 
+                let r = this.radius * 2
+                let newPosition = this.position.copy().add(random(-r, r), random(-r, r))
+
+                new Ability({
+                    owner: this.owner,
+                    info: EFFECTS.Smoke,
+                    customInfo: {
+                        position: newPosition,
+                        radius: random(10, 30),
+                        lifeTime: random(500, 1300)
+                    }
+                })
+            }
+
+            // xoá
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    TroiAnhSanh: {
+        onBorn: function () {
+            // khởi tạo hướng
+        },
+        onAlive: function () {
+            // di chuyển theo hướng
+            // hien thi trói ánh sáng
+        },
+        checkFinish: function () {
+            // check trung ai chua
+        },
+        onFinish: function () {
+            // hiệu ứng trói
         }
     }
 }
@@ -389,9 +518,9 @@ class EventableClass {
             checkFinish = function () { }
         } = config
 
-        this.onBorn = onBorn 
-        this.onAlive = onAlive 
-        this.onFinish = onFinish 
+        this.onBorn = onBorn
+        this.onAlive = onAlive
+        this.onFinish = onFinish
         this.checkFinish = checkFinish
     }
 
@@ -580,7 +709,7 @@ class Ability extends EventableClass {
 
         this.onBorn()
 
-        for(let custom in customInfo) {
+        for (let custom in customInfo) {
             this[custom] = customInfo[custom]
         }
     }
