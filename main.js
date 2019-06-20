@@ -1,21 +1,17 @@
 let gamemap, camera
-let objects = []
-
-let player
-let comps = []
+let player, comps = []
 let abilities = []
 let images = {
     characters: {},
-    moveableObjects: {}
+    others: {}
 }
-
 
 function preload() {
     images.characters['yasuo'] = loadImage('./images/character/yasuo.png')
     images.characters['jinx'] = loadImage('./images/character/jinx.png')
     images.characters['blitzcrank'] = loadImage('./images/character/blitzcrank.png')
 
-    images.moveableObjects['rocket'] = loadImage('./images/rocket2.png')
+    images.others['rocket'] = loadImage('./images/rocket2.png')
 }
 
 function setup() {
@@ -75,43 +71,25 @@ function draw() {
 
     player.run()
 
-    for (let ability of abilities) {
-        ability.run()
-    }
-
     for (let comp of comps) {
         comp.run()
     }
 
-    // for (let o of objects) {
-    //     o.move()
-    //     o.show()
-    // }
+    for (let ability of abilities) {
+        ability.run()
+    }
 
     camera.endState()
+
+    showFrameRate()
 }
 
 function mousePressed() {
     player.setTargetPosition(camera.screenToWorld(mouseX, mouseY))
 }
 
-function keyPressed() {
-    if (key == 'q' || key == 'Q') {
-
-        let mouse = camera.screenToWorld(mouseX, mouseY)
-
-        // create new rocket
-        let vel = p5.Vector.sub(createVector(mouse.x, mouse.y), player.position)
-        vel.setMag(15)
-
-        objects = [];
-        objects.push(new MoveableObject({
-            picture: images.moveableObjects['rocket'],
-            position: player.position.copy(),
-            velocity: vel
-        }))
-
-    } else if (key == 'f' || key == 'F') {
+function keyReleased() {
+    if (key == 'f' || key == 'F') {
         new Ability({
             owner: player,
             info: ABILITIES.Flash
@@ -122,6 +100,24 @@ function keyPressed() {
             owner: player,
             info: ABILITIES.Teleport
         })
+
+    } else if (key == 'q' || key == 'Q') {
+        new Ability({
+            owner: player,
+            info: ABILITIES.Q_Rammus
+        })
+    } else if (key == 'w' || key == 'W') {
+
+    } else if (key == 'e' || key == 'E') {
+
+    } else if (key == 'r' || key == 'R') {
+        new Ability({
+            owner: player,
+            info: ABILITIES.R_Patheon
+        })
+
+    } else if (key == 't' || key == 'T') {
+        camera.followTarget = !camera.followTarget
     }
 }
 
@@ -142,6 +138,193 @@ const randomProperty = function (obj) {
     return obj[keys[keys.length * Math.random() << 0]];
 }
 
+const showFrameRate = function () {
+    fill(255)
+    noStroke()
+    text(~~frameRate(), 10, 10)
+}
+
+const getVectorDirection = function (config = {}) {
+    const {
+        toPosition = createVector(0, 0),
+        fromPosition = createVector(0, 0),
+        range = Infinity
+    } = config
+
+    let direction = p5.Vector.sub(toPosition, fromPosition)
+    let limit = direction.limit(range)
+
+    return fromPosition.copy().add(limit)
+}
+
+// ================== DATABASE ABILITIES ==================
+const ABILITIES = {
+    Q_Rammus: {
+        onBorn: function () {
+            this.lifeTime = 5000
+            this.bornTime = millis()
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            this.owner.speedUp(0.04)
+        },
+        checkFinish: function () {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.setSpeed(this.owner.defaultSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    R_Patheon: {
+        onBorn: function () {
+            this.range = 1000
+
+            this.jumpAt = 1000
+            this.downAt = 2000
+            this.finishAt = 2400
+            this.timeBorn = millis()
+
+            this.effectRange = 0
+            this.effectRangeMax = 250
+
+            this.targetR = getVectorDirection({
+                fromPosition: this.owner.position.copy(),
+                toPosition: camera.screenToWorld(mouseX, mouseY),
+                range: this.range
+            })
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            let period = millis() - this.timeBorn
+
+            this.owner.setSpeed(0)
+
+            let r = 1
+            if (period < this.jumpAt) {
+                camera.position.add(random(-r, r), random(-r, r))
+                this.effectRange = map(period, 0, this.jumpAt, 0, this.effectRangeMax)
+
+            } else if (period < this.downAt) {
+                this.owner.invisible = true
+
+                let newScale = map(period, this.jumpAt, this.downAt, 1, .5)
+                camera.setScale(newScale)
+
+            } else if (period < this.finishAt) {
+
+                let newScale = map(period, this.downAt, this.finishAt, .5, 1)
+                camera.setScale(newScale)
+
+                this.owner.position = this.targetR.copy()
+                this.owner.targetPosition = this.targetR.copy()
+
+                camera.position.add(random(-r, r), random(-r, r))
+            }
+
+            // nơi cần tới
+            fill('#f001')
+            stroke(255, 100)
+            strokeWeight(1)
+            circle(this.targetR.x, this.targetR.y, this.effectRange * 2)
+        },
+        checkFinish: function () {
+            return millis() - this.timeBorn > this.finishAt
+        },
+        onFinish: function () {
+            this.owner.setSpeed(this.owner.defaultSpeed)
+            this.owner.invisible = false
+
+            camera.setScale(1)
+
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    W_Yasuo: {
+
+    },
+    Flash: {
+        range: 200,
+        onBorn: function () {
+            let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
+            direction.limit(this.range)
+
+            this.owner.position.add(direction)
+            this.owner.targetPosition = this.owner.position.copy()
+        }
+    },
+    Teleport: {
+        range: Infinity,
+        onBorn: function () {
+            this.lifeTime = 3500
+            this.bornTime = millis()
+            this.teleportTarget = camera.screenToWorld(mouseX, mouseY)
+
+            this.owner.setSpeed(0)
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            fill(0, 0, 255)
+            circle(this.teleportTarget.x, this.teleportTarget.y, 30)
+        },
+        checkFinish: function () {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.position = this.teleportTarget.copy()
+            this.owner.targetPosition = this.teleportTarget.copy()
+            this.owner.setSpeed(this.owner.defaultSpeed)
+
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    R2_Patheon: {
+        
+    }
+}
+
+const EFFECTS = {
+    SlowDown: {
+        onBorn: function () {
+            this.lifeTime = 3000
+            this.oldSpeed = this.owner.getSpeed()
+            this.bornTime = millis()
+            this.owner.setSpeed(this.oldSpeed / 10)
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+        },
+        checkFinish: function () {
+            return millis() - this.bornTime > this.lifeTime
+        },
+        onFinish: function () {
+            this.owner.setSpeed(this.oldSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    }
+}
+
+const OBJECTS = {
+    TenLuaDanDaoSieuKhungKhiep: {
+        onBorn: function () {
+
+        },
+        onAlive: function () {
+
+        },
+        checkFinish: function () {
+
+        },
+        onFinish: function () {
+
+        }
+    }
+}
+
 // =========================================
 // ============= CLASSES ===================
 // =========================================
@@ -154,9 +337,9 @@ class EventableClass {
             checkFinish = function () { }
         } = config
 
-        this.onBorn = onBorn //.bind(this)
-        this.onAlive = onAlive //.bind(this)
-        this.onFinish = onFinish //.bind(this)
+        this.onBorn = onBorn 
+        this.onAlive = onAlive 
+        this.onFinish = onFinish 
         this.checkFinish = checkFinish
     }
 
@@ -184,9 +367,11 @@ class Character extends EventableClass {
         this.radius = radius
         this.name = name
         this.movementSpeed = movementSpeed
+        this.defaultSpeed = movementSpeed
 
         this.targetPosition = position.copy()
         this.lookAtPosition = position.copy()
+        this.invisible = false
 
         this.onBorn()
     }
@@ -244,6 +429,8 @@ class Character extends EventableClass {
     }
 
     show() {
+        if (this.invisible) return
+
         push()
         translate(this.position.x, this.position.y)
 
@@ -336,52 +523,8 @@ class Ability extends EventableClass {
         } = config
 
         super(info)
-
-        const {
-            range = 0
-        } = info
-
         this.owner = owner
-        this.range = range
-
         this.onBorn()
-    }
-}
-
-class MoveableObject {
-    constructor(config = {}) {
-        const {
-            position = createVector(0, 0),
-            velocity = createVector(0, 0),
-            radius = 30,
-            picture
-        } = config
-
-        this.position = position
-        this.velocity = velocity
-        this.radius = radius
-        this.picture = picture
-    }
-
-    move() {
-        this.position.add(this.velocity)
-    }
-
-    show() {
-        if (this.picture) {
-
-            push()
-            translate(this.position.x, this.position.y)
-            rotate(this.velocity.heading())
-            image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
-
-            pop()
-
-        } else {
-            fill(255)
-            noStroke()
-            circle(this.position.x, this.position.y, this.radius * 2)
-        }
     }
 }
 
@@ -585,104 +728,6 @@ class Camera {
     }
 }
 
-
-// ================== DATABASE ABILITIES ==================
-const ABILITIES = {
-    Q_Rammus: {
-        onBorn: function () {
-            this.lifeTime = 5000
-            this.oldSpeed = this.owner.getSpeed()
-            this.bornTime = millis()
-
-            abilities.push(this)
-        },
-        onAlive: function () {
-            this.owner.speedUp(0.04)
-        },
-        checkFinish: function () {
-            return millis() - this.bornTime > this.lifeTime
-        },
-        onFinish: function () {
-            this.owner.setSpeed(this.oldSpeed)
-            abilities.splice(abilities.indexOf(this), 1)
-        }
-    },
-    R_Patheon: {
-        onBorn: function () {
-            this.bornTime = millis()
-        },
-        onAlive: function () {
-
-        },
-        checkFinish: function () {
-
-        },
-        onFinish: function () {
-
-        }
-    },
-    W_Yasuo: {
-
-    },
-    Flash: {
-        onBorn: function () {
-            let distance = 150
-            let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
-            direction.limit(distance)
-
-            this.owner.position.add(direction)
-            this.owner.targetPosition = this.owner.position.copy()
-        }
-    },
-    Teleport: {
-        onBorn: function () {
-            this.lifeTime = 1000
-            this.bornTime = millis()
-            this.teleportTarget = camera.screenToWorld(mouseX, mouseY)
-
-            abilities.push(this)
-        },
-        onAlive: function () {
-            // console.log('... Đang dịch chuyển')
-            fill(0, 0, 255)
-            circle(this.teleportTarget.x, this.teleportTarget.y, 30)
-        },
-        checkFinish: function () {
-            return millis() - this.bornTime > this.lifeTime
-        },
-        onFinish: function () {
-            this.owner.position = this.teleportTarget.copy()
-            this.owner.targetPosition = this.teleportTarget.copy()
-
-            abilities.splice(abilities.indexOf(this), 1)
-        }
-    }
-}
-
-const EFFECTS = {
-    SlowDown: {
-        onBorn: function () {
-            this.lifeTime = 3000
-            this.oldSpeed = this.owner.getSpeed()
-            this.bornTime = millis()
-            this.owner.setSpeed(this.oldSpeed / 10)
-
-            abilities.push(this)
-        },
-        onAlive: function () {
-        },
-        checkFinish: function () {
-            return millis() - this.bornTime > this.lifeTime
-        },
-        onFinish: function () {
-            this.owner.setSpeed(this.oldSpeed)
-            abilities.splice(abilities.indexOf(this), 1)
-        }
-    }
-}
-
-const OBJECTS = {
-    TuongGio: {
-
-    }
+window.onload = function () {
+    document.addEventListener('contextmenu', e => e.preventDefault());
 }
