@@ -270,6 +270,9 @@ const ABILITIES = {
             abilities.splice(abilities.indexOf(this), 1)
         }
     },
+    W_Nekko:{
+        
+    },
     Flash: {
         onBorn: function () {
             this.range = 200
