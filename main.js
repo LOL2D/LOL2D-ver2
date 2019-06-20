@@ -323,7 +323,7 @@ const ABILITIES = {
                 mag: speed
             })
 
-            // bắn ra TenLuaDanDaoSieuKhungKhiep
+            // bắn ra QuaCauBang
             new Ability({
                 owner: this.owner,
                 info: OBJECTS.QuaCauBang,
