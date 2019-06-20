@@ -20,8 +20,8 @@ function setup() {
     rectMode(CENTER)
 
     gamemap = new GameMap({
-        width: 2000,
-        height: 2000
+        width: 20000,
+        height: 20000
     })
 
     camera = new Camera()
@@ -168,6 +168,15 @@ const ABILITIES = {
         },
         onAlive: function () {
             this.owner.speedUp(0.04)
+
+            if(this.owner.getSpeed() > this.owner.defaultSpeed * 2) {
+                if(random() > 0.8)
+                    new Ability({
+                        owner: this.owner,
+                        info: EFFECTS.Smoke
+                    })
+            }
+
         },
         checkFinish: function () {
             return millis() - this.bornTime > this.lifeTime
@@ -179,7 +188,7 @@ const ABILITIES = {
     },
     R_Patheon: {
         onBorn: function () {
-            this.range = 1000
+            this.range = 5000
 
             this.jumpAt = 1000
             this.downAt = 2000
@@ -237,13 +246,17 @@ const ABILITIES = {
             this.owner.setSpeed(this.owner.defaultSpeed)
             this.owner.invisible = false
 
+            for(let i = 0; i < 5; i++) {
+                new Ability({
+                    owner: this.owner,
+                    info: EFFECTS.Smoke
+                })
+            }
+
             camera.setScale(1)
 
             abilities.splice(abilities.indexOf(this), 1)
         }
-    },
-    W_Yasuo: {
-
     },
     Flash: {
         range: 200,
@@ -280,9 +293,6 @@ const ABILITIES = {
 
             abilities.splice(abilities.indexOf(this), 1)
         }
-    },
-    R2_Patheon: {
-        
     }
 }
 
@@ -303,6 +313,37 @@ const EFFECTS = {
         },
         onFinish: function () {
             this.owner.setSpeed(this.oldSpeed)
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    Smoke: {
+        onBorn: function() {
+            this.lifeTime = random(500, 2000)
+            this.timeBorn = millis()
+
+            let r = this.owner.radius
+            let randomAdd = createVector(random(-r, r), random(-r, r))
+            this.position = this.owner.position.copy().add(randomAdd)
+            this.radius = random(10, 30)
+
+            abilities.push(this)
+        },
+        onAlive: function() {
+            let period = millis() - this.timeBorn
+            let alpha = map(period, 0, this.lifeTime, 255, 0)
+
+            noStroke()
+            fill(255, alpha)
+            circle(this.position.x, this.position.y, this.radius * 2)
+
+            let r = 3
+            this.position.add(random(-r, r), random(-r, r))
+            this.radius += 1
+        },
+        checkFinish: function() {
+            return millis() - this.timeBorn > this.lifeTime
+        },
+        onFinish: function() {
             abilities.splice(abilities.indexOf(this), 1)
         }
     }
