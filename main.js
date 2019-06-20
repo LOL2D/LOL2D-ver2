@@ -20,8 +20,8 @@ function setup() {
     rectMode(CENTER)
 
     gamemap = new GameMap({
-        width: 20000,
-        height: 20000
+        width: 5000,
+        height: 5000
     })
 
     camera = new Camera()
@@ -272,8 +272,8 @@ const ABILITIES = {
         }
     },
     Flash: {
-        range: 200,
         onBorn: function () {
+            this.range = 200
             let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
             direction.limit(this.range)
 
@@ -282,7 +282,6 @@ const ABILITIES = {
         }
     },
     Teleport: {
-        range: Infinity,
         onBorn: function () {
             this.lifeTime = 3500
             this.bornTime = millis()
