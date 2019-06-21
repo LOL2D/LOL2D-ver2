@@ -16,6 +16,7 @@ function preload() {
 
     images.others['rocket'] = loadImage('./images/rocket2.png')
     images.others['locxoay'] = loadImage('./images/locXoay.png')
+    images.others['cautuyet'] = loadImage('./images/cautuyet.png')
 }
 
 function setup() {
@@ -94,30 +95,30 @@ function draw() {
         p.run()
     }
 
-    for (let ability of abilities) {
-        ability.run()
+    for (let i = abilities.length - 1; i >= 0; i--) {
+        abilities[i].run()
     }
 
     camera.endState()
 
-    if(random() > 0.99) {
-        let speed = 10
-        let direction = getVectorDirection({
-            fromPosition: players[1].position.copy(),
-            toPosition: camera.screenToWorld(mouseX, mouseY),
-            mag: speed
-        })
+    // if (random() > 0.99) {
+    //     let speed = 10
+    //     let direction = getVectorDirection({
+    //         fromPosition: players[1].position.copy(),
+    //         toPosition: camera.screenToWorld(mouseX, mouseY),
+    //         mag: speed
+    //     })
 
-        // bắn ra TenLuaDanDaoSieuKhungKhiep
-        new Ability({
-            owner: players[1],
-            info: OBJECTS.TenLuaDanDaoSieuKhungKhiep,
-            customInfo: {
-                direction: direction,
-                position: players[1].position.copy()
-            }
-        })
-    }
+    //     // bắn ra TenLuaDanDaoSieuKhungKhiep
+    //     new Ability({
+    //         owner: players[1],
+    //         info: OBJECTS.TenLuaDanDaoSieuKhungKhiep,
+    //         customInfo: {
+    //             direction: direction,
+    //             position: players[1].position.copy()
+    //         }
+    //     })
+    // }
 
     showFrameRate()
 }
@@ -142,8 +143,6 @@ function keyReleased() {
 
         player.action(upperKey)
     }
-
-    console.log(key)
 }
 
 function mouseWheel(e) {
@@ -202,15 +201,18 @@ const vaChamTronTron = function (tron1, tron2) {
     return false
 }
 
-const vaChamObjectPlayer = function(obj, playerArr) {
+const vaChamObjectPlayer = function (obj, playerArr, getAll) {
+    let result = []
     for (let p of playerArr) {
         if (!p.disable && p != obj.owner) {
-            if(vaChamTronTron(p, obj)) {
-                return p
+            if (vaChamTronTron(p, obj)) {
+                if (!getAll) return p
+                result.push(p)
             }
         }
     }
-    return null
+    if (getAll) return result
+    else return null
 }
 
 // ================== DATABASE ABILITIES ==================
@@ -252,7 +254,7 @@ const ABILITIES = {
     },
     R_Patheon: {
         onBorn: function () {
-            this.range = 3000
+            this.range = 500
 
             this.jumpAt = 1000
             this.downAt = 2000
@@ -260,7 +262,7 @@ const ABILITIES = {
             this.bornTime = millis()
 
             this.effectRange = 0
-            this.effectRangeMax = 400
+            this.effectRangeMax = 200
 
             this.targetR = getVectorPosition({
                 fromPosition: this.owner.position.copy(),
@@ -311,10 +313,24 @@ const ABILITIES = {
         onFinish: function () {
             this.owner.setSpeed(this.owner.defaultSpeed)
             this.owner.disable = false
+            camera.shake(50)
 
-            let r = this.effectRangeMax
+            // làm chậm những player trong vùng ảnh hưởng
+            let R_info = {
+                position: this.targetR,
+                radius: this.effectRangeMax
+            }
+            let playersInRange = vaChamObjectPlayer(R_info, players, true)
+            for (let p of playersInRange) {
+                if (p != this.owner)
+                    new Ability({
+                        owner: p,
+                        info: EFFECTS.SlowDown
+                    })
+            }
 
             // tạo khói trong vùng ảnh hưởng
+            let r = this.effectRangeMax
             for (let i = 0; i < 15; i++) {
 
                 // lấy 1 vị trí ngẫu nhiên trong vùng ảnh hưởng
@@ -406,6 +422,27 @@ const ABILITIES = {
             new Ability({
                 owner: this.owner,
                 info: OBJECTS.W_Lucian,
+                customInfo: {
+                    direction: direction,
+                    position: this.owner.position.copy()
+                }
+            })
+        }
+    },
+    Q_Anivia: {
+        onBorn: function () {
+            // tính hướng bắn
+            let speed = 3
+            let direction = getVectorDirection({
+                fromPosition: this.owner.position.copy(),
+                toPosition: camera.screenToWorld(mouseX, mouseY),
+                mag: speed
+            })
+
+            // bắn ra QuaCauBang
+            new Ability({
+                owner: this.owner,
+                info: OBJECTS.QuaCauBang,
                 customInfo: {
                     direction: direction,
                     position: this.owner.position.copy()
@@ -542,6 +579,37 @@ const EFFECTS = {
             this.position = createVector(0, 0)
             this.range = 100
         }
+    },
+    IceBreak: {
+        onBorn: function () {
+            this.lifeTime = random(500, 2000)
+            this.timeBorn = millis()
+
+            let r = this.owner.radius
+            let randomAdd = createVector(random(-r / 2, r / 2), random(-r / 2, r / 2))
+            this.position = this.owner.position.copy().add(randomAdd)
+            this.radius = random(2, 5)
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            let period = millis() - this.timeBorn
+            let alpha = map(period, 0, this.lifeTime, 255, 0)
+
+            noStroke()
+            fill(255, alpha)
+            circle(this.position.x, this.position.y, this.radius)
+
+            let r = 3
+            this.position.add(random(-r, r), random(-r, r))
+            // this.radius += 1
+        },
+        checkFinish: function () {
+            return millis() - this.timeBorn > this.lifeTime
+        },
+        onFinish: function () {
+            abilities.splice(abilities.indexOf(this), 1)
+        }
     }
 }
 
@@ -597,7 +665,7 @@ const OBJECTS = {
         },
         onFinish: function () {
             // hiệu ứng nổ
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 5; i++) {
                 let r = this.radius * 2
                 let newPosition = this.position.copy().add(random(-r, r), random(-r, r))
 
@@ -646,7 +714,7 @@ const OBJECTS = {
             this.direction = createVector(0, 0)
             this.position = createVector(0, 0)
             this.speed = 0
-            this.radius = 25
+            this.radius = 15
 
             abilities.push(this)
         },
@@ -655,12 +723,15 @@ const OBJECTS = {
             this.position.add(this.direction)
 
             // hien thi ten lua
-            push()
-            translate(this.position.x, this.position.y)
-            rotate(this.direction.heading())
-
-            image(images.others['locxoay'], 0, 0, this.radius * 2, this.radius * 2)
-            pop()
+            // push()
+            // translate(this.position.x, this.position.y)
+            // rotate(this.direction.heading())
+            // image(images.others['locxoay'], 0, 0, this.radius * 2, this.radius * 2)
+            // pop()
+            fill(0, 0, 200)
+            strokeWeight(2)
+            stroke(150)
+            circle(this.position.x, this.position.y, this.radius * 2)
         },
         checkFinish: function () {
             let dist = p5.Vector.dist(this.position, this.bornPosition)
@@ -694,20 +765,79 @@ const OBJECTS = {
         }
     },
     No4Huong: {
-        onBorn: function() {
-            
+        onBorn: function () {
+
             // this.position
             // this.range
             // this.radius = 0
         },
-        onAlive: function() {
+        onAlive: function () {
 
         },
-        checkFinish: function() {
+        checkFinish: function () {
 
         },
-        onFinish: function() {
+        onFinish: function () {
 
+        }
+    },
+    QuaCauBang: {
+        onBorn: function () {
+            this.lifeTime = 3000
+            this.timeBorn = millis()
+
+            this.startPosition = this.owner.position.copy()
+            // this.range = 300
+
+            // khởi tạo hướng
+            this.direction = createVector(0, 0)
+            this.position = createVector(0, 0)
+            this.speed = 0
+            this.radius = 50
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            // di chuyển theo hướng
+            this.position.add(this.direction)
+
+            // hien thi cau bang 
+            push()
+            let period = millis() - this.timeBorn
+            translate(this.position.x, this.position.y)
+            // xoay cau bang
+            let r = map(period, 0, this.lifeTime, 0, 720)
+            rotate(radians(r * 2))
+            image(images.others['cautuyet'], 0, 0, this.radius * 2, this.radius * 2)
+            pop()
+        },
+        checkFinish: function () {
+            // return millis() - this.timeBorn > this.lifeTime
+            return p5.Vector.dist(this.startPosition, this.position) > 300
+        },
+        onFinish: function () {
+            // hiệu ứng nổ
+            stroke(255)
+            noFill()
+            circle(this.position.x, this.position.y, this.radius * 3)
+            for (let i = 0; i < 20; i++) {
+
+                let r = this.radius * 1.5
+                let newPosition = this.position.copy().add(random(-r, r), random(-r, r))
+
+                new Ability({
+                    owner: this.owner,
+                    info: EFFECTS.IceBreak,
+                    customInfo: {
+                        position: newPosition,
+                        radius: random(3, 5),
+                        lifeTime: random(500, 1300)
+                    }
+                })
+            }
+
+            // xoá
+            abilities.splice(abilities.indexOf(this), 1)
         }
     }
 }
@@ -716,16 +846,7 @@ const CHARACTERS = {
     Yasuo: {
         pictureName: 'yasuo',
         Q: ABILITIES.W_Lucian,
-        W: ABILITIES.Q_Shaco,
-        E: ABILITIES.R_Patheon,
-        R: ABILITIES.R_Jinx,
-        F: ABILITIES.Flash,
-        D: ABILITIES.Teleport
-    },
-    Lux: {
-        pictureName: 'yasuo',
-        Q: ABILITIES.Q_Rammus,
-        W: ABILITIES.Q_Shaco,
+        W: ABILITIES.Q_Anivia,
         E: ABILITIES.R_Patheon,
         R: ABILITIES.R_Jinx,
         F: ABILITIES.Flash,
@@ -786,7 +907,7 @@ class Character extends EventableClass {
     }
 
     action(chieuThuc) {
-        if(this.champion[chieuThuc]) {
+        if (this.champion[chieuThuc]) {
             new Ability({
                 owner: this,
                 info: this.champion[chieuThuc]
@@ -858,7 +979,7 @@ class Character extends EventableClass {
     }
 
     show() {
-        if(this.disable) return
+        if (this.disable) return
 
         push()
         translate(this.position.x, this.position.y)
