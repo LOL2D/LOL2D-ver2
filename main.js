@@ -6,6 +6,9 @@ let images = {
     others: {}
 }
 
+let mobileControl
+let isMobile = false
+
 function preload() {
     images.characters['yasuo'] = loadImage('./images/character/yasuo.png')
     images.characters['jinx'] = loadImage('./images/character/jinx.png')
@@ -21,8 +24,8 @@ function setup() {
     rectMode(CENTER)
 
     gamemap = new GameMap({
-        width: 5000,
-        height: 5000
+        width: 1000,
+        height: 1000
     })
 
     camera = new Camera()
@@ -59,10 +62,24 @@ function setup() {
             }
         }))
     }
+
+    // điều khiển cho đt
+    // isMobile = mobilecheck()
+    mobileControl = new MobileCircleControl({
+        radius: 60,
+        onChange: function() {
+            this.display()
+
+            let velocity = this.getVector().setMag(5)
+            player.targetPosition.add(velocity)
+        }
+    })
 }
 
 function draw() {
     background(25)
+
+    isMobile && mouseIsPressed && mobileControl.setHandPosition(mouseX, mouseY)
 
     camera.beginState()
     camera.follow()
@@ -86,7 +103,15 @@ function draw() {
 }
 
 function mousePressed() {
-    player.setTargetPosition(camera.screenToWorld(mouseX, mouseY))
+    if(isMobile) {
+        mobileControl.mousePressed()
+    } else {
+        player.setTargetPosition(camera.screenToWorld(mouseX, mouseY))
+    }
+}
+
+function mouseReleased() {
+    mobileControl.mouseReleased()
 }
 
 function keyReleased() {
@@ -95,7 +120,6 @@ function keyReleased() {
             owner: player,
             info: ABILITIES.Flash
         })
-
     } else if (key == 'd' || key == 'D') {
         new Ability({
             owner: player,
@@ -108,7 +132,10 @@ function keyReleased() {
             info: ABILITIES.Q_Shaco
         })
     } else if (key == 'w' || key == 'W') {
-
+        new Ability({
+            owner: player,
+            info: ABILITIES.Q_Rammus
+        })
     } else if (key == 'e' || key == 'E') {
         new Ability({
             owner: player,
@@ -180,16 +207,24 @@ const ABILITIES = {
             this.lifeTime = 5000
             this.bornTime = millis()
 
+            this.maxSpeed = this.owner.getSpeed() * 3
+
             abilities.push(this)
         },
         onAlive: function () {
-            this.owner.speedUp(0.04)
+            // this.owner.speedUp(0.04)
+            let period = millis() - this.bornTime
+            let speed = map(period, 0, this.lifeTime, this.owner.defaultSpeed, this.maxSpeed)
+            this.owner.setSpeed(speed)
 
             if (this.owner.getSpeed() > this.owner.defaultSpeed * 2) {
                 if (random() > 0.8)
                     new Ability({
                         owner: this.owner,
-                        info: EFFECTS.Smoke
+                        info: EFFECTS.Smoke,
+                        customInfo: {
+                            lifeTime: random(100, 600)
+                        }
                     })
             }
 
@@ -209,10 +244,10 @@ const ABILITIES = {
             this.jumpAt = 1000
             this.downAt = 2000
             this.finishAt = 3100
-            this.timeBorn = millis()
+            this.bornTime = millis()
 
             this.effectRange = 0
-            this.effectRangeMax = 200
+            this.effectRangeMax = 400
 
             this.targetR = getVectorPosition({
                 fromPosition: this.owner.position.copy(),
@@ -223,7 +258,7 @@ const ABILITIES = {
             abilities.push(this)
         },
         onAlive: function () {
-            let period = millis() - this.timeBorn
+            let period = millis() - this.bornTime
 
             // Khi đang dùng chiêu này thì ko thể di chuyển
             this.owner.setSpeed(0)
@@ -258,7 +293,7 @@ const ABILITIES = {
             circle(this.targetR.x, this.targetR.y, this.effectRange * 2)
         },
         checkFinish: function () {
-            return millis() - this.timeBorn > this.finishAt
+            return millis() - this.bornTime > this.finishAt
         },
         onFinish: function () {
             this.owner.setSpeed(this.owner.defaultSpeed)
@@ -297,7 +332,7 @@ const ABILITIES = {
     R_Jinx: {
         onBorn: function () {
             // tính hướng bắn
-            let speed = 15
+            let speed = 10
             let direction = getVectorDirection({
                 fromPosition: this.owner.position.copy(),
                 toPosition: camera.screenToWorld(mouseX, mouseY),
@@ -317,7 +352,7 @@ const ABILITIES = {
     },
     Q_Shaco: {
         onBorn: function () {
-            this.timeBorn = millis()
+            this.bornTime = millis()
             this.lifeTime = 4000
             this.range = 200
 
@@ -329,7 +364,6 @@ const ABILITIES = {
 
             this.owner.position = targetQ
             this.owner.targetPosition = targetQ
-            this.owner.setSpeed(this.owner.getSpeed() + 1)
             this.owner.invisible = true
 
             abilities.push(this)
@@ -338,11 +372,10 @@ const ABILITIES = {
 
         },
         checkFinish: function () {
-            return millis() - this.timeBorn > this.lifeTime
+            return millis() - this.bornTime > this.lifeTime
         },
         onFinish: function () {
             this.owner.invisible = false
-            this.owner.setSpeed(this.owner.defaultSpeed)
             abilities.splice(abilities.indexOf(this), 1)
         }
     },
@@ -352,8 +385,23 @@ const ABILITIES = {
             let direction = p5.Vector.sub(camera.screenToWorld(mouseX, mouseY), this.owner.position)
             direction.limit(this.range)
 
+            // nếu khởi tạo hàm ở trong onBorn này, thì chỉ gọi được trong onBorn này
+            function addSmoke(owner, pos, r) {
+                new Ability({
+                    owner: owner,
+                    info: EFFECTS.Smoke,
+                    customInfo: {
+                        lifeTime: 400,
+                        position: pos.copy(),
+                        radius: r
+                    }
+                })
+            }
+
+            addSmoke(this.owner, this.owner.position, this.owner.radius)
             this.owner.position.add(direction)
             this.owner.targetPosition = this.owner.position.copy()
+            addSmoke(this.owner, this.owner.position, this.owner.radius)
         }
     },
     Teleport: {
@@ -409,9 +457,8 @@ const EFFECTS = {
     SlowDown: {
         onBorn: function () {
             this.lifeTime = 3000
-            this.oldSpeed = this.owner.getSpeed()
             this.bornTime = millis()
-            this.owner.setSpeed(this.oldSpeed / 10)
+            this.owner.setSpeed(this.owner.getSpeed() / 10)
 
             abilities.push(this)
         },
@@ -421,14 +468,14 @@ const EFFECTS = {
             return millis() - this.bornTime > this.lifeTime
         },
         onFinish: function () {
-            this.owner.setSpeed(this.oldSpeed)
+            this.owner.setSpeed(this.owner.defaultSpeed)
             abilities.splice(abilities.indexOf(this), 1)
         }
     },
     Smoke: {
         onBorn: function () {
             this.lifeTime = random(500, 2000)
-            this.timeBorn = millis()
+            this.bornTime = millis()
 
             let r = this.owner.radius
             let randomAdd = createVector(random(-r, r), random(-r, r))
@@ -438,7 +485,7 @@ const EFFECTS = {
             abilities.push(this)
         },
         onAlive: function () {
-            let period = millis() - this.timeBorn
+            let period = millis() - this.bornTime
             let alpha = map(period, 0, this.lifeTime, 255, 0)
 
             noStroke()
@@ -450,7 +497,7 @@ const EFFECTS = {
             this.radius += 1
         },
         checkFinish: function () {
-            return millis() - this.timeBorn > this.lifeTime
+            return millis() - this.bornTime > this.lifeTime
         },
         onFinish: function () {
             abilities.splice(abilities.indexOf(this), 1)
@@ -468,7 +515,7 @@ const OBJECTS = {
     TenLuaDanDaoSieuKhungKhiep: {
         onBorn: function () {
             this.lifeTime = 10000
-            this.timeBorn = millis()
+            this.bornTime = millis()
 
             // khởi tạo hướng
             this.direction = createVector(0, 0)
@@ -509,12 +556,24 @@ const OBJECTS = {
             }
         },
         checkFinish: function () {
-            return millis() - this.timeBorn > this.lifeTime
+            if(millis() - this.bornTime > this.lifeTime)
+                return true
+
+            for(let comp of comps) {
+                let distance = p5.Vector.dist(this.position, comp.position)
+                if(distance < this.radius + comp.radius) {
+                    new Ability({
+                        owner: comp,
+                        info: EFFECTS.SlowDown
+                    })
+
+                    return true
+                }
+            }
         },
         onFinish: function () {
             // hiệu ứng nổ
             for (let i = 0; i < 10; i++) {
-
                 let r = this.radius * 2
                 let newPosition = this.position.copy().add(random(-r, r), random(-r, r))
 
@@ -547,6 +606,12 @@ const OBJECTS = {
         onFinish: function () {
             // hiệu ứng trói
         }
+    }
+}
+
+const CHARACTERS = {
+    Yasuo: {
+        
     }
 }
 
@@ -971,6 +1036,87 @@ class Camera {
         let worldY = (screenY - height * .5) / this.scale + this.position.y
         return createVector(worldX, worldY)
     }
+}
+
+class MobileCircleControl {
+    constructor(config = {}) {
+        const {
+            position = createVector(width / 2, height / 2),
+            radius = 50,
+            onChange = function() {}
+        } = config
+
+        this.position = position
+        this.radius = radius
+        this.handPosition = this.position.copy().add(10, -10)
+        this.buttonRadius = radius / 2.5
+        this.onChange = onChange.bind(this)
+    }
+
+    display() {
+        if (this.controlable) {
+            strokeWeight(3)
+            stroke(150, 50)
+            line(this.position.x, this.position.y, this.handPosition.x, this.handPosition.y)
+
+            noStroke()
+            strokeWeight(1)
+            fill(150, 50)
+            circle(this.position.x, this.position.y, this.radius * 2)
+            circle(this.handPosition.x, this.handPosition.y, this.buttonRadius * 2)
+        }
+    }
+
+    setControlable(value) {
+        this.controlable = value
+    }
+
+    getVector() {
+        let direction = p5.Vector.sub(this.handPosition, this.position)
+        let value = map(direction.mag(), 0, this.radius - this.buttonRadius, 0, 1)
+
+        return direction.setMag(value)
+    }
+
+    setHandPosition(x, y) {
+        if (this.controlable) {
+            let direction = p5.Vector.sub(createVector(x, y), this.position)
+            let constrain = direction.limit(this.radius - this.buttonRadius)
+
+            this.handPosition = p5.Vector.add(this.position, constrain)
+            this.onChange()
+        }
+        return this
+    }
+
+    resetHandPosition() {
+        this.handPosition = this.position.copy()
+        return this
+    }
+
+    isAcceptHandPosition(x, y) {
+        return y > height / 2
+        // return p5.Vector.dist(this.position, createVector(x, y)) < this.radius
+    }
+
+    // for mouse control
+    mousePressed() {
+        let check = this.isAcceptHandPosition(mouseX, mouseY)
+        if (check) {
+            this.position = createVector(mouseX, mouseY)
+            this.setControlable(check)
+        }
+    }
+
+    mouseReleased() {
+        this.setControlable(false)
+    }
+}
+
+function mobilecheck() {
+    var check = false;
+    (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+    return check;
 }
 
 window.onload = function () {
