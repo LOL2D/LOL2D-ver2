@@ -547,13 +547,13 @@ const OBJECTS = {
             this.lifeTime = 2000
             this.timeBorn = millis()
 
-            // this.startPosition = this.owner.direction
+            this.startPosition = this.owner.position.copy()
             // this.range = 300
 
             // khởi tạo hướng
-            // this.direction = createVector(0, 0)
-            // this.position = createVector(0, 0)
-            // this.speed = 0
+            this.direction = createVector(0, 0)
+            this.position = createVector(0, 0)
+            this.speed = 0
             this.radius = 25
 
             abilities.push(this)
@@ -574,7 +574,8 @@ const OBJECTS = {
             pop() 
         },
         checkFinish: function () {
-            return millis() - this.timeBorn > this.lifeTime
+            // return millis() - this.timeBorn > this.lifeTime
+            return p5.Vector.dist(this.startPosition,this.position) > 300
         },
         onFinish: function () {
             // hiệu ứng nổ
