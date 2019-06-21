@@ -1,5 +1,5 @@
 let gamemap, camera
-let player, comps = []
+let player, players = []
 let abilities = []
 let images = {
     characters: {},
@@ -32,6 +32,7 @@ function setup() {
 
     // Khởi tạo người chơi
     player = new Character({
+        champion: CHARACTERS.Yasuo,
         picture: images.characters['jinx'],
         onBorn: function () {
         },
@@ -46,12 +47,14 @@ function setup() {
         }
     })
 
+    players.push(player)
+
     camera.setTarget(player)
 
     // thêm máy
     for (let i = 0; i < 2; i++) {
-        comps.push(new AICharacter({
-            picture: randomProperty(images.characters),
+        players.push(new AICharacter({
+            champion: CHARACTERS.Yasuo,
             position: createVector(random(width), random(height)),
             onAlive: function () {
                 this.move()
@@ -67,7 +70,7 @@ function setup() {
     // isMobile = mobilecheck()
     mobileControl = new MobileCircleControl({
         radius: 60,
-        onChange: function() {
+        onChange: function () {
             this.display()
 
             let velocity = this.getVector().setMag(5)
@@ -87,10 +90,8 @@ function draw() {
     gamemap.showGrid()
     gamemap.showEdges()
 
-    player.run()
-
-    for (let comp of comps) {
-        comp.run()
+    for (let p of players) {
+        p.run()
     }
 
     for (let ability of abilities) {
@@ -99,11 +100,30 @@ function draw() {
 
     camera.endState()
 
+    if(random() > 0.99) {
+        let speed = 10
+        let direction = getVectorDirection({
+            fromPosition: players[1].position.copy(),
+            toPosition: camera.screenToWorld(mouseX, mouseY),
+            mag: speed
+        })
+
+        // bắn ra TenLuaDanDaoSieuKhungKhiep
+        new Ability({
+            owner: players[1],
+            info: OBJECTS.TenLuaDanDaoSieuKhungKhiep,
+            customInfo: {
+                direction: direction,
+                position: players[1].position.copy()
+            }
+        })
+    }
+
     showFrameRate()
 }
 
 function mousePressed() {
-    if(isMobile) {
+    if (isMobile) {
         mobileControl.mousePressed()
     } else {
         player.setTargetPosition(camera.screenToWorld(mouseX, mouseY))
@@ -115,41 +135,15 @@ function mouseReleased() {
 }
 
 function keyReleased() {
-    if (key == 'f' || key == 'F') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.Flash
-        })
-    } else if (key == 'd' || key == 'D') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.Teleport
-        })
-
-    } else if (key == 'q' || key == 'Q') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.Q_Shaco
-        })
-    } else if (key == 'w' || key == 'W') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.Q_Rammus
-        })
-    } else if (key == 'e' || key == 'E') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.R_Patheon
-        })
-    } else if (key == 'r' || key == 'R') {
-        new Ability({
-            owner: player,
-            info: ABILITIES.R_Jinx
-        })
-
-    } else if (key == 't' || key == 'T') {
+    if (key == 't' || key == 'T') {
         camera.followTarget = !camera.followTarget
+    } else {
+        let upperKey = key.toUpperCase()
+
+        player.action(upperKey)
     }
+
+    console.log(key)
 }
 
 function mouseWheel(e) {
@@ -198,6 +192,25 @@ const getVectorPosition = function (config = {}) {
     } = config
 
     return fromPosition.copy().add(getVectorDirection(config))
+}
+
+const vaChamTronTron = function (tron1, tron2) {
+    let distance = p5.Vector.dist(tron1.position, tron2.position)
+    if (distance < tron1.radius + tron2.radius) {
+        return true
+    }
+    return false
+}
+
+const vaChamObjectPlayer = function(obj, playerArr) {
+    for (let p of playerArr) {
+        if (!p.disable && p != obj.owner) {
+            if(vaChamTronTron(p, obj)) {
+                return p
+            }
+        }
+    }
+    return null
 }
 
 // ================== DATABASE ABILITIES ==================
@@ -270,7 +283,7 @@ const ABILITIES = {
 
                 // Khi đang trên không trung
             } else if (period < this.downAt) {
-                this.owner.invisible = true
+                this.owner.disable = true
 
                 let newScale = map(period, this.jumpAt, this.downAt, 1, .4)
                 camera.setScale(newScale)
@@ -297,7 +310,7 @@ const ABILITIES = {
         },
         onFinish: function () {
             this.owner.setSpeed(this.owner.defaultSpeed)
-            this.owner.invisible = false
+            this.owner.disable = false
 
             let r = this.effectRangeMax
 
@@ -379,6 +392,27 @@ const ABILITIES = {
             abilities.splice(abilities.indexOf(this), 1)
         }
     },
+    W_Lucian: {
+        onBorn: function () {
+            // tính hướng bắn
+            let speed = 10
+            let direction = getVectorDirection({
+                fromPosition: this.owner.position.copy(),
+                toPosition: camera.screenToWorld(mouseX, mouseY),
+                mag: speed
+            })
+
+            // bắn ra TenLuaDanDaoSieuKhungKhiep
+            new Ability({
+                owner: this.owner,
+                info: OBJECTS.W_Lucian,
+                customInfo: {
+                    direction: direction,
+                    position: this.owner.position.copy()
+                }
+            })
+        }
+    },
     Flash: {
         onBorn: function () {
             this.range = 300
@@ -413,7 +447,7 @@ const ABILITIES = {
 
             this.angle = 0
 
-            this.showEffectTeleport = function(pos, radius) {
+            this.showEffectTeleport = function (pos, radius) {
                 push()
                 translate(pos.x, pos.y)
                 rotate(this.angle)
@@ -523,8 +557,6 @@ const OBJECTS = {
             this.speed = 0
             this.radius = 25
 
-            // camera.setTarget(this)
-
             abilities.push(this)
         },
         onAlive: function () {
@@ -556,20 +588,12 @@ const OBJECTS = {
             }
         },
         checkFinish: function () {
-            if(millis() - this.bornTime > this.lifeTime)
+            if (millis() - this.bornTime > this.lifeTime)
                 return true
 
-            for(let comp of comps) {
-                let distance = p5.Vector.dist(this.position, comp.position)
-                if(distance < this.radius + comp.radius) {
-                    new Ability({
-                        owner: comp,
-                        info: EFFECTS.SlowDown
-                    })
+            this.playerTrung = vaChamObjectPlayer(this, players)
 
-                    return true
-                }
-            }
+            return this.playerTrung
         },
         onFinish: function () {
             // hiệu ứng nổ
@@ -587,6 +611,12 @@ const OBJECTS = {
                     }
                 })
             }
+
+            if (this.playerTrung)
+                new Ability({
+                    owner: this.playerTrung,
+                    info: EFFECTS.SlowDown
+                })
 
             // xoá
             abilities.splice(abilities.indexOf(this), 1)
@@ -606,12 +636,100 @@ const OBJECTS = {
         onFinish: function () {
             // hiệu ứng trói
         }
+    },
+    W_Lucian: {
+        onBorn: function () {
+            this.lifeRange = 500
+            this.bornPosition = this.owner.position.copy()
+
+            // khởi tạo hướng
+            this.direction = createVector(0, 0)
+            this.position = createVector(0, 0)
+            this.speed = 0
+            this.radius = 25
+
+            abilities.push(this)
+        },
+        onAlive: function () {
+            // di chuyển theo hướng
+            this.position.add(this.direction)
+
+            // hien thi ten lua
+            push()
+            translate(this.position.x, this.position.y)
+            rotate(this.direction.heading())
+
+            image(images.others['locxoay'], 0, 0, this.radius * 2, this.radius * 2)
+            pop()
+        },
+        checkFinish: function () {
+            let dist = p5.Vector.dist(this.position, this.bornPosition)
+            if (dist > this.lifeRange)
+                return true
+
+            this.playerTrung = vaChamObjectPlayer(this, players)
+
+            return this.playerTrung
+        },
+        onFinish: function () {
+            // hiệu ứng nổ 4 hướng
+            push()
+            translate(this.position.x, this.position.y)
+            rotate(this.direction.heading())
+            stroke(255)
+            strokeWeight(4)
+            line(-100, 0, 100, 0)
+            line(0, -100, 0, 100)
+            pop()
+
+
+            if (this.playerTrung)
+                new Ability({
+                    owner: this.playerTrung,
+                    info: EFFECTS.SlowDown
+                })
+
+            // xoá
+            abilities.splice(abilities.indexOf(this), 1)
+        }
+    },
+    No4Huong: {
+        onBorn: function() {
+            
+            // this.position
+            // this.range
+            // this.radius = 0
+        },
+        onAlive: function() {
+
+        },
+        checkFinish: function() {
+
+        },
+        onFinish: function() {
+
+        }
     }
 }
 
 const CHARACTERS = {
     Yasuo: {
-        
+        pictureName: 'yasuo',
+        Q: ABILITIES.W_Lucian,
+        W: ABILITIES.Q_Shaco,
+        E: ABILITIES.R_Patheon,
+        R: ABILITIES.R_Jinx,
+        F: ABILITIES.Flash,
+        D: ABILITIES.Teleport
+    },
+    Lux: {
+        pictureName: 'yasuo',
+        Q: ABILITIES.Q_Rammus,
+        W: ABILITIES.Q_Shaco,
+        E: ABILITIES.R_Patheon,
+        R: ABILITIES.R_Jinx,
+        F: ABILITIES.Flash,
+        D: ABILITIES.Teleport
     }
 }
 
@@ -644,15 +762,15 @@ class Character extends EventableClass {
         super(config)
 
         let {
-            picture,
             radius = 35,
             position = createVector(500, 100),
             name = 'Character',
-            movementSpeed = 4
+            movementSpeed = 4,
+            champion = {}
 
         } = config
 
-        this.picture = picture
+        this.champion = champion
         this.position = position
         this.radius = radius
         this.name = name
@@ -662,8 +780,18 @@ class Character extends EventableClass {
         this.targetPosition = position.copy()
         this.lookAtPosition = position.copy()
         this.invisible = false
+        this.disable = false
 
         this.onBorn()
+    }
+
+    action(chieuThuc) {
+        if(this.champion[chieuThuc]) {
+            new Ability({
+                owner: this,
+                info: this.champion[chieuThuc]
+            })
+        }
     }
 
     getSpeed() {
@@ -730,6 +858,8 @@ class Character extends EventableClass {
     }
 
     show() {
+        if(this.disable) return
+
         push()
         translate(this.position.x, this.position.y)
 
@@ -740,14 +870,15 @@ class Character extends EventableClass {
         line(0, 0, vectorHuong.x, vectorHuong.y)
 
         // vẽ hình ảnh
-        if(this.invisible) {
+        if (this.invisible) {
             noFill()
             stroke(200, 100)
             strokeWeight(1)
             circle(0, 0, this.radius * 2)
-            
-        } else if (this.picture) {
-            image(this.picture, 0, 0, this.radius * 2, this.radius * 2)
+
+        } else if (this.champion.pictureName) {
+            let name = this.champion.pictureName
+            image(images.characters[name], 0, 0, this.radius * 2, this.radius * 2)
 
         } else {
             fill(100)
@@ -1043,7 +1174,7 @@ class MobileCircleControl {
         const {
             position = createVector(width / 2, height / 2),
             radius = 50,
-            onChange = function() {}
+            onChange = function () { }
         } = config
 
         this.position = position
